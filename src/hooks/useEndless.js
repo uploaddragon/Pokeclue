@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import DB from '../data/pokemon.js';
 import { getTodayStr } from '../utils/game.js';
 
-const CHALLENGE_MAX_TRIES = 7;
+const CHALLENGE_MAX_TRIES = 8;
 const CHALLENGE_DAILY_LIMIT = 3;
 const CHALLENGE_KEY   = 'pokeclue_challenge';
 const NORMAL_STATE_KEY    = 'pokeclue_endless_normal';
