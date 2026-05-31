@@ -34,14 +34,13 @@ export function useBattle(user) {
   const [error, setError] = useState('');
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
-  const slotRef = useRef(null); // realtime 콜백에서 mySlot 참조용
 
   useEffect(() => () => {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
   }, []);
 
-  function subscribeRoom(code, slotRef) {
+  function subscribeRoom(code) {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     channelRef.current = bc
       .channel(`battle-${code}-${Date.now()}`)
@@ -56,27 +55,6 @@ export function useBattle(user) {
           setPhase('playing');
         }
         if (r.status === 'finished') setPhase('finished');
-
-        // 양측 모두 리매치 준비됨 → p1이 새 게임 시작 (race condition 방지)
-        if (r.p1_rematch && r.p2_rematch && r.status === 'finished') {
-          if (slotRef.current === 'p1') {
-            const nextRound = (r.round || 1) + 1;
-            const firstTurn = nextRound % 2 === 0 ? 'p2' : 'p1';
-            const newPoke = DB[Math.floor(Math.random() * DB.length)];
-            bc.from('battle_rooms').update({
-              answer_id: String(newPoke.id),
-              status: 'playing',
-              current_turn: firstTurn,
-              shared_guesses: [],
-              p1_tries: 0, p1_solved: false,
-              p2_tries: 0, p2_solved: false,
-              winner: null,
-              p1_rematch: false, p2_rematch: false,
-              round: nextRound,
-            }).eq('id', r.id).eq('p1_rematch', true).eq('p2_rematch', true);
-            // answer는 realtime의 status='playing' 이벤트에서 갱신됨
-          }
-        }
       })
       .subscribe((st, err) => { if (err) console.error('[Battle] realtime error', err); });
   }
@@ -103,9 +81,8 @@ export function useBattle(user) {
     const me = getIdentity(user);
     try {
       const result = await createRoom(me);
-      slotRef.current = 'p1';
       setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
-      setPhase('waiting'); subscribeRoom(result.code, slotRef); startTimeout();
+      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
     } catch (err) { setError(`방 생성 실패: ${err.message}`); }
   }
 
@@ -130,9 +107,8 @@ export function useBattle(user) {
 
     const poke = DB.find(p => String(p.id) === String(r.answer_id));
     const joined = { ...r, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
-    slotRef.current = 'p2';
     setRoomCode(upper); setMySlot('p2'); setAnswer(poke); setRoom(joined);
-    setPhase('playing'); subscribeRoom(upper, slotRef);
+    setPhase('playing'); subscribeRoom(upper);
   }
 
   async function findRandom() {
@@ -153,17 +129,15 @@ export function useBattle(user) {
       if (!e) {
         const poke = DB.find(p => String(p.id) === String(target.answer_id));
         const joined = { ...target, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
-        slotRef.current = 'p2';
         setRoomCode(target.id); setMySlot('p2'); setAnswer(poke); setRoom(joined);
-        setPhase('playing'); subscribeRoom(target.id, slotRef); return;
+        setPhase('playing'); subscribeRoom(target.id); return;
       }
     }
 
     try {
       const result = await createRoom(me);
-      slotRef.current = 'p1';
       setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
-      setPhase('waiting'); subscribeRoom(result.code, slotRef); startTimeout();
+      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
     } catch (err) { setPhase('select'); setError(`방 생성 실패: ${err.message}`); }
   }
 
@@ -206,12 +180,37 @@ export function useBattle(user) {
     await bc.from('battle_rooms').update({ current_turn: nextTurn }).eq('id', roomCode);
   }, [roomCode, mySlot]);
 
-  // 리매치 요청 — 항상 대기 화면 표시, 양측 모두 누르면 realtime이 새 게임 시작
+  // 리매치 요청
   const requestRematch = useCallback(async () => {
     if (!roomCode || !mySlot) return;
     const myKey = mySlot === 'p1' ? 'p1_rematch' : 'p2_rematch';
+
+    // 내 플래그 설정
     await bc.from('battle_rooms').update({ [myKey]: true }).eq('id', roomCode);
     setPhase('rematch_wait');
+
+    // DB에서 최신 상태 조회 — 상대가 이미 준비돼 있으면 내가 새 게임 시작
+    const { data } = await bc.from('battle_rooms')
+      .select('p1_rematch, p2_rematch, round')
+      .eq('id', roomCode)
+      .single();
+
+    if (data?.p1_rematch && data?.p2_rematch) {
+      // 양쪽 준비됨: p1이 새 게임 시작, p2는 realtime 대기
+      if (mySlot === 'p1') {
+        const nextRound = (data.round || 1) + 1;
+        const firstTurn = nextRound % 2 === 0 ? 'p2' : 'p1';
+        const newPoke = DB[Math.floor(Math.random() * DB.length)];
+        await bc.from('battle_rooms').update({
+          answer_id: String(newPoke.id),
+          status: 'playing', current_turn: firstTurn, shared_guesses: [],
+          p1_tries: 0, p1_solved: false, p2_tries: 0, p2_solved: false,
+          winner: null, p1_rematch: false, p2_rematch: false, round: nextRound,
+        }).eq('id', roomCode);
+        // answer·phase는 realtime의 status='playing' 이벤트에서 갱신
+      }
+      // p2는 realtime이 status='playing' 이벤트를 받을 때까지 대기
+    }
   }, [roomCode, mySlot]);
 
   // 항복 — 상대방 승리로 처리
