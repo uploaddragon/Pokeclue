@@ -294,7 +294,7 @@ const DB = [
   {id:532,ko:'으랏차',en:'Timburr',gen:5,t1:'격투',t2:'없음',evo:1,len:3,enLen:7},{id:533,ko:'토쇠골',en:'Gurdurr',gen:5,t1:'격투',t2:'없음',evo:2,len:3,enLen:7},{id:534,ko:'노보청',en:'Conkeldurr',gen:5,t1:'격투',t2:'없음',evo:3,len:3,enLen:10},
   {id:535,ko:'동챙이',en:'Tympole',gen:5,t1:'물',t2:'없음',evo:1,len:3,enLen:7},{id:536,ko:'두까비',en:'Palpitoad',gen:5,t1:'물',t2:'땅',evo:2,len:3,enLen:9},{id:537,ko:'두빅굴',en:'Seismitoad',gen:5,t1:'물',t2:'땅',evo:3,len:3,enLen:10},
   {id:538,ko:'던지미',en:'Throh',gen:5,t1:'격투',t2:'없음',evo:1,len:3,enLen:5},{id:539,ko:'타격귀',en:'Sawk',gen:5,t1:'격투',t2:'없음',evo:2,len:3,enLen:4},
-  {id:540,ko:'두르보',en:'Sewaddle',gen:5,t1:'벌레',t2:'없음',evo:1,len:3,enLen:8},{id:541,ko:'두르쿤',en:'Swadloon',gen:5,t1:'벌레',t2:'없음',evo:2,len:3,enLen:8},{id:542,ko:'모아머',en:'Leavanny',gen:5,t1:'벌레',t2:'풀',evo:3,len:3,enLen:8},
+  {id:540,ko:'두르보',en:'Sewaddle',gen:5,t1:'벌레',t2:'풀',evo:1,len:3,enLen:8},{id:541,ko:'두르쿤',en:'Swadloon',gen:5,t1:'벌레',t2:'풀',evo:2,len:3,enLen:8},{id:542,ko:'모아머',en:'Leavanny',gen:5,t1:'벌레',t2:'풀',evo:3,len:3,enLen:8},
   {id:543,ko:'마디네',en:'Venipede',gen:5,t1:'벌레',t2:'독',evo:1,len:3,enLen:8},{id:544,ko:'휠구',en:'Whirlipede',gen:5,t1:'벌레',t2:'독',evo:2,len:2,enLen:10},{id:545,ko:'펜드라',en:'Scolipede',gen:5,t1:'벌레',t2:'독',evo:3,len:3,enLen:9},
   {id:546,ko:'소미안',en:'Cottonee',gen:5,t1:'풀',t2:'없음',evo:1,len:3,enLen:8},{id:547,ko:'엘풍',en:'Whimsicott',gen:5,t1:'풀',t2:'비행',evo:2,len:2,enLen:10},
   {id:548,ko:'치릴리',en:'Petilil',gen:5,t1:'풀',t2:'없음',evo:1,len:3,enLen:7},{id:549,ko:'드레디어',en:'Lilligant',gen:5,t1:'풀',t2:'없음',evo:2,len:4,enLen:9},
