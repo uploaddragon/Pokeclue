@@ -44,6 +44,7 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
         <div className="nav">
           <button className={`nav-btn${page === 'game' ? ' on' : ''}`} onClick={() => onNav('game')}>{isEn ? 'Game' : '게임'}</button>
           <button className={`nav-btn${page === 'dex' ? ' on' : ''}`} onClick={() => onNav('dex')}>{isEn ? 'Dex' : '도감'}</button>
+          <button className={`nav-btn${page === 'battle' ? ' on' : ''}`} onClick={() => onNav('battle')}>{isEn ? 'Battle' : '대전'}</button>
           <div className="nav-divider" />
           <div className="lang-wrap" ref={langRef}>
             <button className={`nav-btn lang-btn${langOpen ? ' on' : ''}`} onClick={() => setLangOpen(o => !o)}>

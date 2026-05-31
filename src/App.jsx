@@ -7,6 +7,7 @@ import { DexPage } from './components/DexPage.jsx';
 import { AuthModal } from './components/AuthModal.jsx';
 import { RankingModal } from './components/RankingModal.jsx';
 import { WelcomeModal, useWelcomeModal } from './components/WelcomeModal.jsx';
+import { BattlePage } from './components/BattlePage.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
@@ -80,6 +81,9 @@ export default function App() {
       )}
       {page === 'dex' && (
         <DexPage dex={dex} lang={lang} />
+      )}
+      {page === 'battle' && (
+        <BattlePage user={user} lang={lang} />
       )}
       <Footer />
     </div>
