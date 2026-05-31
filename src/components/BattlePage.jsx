@@ -1,15 +1,46 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useBattle } from '../hooks/useBattle.js';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { displayName } from '../utils/game.js';
 import { spr } from '../utils/sprite.js';
 
+const TURN_SEC = 30;
+
 export function BattlePage({ user, lang }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
   const [friendView, setFriendView] = useState('main'); // 'main' | 'friend'
+  const [timer, setTimer] = useState(TURN_SEC);
+  const [skipped, setSkipped] = useState(false);
+  const timerRef = useRef(null);
+
+  // 타이머: playing 단계에서만 동작
+  useEffect(() => {
+    if (b.phase !== 'playing' || b.gameOver) {
+      clearInterval(timerRef.current);
+      return;
+    }
+    setTimer(TURN_SEC);
+    timerRef.current = setInterval(() => {
+      setTimer(t => {
+        if (t <= 1) {
+          // 시간 초과 → 턴 넘김 표시 후 리셋
+          setSkipped(true);
+          setTimeout(() => setSkipped(false), 1500);
+          return TURN_SEC;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [b.phase, b.gameOver]);
+
+  function handleSubmit(id) {
+    setTimer(TURN_SEC); // 제출 시 타이머 리셋
+    b.submitGuess(id);
+  }
 
   // ── SELECT ──────────────────────────────────────────────
   if (b.phase === 'select') {
@@ -126,6 +157,7 @@ export function BattlePage({ user, lang }) {
 
   // ── PLAYING ──────────────────────────────────────────────
   if (b.phase === 'playing') {
+    const urgent = timer <= 10;
     return (
       <main>
         <div className="battle-hud">
@@ -134,7 +166,16 @@ export function BattlePage({ user, lang }) {
             <div className="battle-hud-nick">{b.myNick}</div>
             <div className="battle-hud-tries">{b.guesses.length}{isEn ? ' tries' : '번'}</div>
           </div>
-          <div className="battle-hud-vs">VS</div>
+
+          <div className="battle-hud-center">
+            <div className="battle-hud-vs">VS</div>
+            <div className={`battle-timer${urgent ? ' urgent' : ''}`}>
+              {skipped
+                ? (isEn ? 'SKIP!' : '턴 넘김!')
+                : `${timer}s`}
+            </div>
+          </div>
+
           <div className="battle-hud-player op">
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
@@ -151,7 +192,7 @@ export function BattlePage({ user, lang }) {
           </div>
         )}
 
-        <Autocomplete onSubmit={b.submitGuess} disabled={b.gameOver} lang={lang} />
+        <Autocomplete onSubmit={handleSubmit} disabled={b.gameOver} lang={lang} />
         <GuessTable guesses={b.guesses} answer={b.answer} lang={lang} />
       </main>
     );
