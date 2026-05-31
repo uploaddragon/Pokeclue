@@ -107,13 +107,13 @@ main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
 .hero{
   background:white;border:3px solid #222;
   box-shadow:5px 5px 0 #222;
-  padding:18px 44px;text-align:center;
+  padding:20px 48px;text-align:center;
   margin-bottom:20px;position:relative;overflow:hidden;
 }
-.hero::before{content:'★';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:20px;text-shadow:1px 1px 0 #000;}
-.hero::after{content:'★';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:20px;text-shadow:1px 1px 0 #000;}
-.hero-t{font-family:'Press Start 2P',monospace;font-size:10px;margin-bottom:10px;line-height:2.2;color:#1a1a1a;}
-.hero-s{font-size:11px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2;}
+.hero::before{content:'★';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:22px;text-shadow:1px 1px 0 #000;}
+.hero::after{content:'★';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:22px;text-shadow:1px 1px 0 #000;}
+.hero-t{font-family:'Press Start 2P',monospace;font-size:11px;margin-bottom:10px;line-height:2.2;color:#1a1a1a;}
+.hero-s{font-size:12px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2;}
 .hero-s strong{color:var(--red);}
 
 /* ── Challenge Meta ── */
@@ -123,7 +123,7 @@ main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
 }
 .challenge-divider{width:1px;height:36px;background:#ddd;}
 .challenge-stat{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.challenge-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
+.challenge-label{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);}
 .challenge-dots{display:flex;gap:5px;}
 .cdot{
   width:12px;height:12px;border-radius:50%;
@@ -133,8 +133,8 @@ main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
 .cdot.active{background:var(--correct);border-color:#1b5e20;}
 .cdot.try{background:#ddd;border-color:#bbb;}
 .cdot.try.used{background:var(--wrong);border-color:#7f0000;}
-.challenge-val{font-family:'Press Start 2P',monospace;font-size:10px;color:#1a1a1a;line-height:1;}
-.challenge-unit{font-size:7px;color:var(--muted);margin-left:2px;}
+.challenge-val{font-family:'Press Start 2P',monospace;font-size:11px;color:#1a1a1a;line-height:1;}
+.challenge-unit{font-size:9px;color:var(--muted);margin-left:2px;}
 
 /* ── Result Banner ── */
 .result-banner{
@@ -144,27 +144,27 @@ main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
 .result-banner.fail{border-color:var(--wrong);}
 .res-poke{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:10px;flex-wrap:wrap;}
 .res-poke img{width:80px;height:80px;image-rendering:pixelated;flex-shrink:0;}
-.res-t{font-family:'Press Start 2P',monospace;font-size:11px;margin-bottom:8px;line-height:2.2;color:#1a1a1a;}
-.res-s{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.2;}
+.res-t{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:8px;line-height:2.2;color:#1a1a1a;}
+.res-s{font-size:11px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.2;}
 
 /* ── Result Inline Ranking ── */
-.res-ranking{margin-top:16px;border-top:2px solid #e0e0e0;padding-top:14px;text-align:left;}
-.res-ranking-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
-.res-ranking-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#1a1a1a;}
-.res-ranking-stats{display:flex;gap:12px;flex-wrap:wrap;}
-.res-ranking-stats span{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
+.res-ranking{margin-top:18px;border-top:2px solid #e0e0e0;padding-top:16px;text-align:left;}
+.res-ranking-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.res-ranking-title{font-family:'Press Start 2P',monospace;font-size:10px;color:#1a1a1a;}
+.res-ranking-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.res-ranking-stats span{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);}
 .res-ranking-stats strong{color:#1a1a1a;}
 .res-my-rank strong{color:var(--red);}
-.res-ranking-list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;}
-.res-ranking-row{display:flex;align-items:center;gap:10px;padding:7px 10px;background:#f9f9f9;border:2px solid #eee;font-family:'Press Start 2P',monospace;font-size:8px;}
+.res-ranking-list{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto;}
+.res-ranking-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f9f9f9;border:2px solid #eee;font-family:'Press Start 2P',monospace;font-size:9px;}
 .res-ranking-row.me{background:#fff9e6;border-color:var(--yellow);}
-.res-rank-pos{width:24px;text-align:center;font-size:12px;flex-shrink:0;}
+.res-rank-pos{width:26px;text-align:center;font-size:14px;flex-shrink:0;}
 .res-rank-name{flex:1;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.res-rank-tries-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;}
-.res-rank-tries{color:#555;white-space:nowrap;font-size:8px;}
-.res-rank-no-filter{color:#c89000;font-size:6px;white-space:nowrap;}
-.res-rank-me{background:var(--yellow);color:#222;border:2px solid #222;padding:2px 6px;font-size:7px;flex-shrink:0;}
-.res-ranking-empty{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);padding:12px 0;text-align:center;line-height:2;}
+.res-rank-tries-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
+.res-rank-tries{color:#555;white-space:nowrap;font-size:9px;}
+.res-rank-no-filter{color:#c89000;font-size:8px;white-space:nowrap;}
+.res-rank-me{background:var(--yellow);color:#222;border:2px solid #222;padding:3px 7px;font-size:8px;flex-shrink:0;}
+.res-ranking-empty{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);padding:14px 0;text-align:center;line-height:2.2;}
 
 /* ── Primary / Next Button ── */
 .next-btn{
@@ -227,14 +227,14 @@ main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
 .tool-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000;}
 .tool-btn.active-btn{background:var(--yellow);color:#222;border-color:#000;}
 .badge{
-  font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;
+  font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;
   color:var(--muted);display:flex;align-items:center;gap:6px;
   line-height:2;margin-left:auto;
 }
 .dot{width:8px;height:8px;background:var(--partial);border:2px solid #222;border-radius:50%;animation:blink 1.2s infinite step-start;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .no-filter-notice{
-  font-family:'Press Start 2P',monospace;font-size:8px;
+  font-family:'Press Start 2P',monospace;font-size:10px;
   color:var(--wrong);display:flex;align-items:center;gap:6px;
   padding:4px 0;
 }
@@ -278,9 +278,9 @@ tr:last-child td{border-bottom:none;}
 /* ── How-to ── */
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .how-c{background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;padding:18px 14px;text-align:center;}
-.how-i{font-size:24px;margin-bottom:10px;}
-.how-t{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--red);margin-bottom:8px;line-height:2;}
-.how-d{font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.4;}
+.how-i{font-size:26px;margin-bottom:10px;}
+.how-t{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--red);margin-bottom:8px;line-height:2;}
+.how-d{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.6;}
 
 /* ── Legend / Shiny ── */
 .leg{background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;padding:14px 18px;margin-bottom:12px;}
@@ -375,8 +375,8 @@ tr:last-child td{border-bottom:none;}
 .endless-card-icon{font-family:'Press Start 2P',monospace;font-size:30px;margin-bottom:16px;color:var(--red);}
 .endless-card.challenge .endless-card-icon{color:#c17a00;}
 .endless-card-title{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:18px;color:#1a1a1a;}
-.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:9px;}
-.endless-card-desc li{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);line-height:1.9;padding-left:12px;position:relative;}
+.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;}
+.endless-card-desc li{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);line-height:2.1;padding-left:14px;position:relative;}
 .endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);}
 .endless-card.challenge .endless-card-desc li::before{color:#c17a00;}
 
