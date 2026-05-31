@@ -11,7 +11,7 @@ export function RankingModal({ onClose, user, lang }) {
     async function fetchRanking() {
       const { data, error } = await supabase
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, solved, nickname')
+        .select('id, user_id, anon_id, tries, solved, used_filter, nickname')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
@@ -72,8 +72,11 @@ export function RankingModal({ onClose, user, lang }) {
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
                   </span>
                   <span className="ranking-nickname">{r.nickname || '트레이너'}</span>
-                  <span className="ranking-tries">
-                    {r.tries}{isEn ? ' tries' : '번'}
+                  <span className="ranking-tries-wrap">
+                    <span className="ranking-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
+                    {!r.used_filter && (
+                      <span className="ranking-no-filter">{isEn ? 'no filter!' : '필터 미사용!'}</span>
+                    )}
                   </span>
                   {isMe && (
                     <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>
