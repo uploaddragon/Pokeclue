@@ -288,7 +288,7 @@ const DB = [
   {id:519,ko:'콩둘기',en:'Pidove',gen:5,t1:'노말',t2:'비행',evo:1,len:3,enLen:6},{id:520,ko:'유토브',en:'Tranquill',gen:5,t1:'노말',t2:'비행',evo:2,len:3,enLen:9},{id:521,ko:'켄호로우',en:'Unfezant',gen:5,t1:'노말',t2:'비행',evo:3,len:4,enLen:8},
   {id:522,ko:'줄뮤마',en:'Blitzle',gen:5,t1:'전기',t2:'없음',evo:1,len:3,enLen:7},{id:523,ko:'제브라이카',en:'Zebstrika',gen:5,t1:'전기',t2:'없음',evo:2,len:5,enLen:9},
   {id:524,ko:'단굴',en:'Roggenrola',gen:5,t1:'바위',t2:'없음',evo:1,len:2,enLen:10},{id:525,ko:'암트르',en:'Boldore',gen:5,t1:'바위',t2:'없음',evo:2,len:3,enLen:7},{id:526,ko:'기가이어스',en:'Gigalith',gen:5,t1:'바위',t2:'없음',evo:3,len:5,enLen:8},
-  {id:527,ko:'또르박쥐',en:'Woobat',gen:5,t1:'독',t2:'비행',evo:1,len:4,enLen:6},{id:528,ko:'맘박쥐',en:'Swoobat',gen:5,t1:'독',t2:'비행',evo:2,len:3,enLen:7},
+  {id:527,ko:'또르박쥐',en:'Woobat',gen:5,t1:'독',t2:'에스퍼',evo:1,len:4,enLen:6},{id:528,ko:'맘박쥐',en:'Swoobat',gen:5,t1:'독',t2:'에스퍼',evo:2,len:3,enLen:7},
   {id:529,ko:'두더류',en:'Drilbur',gen:5,t1:'땅',t2:'없음',evo:1,len:3,enLen:7},{id:530,ko:'몰드류',en:'Excadrill',gen:5,t1:'땅',t2:'강철',evo:2,len:3,enLen:9},
   {id:531,ko:'다부니',en:'Audino',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:6},
   {id:532,ko:'으랏차',en:'Timburr',gen:5,t1:'격투',t2:'없음',evo:1,len:3,enLen:7},{id:533,ko:'토쇠골',en:'Gurdurr',gen:5,t1:'격투',t2:'없음',evo:2,len:3,enLen:7},{id:534,ko:'노보청',en:'Conkeldurr',gen:5,t1:'격투',t2:'없음',evo:3,len:3,enLen:10},
