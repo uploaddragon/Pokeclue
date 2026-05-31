@@ -40,16 +40,12 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
     try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
   })();
 
-  const cleanRows  = rows.filter(r => !r.used_filter);
-  const filterRows = rows.filter(r => r.used_filter);
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
   const myRow = rows.find(r =>
     (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId)
   );
-  const myRank = myRow
-    ? (myRow.used_filter ? filterRows : cleanRows).indexOf(myRow) + 1
-    : null;
+  const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
 
   return (
     <div className={`result-banner show${win ? '' : ' fail'}`}>
@@ -87,55 +83,26 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
           ) : rows.length === 0 ? (
             <div className="res-ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
           ) : (
-            <>
-              {/* 필터 미사용 섹션 */}
-              {cleanRows.length > 0 && (
-                <>
-                  <div className="res-ranking-section-title">
-                    ✨ {isEn ? 'No Filter' : '필터 미사용'}
+            <div className="res-ranking-list">
+              {rows.slice(0, 20).map((r, i) => {
+                const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
+                return (
+                  <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
+                    <span className="res-rank-pos">
+                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
+                    </span>
+                    <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
+                    <span className="res-rank-tries-wrap">
+                      <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
+                      {!r.used_filter && (
+                        <span className="res-rank-no-filter">{isEn ? 'no filter!' : '필터 미사용!'}</span>
+                      )}
+                    </span>
+                    {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
                   </div>
-                  <div className="res-ranking-list">
-                    {cleanRows.slice(0, 10).map((r, i) => {
-                      const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
-                      return (
-                        <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
-                          <span className="res-rank-pos">
-                            {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
-                          </span>
-                          <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
-                          <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
-                          {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-
-              {/* 필터 사용 섹션 */}
-              {filterRows.length > 0 && (
-                <>
-                  <div className="res-ranking-section-title filter">
-                    🗂️ {isEn ? 'Filter Used' : '필터 사용'}
-                  </div>
-                  <div className="res-ranking-list">
-                    {filterRows.slice(0, 10).map((r, i) => {
-                      const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
-                      return (
-                        <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
-                          <span className="res-rank-pos">
-                            {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
-                          </span>
-                          <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
-                          <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
-                          {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
