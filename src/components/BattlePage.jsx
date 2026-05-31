@@ -179,6 +179,14 @@ export function BattlePage({ user, lang }) {
 
         <Autocomplete onSubmit={handleSubmit} disabled={!b.isMyTurn} lang={lang} />
         <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
+
+        <div style={{ textAlign: 'center', marginTop: '16px' }}>
+          <button className="battle-giveup-btn" onClick={() => {
+            if (window.confirm(isEn ? 'Give up? You will lose.' : '항복하시겠어요? 패배 처리됩니다.')) b.giveUp();
+          }}>
+            🏳 {isEn ? 'Give Up' : '항복'}
+          </button>
+        </div>
       </main>
     );
   }

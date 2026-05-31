@@ -175,6 +175,17 @@ export function useBattle(user) {
     await bc.from('battle_rooms').update({ current_turn: nextTurn }).eq('id', roomCode);
   }, [roomCode, mySlot]);
 
+  // 항복 — 상대방 승리로 처리
+  const giveUp = useCallback(async () => {
+    if (!roomCode) return;
+    const opSlot = mySlot === 'p1' ? 'p2' : 'p1';
+    const { error: e } = await bc.from('battle_rooms').update({
+      status: 'finished',
+      winner: opSlot,
+    }).eq('id', roomCode);
+    if (e) console.error('[Battle] giveUp error', e);
+  }, [roomCode, mySlot]);
+
   function reset() {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
@@ -198,6 +209,6 @@ export function useBattle(user) {
     phase, roomCode, room, mySlot, answer, error,
     myNick: me.nick, opNick, opTries, iWon, winner: room?.winner,
     isMyTurn, currentTurn, sharedGuesses,
-    createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, reset,
+    createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, reset,
   };
 }

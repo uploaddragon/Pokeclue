@@ -320,7 +320,7 @@ const DB = [
   {id:585,ko:'사철록',en:'Deerling',gen:5,t1:'노말',t2:'풀',evo:1,len:3,enLen:8},{id:586,ko:'바라철록',en:'Sawsbuck',gen:5,t1:'노말',t2:'풀',evo:2,len:4,enLen:8},
   {id:587,ko:'에몽가',en:'Emolga',gen:5,t1:'전기',t2:'비행',evo:1,len:3,enLen:6},
   {id:588,ko:'딱정곤',en:'Karrablast',gen:5,t1:'벌레',t2:'없음',evo:1,len:3,enLen:10},{id:589,ko:'슈바르고',en:'Escavalier',gen:5,t1:'벌레',t2:'강철',evo:2,len:4,enLen:10},
-  {id:590,ko:'깜놀버슬',en:'Foongus',gen:5,t1:'풀',t2:'없음',evo:1,len:4,enLen:7},{id:591,ko:'뽀록나',en:'Amoonguss',gen:5,t1:'풀',t2:'독',evo:2,len:3,enLen:9},
+  {id:590,ko:'깜놀버슬',en:'Foongus',gen:5,t1:'풀',t2:'독',evo:1,len:4,enLen:7},{id:591,ko:'뽀록나',en:'Amoonguss',gen:5,t1:'풀',t2:'독',evo:2,len:3,enLen:9},
   {id:592,ko:'탱그릴',en:'Frillish',gen:5,t1:'물',t2:'고스트',evo:1,len:3,enLen:8},{id:593,ko:'탱탱겔',en:'Jellicent',gen:5,t1:'물',t2:'고스트',evo:2,len:3,enLen:9},
   {id:594,ko:'맘복치',en:'Alomomola',gen:5,t1:'물',t2:'없음',evo:1,len:3,enLen:9},
   {id:595,ko:'파쪼옥',en:'Joltik',gen:5,t1:'벌레',t2:'전기',evo:1,len:3,enLen:6},{id:596,ko:'전툴라',en:'Galvantula',gen:5,t1:'벌레',t2:'전기',evo:2,len:3,enLen:10},

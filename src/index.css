@@ -544,6 +544,8 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-turn-banner.op-turn{background:#f9f9f9;color:var(--muted);border-color:#ddd;}
 .battle-solved-mark{color:var(--correct);}
 
+.battle-giveup-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#888;border:2px solid #bbb;padding:10px 20px;cursor:pointer;transition:color 0.1s,border-color 0.1s;}
+.battle-giveup-btn:hover{color:var(--wrong);border-color:var(--wrong);}
 .battle-result-scores{display:flex;align-items:center;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap;}
 .battle-result-score{background:white;border:3px solid #222;box-shadow:3px 3px 0 #000;padding:16px 24px;text-align:center;min-width:120px;position:relative;}
 .battle-result-score.winner{border-color:var(--yellow);background:#fff9e6;}
