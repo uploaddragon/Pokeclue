@@ -63,7 +63,7 @@ const DB = [
   {id:128,ko:'켄타로스',en:'Tauros',gen:1,t1:'노말',t2:'없음',evo:1,len:4,enLen:6},
   {id:129,ko:'잉어킹',en:'Magikarp',gen:1,t1:'물',t2:'없음',evo:1,len:3,enLen:8},{id:130,ko:'갸라도스',en:'Gyarados',gen:1,t1:'물',t2:'비행',evo:2,len:4,enLen:8},
   {id:131,ko:'라프라스',en:'Lapras',gen:1,t1:'물',t2:'얼음',evo:1,len:4,enLen:6},{id:132,ko:'메타몽',en:'Ditto',gen:1,t1:'노말',t2:'없음',evo:1,len:3,enLen:5},
-  {id:133,ko:'이브이',en:'Eevee',gen:1,t1:'노말',t2:'없음',evo:1,len:3,enLen:5},{id:134,ko:'샤미드',en:'Vaporeon',gen:1,t1:'물',t2:'없음',evo:2,len:3,enLen:8},{id:135,ko:'쥬피썬더',en:'Jolteon',gen:1,t1:'전기',t2:'없음',evo:2,len:5,enLen:7},{id:136,ko:'부스터',en:'Flareon',gen:1,t1:'불꽃',t2:'없음',evo:2,len:3,enLen:7},
+  {id:133,ko:'이브이',en:'Eevee',gen:1,t1:'노말',t2:'없음',evo:1,len:3,enLen:5},{id:134,ko:'샤미드',en:'Vaporeon',gen:1,t1:'물',t2:'없음',evo:2,len:3,enLen:8},{id:135,ko:'쥬피썬더',en:'Jolteon',gen:1,t1:'전기',t2:'없음',evo:2,len:4,enLen:7},{id:136,ko:'부스터',en:'Flareon',gen:1,t1:'불꽃',t2:'없음',evo:2,len:3,enLen:7},
   {id:137,ko:'폴리곤',en:'Porygon',gen:1,t1:'노말',t2:'없음',evo:1,len:3,enLen:7},
   {id:138,ko:'암나이트',en:'Omanyte',gen:1,t1:'바위',t2:'물',evo:1,len:4,enLen:7},{id:139,ko:'암스타',en:'Omastar',gen:1,t1:'바위',t2:'물',evo:2,len:3,enLen:7},
   {id:140,ko:'투구',en:'Kabuto',gen:1,t1:'바위',t2:'물',evo:1,len:2,enLen:6},{id:141,ko:'투구푸스',en:'Kabutops',gen:1,t1:'바위',t2:'물',evo:2,len:4,enLen:8},
@@ -274,7 +274,7 @@ const DB = [
   {id:492,ko:'쉐이미',en:'Shaymin',form:'land',gen:4,t1:'풀',t2:'없음',evo:1,len:3,enLen:7},
   {id:'492-sky',ko:'쉐이미',en:'Shaymin',baseId:492,form:'sky',gen:4,t1:'풀',t2:'비행',evo:1,len:3,enLen:7},
   {id:493,ko:'아르세우스',en:'Arceus',gen:4,t1:'노말',t2:'없음',evo:1,len:5,enLen:6},
-  {id:494,ko:'비크티니',en:'Victini',gen:5,t1:'에스퍼',t2:'불꽃',evo:1,len:3,enLen:7},
+  {id:494,ko:'비크티니',en:'Victini',gen:5,t1:'에스퍼',t2:'불꽃',evo:1,len:4,enLen:7},
   {id:495,ko:'주리비얀',en:'Snivy',gen:5,t1:'풀',t2:'없음',evo:1,len:4,enLen:5},{id:496,ko:'샤비',en:'Servine',gen:5,t1:'풀',t2:'없음',evo:2,len:2,enLen:7},{id:497,ko:'샤로다',en:'Serperior',gen:5,t1:'풀',t2:'없음',evo:3,len:3,enLen:9},
   {id:498,ko:'뚜꾸리',en:'Tepig',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3,enLen:5},{id:499,ko:'챠오꿀',en:'Pignite',gen:5,t1:'불꽃',t2:'격투',evo:2,len:3,enLen:7},{id:500,ko:'염무왕',en:'Emboar',gen:5,t1:'불꽃',t2:'격투',evo:3,len:3,enLen:6},
   {id:501,ko:'수댕이',en:'Oshawott',gen:5,t1:'물',t2:'없음',evo:1,len:3,enLen:8},{id:502,ko:'쌍검자비',en:'Dewott',gen:5,t1:'물',t2:'없음',evo:2,len:4,enLen:6},{id:503,ko:'대검귀',en:'Samurott',gen:5,t1:'물',t2:'없음',evo:3,len:3,enLen:8},
@@ -309,7 +309,7 @@ const DB = [
   {id:561,ko:'심보러',en:'Sigilyph',gen:5,t1:'에스퍼',t2:'비행',evo:1,len:3,enLen:8},
   {id:562,ko:'데스마스',en:'Yamask',gen:5,t1:'고스트',t2:'없음',evo:1,len:4,enLen:6},{id:563,ko:'데스니칸',en:'Cofagrigus',gen:5,t1:'고스트',t2:'없음',evo:2,len:4,enLen:10},
   {id:564,ko:'프로토가',en:'Tirtouga',gen:5,t1:'물',t2:'바위',evo:1,len:4,enLen:8},{id:565,ko:'늑골라',en:'Carracosta',gen:5,t1:'물',t2:'바위',evo:2,len:3,enLen:10},
-  {id:566,ko:'아켄',en:'Archen',gen:5,t1:'바위',t2:'비행',evo:1,len:3,enLen:6},{id:567,ko:'아케오스',en:'Archeops',gen:5,t1:'바위',t2:'비행',evo:2,len:4,enLen:8},
+  {id:566,ko:'아켄',en:'Archen',gen:5,t1:'바위',t2:'비행',evo:1,len:2,enLen:6},{id:567,ko:'아케오스',en:'Archeops',gen:5,t1:'바위',t2:'비행',evo:2,len:4,enLen:8},
   {id:568,ko:'깨봉이',en:'Trubbish',gen:5,t1:'독',t2:'없음',evo:1,len:3,enLen:8},{id:569,ko:'더스트나',en:'Garbodor',gen:5,t1:'독',t2:'없음',evo:2,len:4,enLen:8},
   {id:570,ko:'조로아',en:'Zorua',gen:5,t1:'악',t2:'없음',evo:1,len:3,enLen:5},{id:571,ko:'조로아크',en:'Zoroark',gen:5,t1:'악',t2:'없음',evo:2,len:4,enLen:7},
   {id:572,ko:'치라미',en:'Minccino',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:8},{id:573,ko:'치라치노',en:'Cinccino',gen:5,t1:'노말',t2:'없음',evo:2,len:4,enLen:8},
@@ -682,9 +682,9 @@ const DB = [
 
   // ── 팔데아 리전폼 ──
   {id:'194-paldea',  ko:'우파',   en:'Wooper',  baseId:194, form:'paldea',gen:2,t1:'독',  t2:'땅',  evo:1,len:2,enLen:6},
-  {id:'128-combat',  ko:'켄타로스',en:'Tauros',  baseId:128, form:'combat',gen:1,t1:'격투',t2:'없음',evo:1,len:3,enLen:6},
-  {id:'128-blaze',   ko:'켄타로스',en:'Tauros',  baseId:128, form:'blaze', gen:1,t1:'격투',t2:'불꽃',evo:1,len:3,enLen:6},
-  {id:'128-aqua',    ko:'켄타로스',en:'Tauros',  baseId:128, form:'aqua',  gen:1,t1:'격투',t2:'물',  evo:1,len:3,enLen:6},
+  {id:'128-combat',  ko:'켄타로스',en:'Tauros',  baseId:128, form:'combat',gen:1,t1:'격투',t2:'없음',evo:1,len:4,enLen:6},
+  {id:'128-blaze',   ko:'켄타로스',en:'Tauros',  baseId:128, form:'blaze', gen:1,t1:'격투',t2:'불꽃',evo:1,len:4,enLen:6},
+  {id:'128-aqua',    ko:'켄타로스',en:'Tauros',  baseId:128, form:'aqua',  gen:1,t1:'격투',t2:'물',  evo:1,len:4,enLen:6},
 
   // ── 알로라폼 ──
   {id:'19-alola',  ko:'꼬렛',   en:'Rattata',  baseId:19,  form:'alola',gen:1,t1:'악',   t2:'노말', evo:1,len:2,enLen:7},
