@@ -117,6 +117,13 @@ export function useGame(unlockDex, user) {
     });
   }, [guesses, gameOver, usedFilter, result]);
 
+  // 로그인 시점에 이미 클리어한 상태라면 user_id로 재저장
+  useEffect(() => {
+    if (user && result?.win) {
+      saveDailyToSupabase(user, { tries: guesses.length, solved: true, usedFilter });
+    }
+  }, [user]);
+
   const submitGuess = useCallback((pokemonId) => {
     if (gameOver) return;
     const g = DB.find(x => x.id === pokemonId);

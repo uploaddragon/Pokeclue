@@ -31,7 +31,7 @@ export function RankingModal({ onClose, user, lang }) {
     try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
   })();
   const myRow = rows.find(r =>
-    (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId)
+    (user && r.user_id === user.id) || (anonId && r.anon_id === anonId)
   );
   const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
 
@@ -65,7 +65,7 @@ export function RankingModal({ onClose, user, lang }) {
             <div className="ranking-empty">{isEn ? 'No records yet today.' : '오늘 아직 클리어한 사람이 없어요.'}</div>
           ) : (
             rows.slice(0, 20).map((r, i) => {
-              const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
+              const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
               return (
                 <div key={r.id ?? i} className={`ranking-row${isMe ? ' me' : ''}`}>
                   <span className="ranking-pos">

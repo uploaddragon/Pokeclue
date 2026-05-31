@@ -43,7 +43,7 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
   const myRow = rows.find(r =>
-    (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId)
+    (user && r.user_id === user.id) || (anonId && r.anon_id === anonId)
   );
   const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
 
@@ -85,7 +85,7 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
           ) : (
             <div className="res-ranking-list">
               {rows.slice(0, 20).map((r, i) => {
-                const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
+                const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
                 return (
                   <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
                     <span className="res-rank-pos">
