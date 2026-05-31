@@ -11,44 +11,43 @@ export function BattlePage({ user, lang }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
-  const [friendView, setFriendView] = useState('main'); // 'main' | 'friend'
+  const [friendView, setFriendView] = useState('main');
   const [timer, setTimer] = useState(TURN_SEC);
-  const [skipped, setSkipped] = useState(false);
   const timerRef = useRef(null);
 
-  // 타이머: playing 단계에서만 동작
+  // 타이머: 내 턴일 때만 카운트
   useEffect(() => {
-    if (b.phase !== 'playing' || b.gameOver) {
-      clearInterval(timerRef.current);
-      return;
-    }
+    clearInterval(timerRef.current);
+    if (!b.isMyTurn) { setTimer(TURN_SEC); return; }
+
     setTimer(TURN_SEC);
     timerRef.current = setInterval(() => {
       setTimer(t => {
         if (t <= 1) {
-          // 시간 초과 → 턴 넘김 표시 후 리셋
-          setSkipped(true);
-          setTimeout(() => setSkipped(false), 1500);
+          clearInterval(timerRef.current);
+          b.skipTurn();
           return TURN_SEC;
         }
         return t - 1;
       });
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [b.phase, b.gameOver]);
+  }, [b.isMyTurn]);
 
   function handleSubmit(id) {
-    setTimer(TURN_SEC); // 제출 시 타이머 리셋
+    if (!b.isMyTurn) return;
+    clearInterval(timerRef.current);
+    setTimer(TURN_SEC);
     b.submitGuess(id);
   }
 
-  // ── SELECT ──────────────────────────────────────────────
+  // ── SELECT ───────────────────────────────────────────────
   if (b.phase === 'select') {
     return (
       <main>
         <div className="hero">
           <div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div>
-          <div className="hero-s">{isEn ? 'Race to guess the Pokémon first!' : '먼저 맞추는 사람이 승리!'}</div>
+          <div className="hero-s">{isEn ? 'Take turns guessing — first to solve wins!' : '번갈아 추측하며 먼저 맞추는 사람이 승리!'}</div>
         </div>
 
         {friendView === 'main' && (
@@ -75,9 +74,7 @@ export function BattlePage({ user, lang }) {
               <div className="battle-friend-box">
                 <div className="battle-friend-box-title">{isEn ? '🏠 Create Room' : '🏠 방 만들기'}</div>
                 <div className="battle-friend-box-desc">{isEn ? 'Get a code to share with a friend' : '코드를 받아 친구에게 공유하세요'}</div>
-                <button className="battle-action-btn" onClick={b.createFriendRoom}>
-                  {isEn ? 'Create Room' : '방 만들기'}
-                </button>
+                <button className="battle-action-btn" onClick={b.createFriendRoom}>{isEn ? 'Create Room' : '방 만들기'}</button>
               </div>
               <div className="battle-friend-sep">VS</div>
               <div className="battle-friend-box">
@@ -90,9 +87,7 @@ export function BattlePage({ user, lang }) {
                   placeholder={isEn ? 'Enter 6-char code' : '6자리 코드 입력'}
                   maxLength={6}
                 />
-                <button className="battle-action-btn" onClick={() => b.joinFriendRoom(joinCode)}>
-                  {isEn ? 'Join Room' : '참가하기'}
-                </button>
+                <button className="battle-action-btn" onClick={() => b.joinFriendRoom(joinCode)}>{isEn ? 'Join Room' : '참가하기'}</button>
               </div>
             </div>
             {b.error && <div className="battle-error">{b.error}</div>}
@@ -102,21 +97,15 @@ export function BattlePage({ user, lang }) {
     );
   }
 
-  // ── SEARCHING / WAITING ──────────────────────────────────
-  if (b.phase === 'searching' || b.phase === 'waiting') {
+  // ── WAITING / SEARCHING ──────────────────────────────────
+  if (b.phase === 'waiting' || b.phase === 'searching') {
     return (
       <main>
-        <div className="hero">
-          <div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div>
-        </div>
+        <div className="hero"><div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div></div>
         <div className="battle-waiting">
-          <div className="battle-waiting-icon">
-            {b.phase === 'searching' ? '🔍' : '⏳'}
-          </div>
+          <div className="battle-waiting-icon">{b.phase === 'searching' ? '🔍' : '⏳'}</div>
           <div className="battle-waiting-title">
-            {b.phase === 'searching'
-              ? (isEn ? 'Finding opponent...' : '상대를 찾는 중...')
-              : (isEn ? 'Waiting for opponent...' : '상대를 기다리는 중...')}
+            {b.phase === 'searching' ? (isEn ? 'Finding opponent...' : '상대를 찾는 중...') : (isEn ? 'Waiting for opponent...' : '상대를 기다리는 중...')}
           </div>
           {b.phase === 'waiting' && b.roomCode && (
             <div className="battle-room-code-box">
@@ -127,9 +116,7 @@ export function BattlePage({ user, lang }) {
               </button>
             </div>
           )}
-          <button className="battle-cancel-btn" onClick={b.reset}>
-            {isEn ? 'Cancel' : '취소'}
-          </button>
+          <button className="battle-cancel-btn" onClick={b.reset}>{isEn ? 'Cancel' : '취소'}</button>
         </div>
       </main>
     );
@@ -139,17 +126,11 @@ export function BattlePage({ user, lang }) {
   if (b.phase === 'timeout') {
     return (
       <main>
-        <div className="hero">
-          <div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div>
-        </div>
+        <div className="hero"><div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div></div>
         <div className="battle-waiting">
           <div className="battle-waiting-icon">😔</div>
-          <div className="battle-waiting-title">
-            {isEn ? 'No opponent found.' : '상대를 찾지 못했어요.'}
-          </div>
-          <button className="battle-action-btn" onClick={b.reset}>
-            {isEn ? 'Try Again' : '다시 시도'}
-          </button>
+          <div className="battle-waiting-title">{isEn ? 'No opponent found.' : '상대를 찾지 못했어요.'}</div>
+          <button className="battle-action-btn" onClick={b.reset}>{isEn ? 'Try Again' : '다시 시도'}</button>
         </div>
       </main>
     );
@@ -157,50 +138,55 @@ export function BattlePage({ user, lang }) {
 
   // ── PLAYING ──────────────────────────────────────────────
   if (b.phase === 'playing') {
-    const urgent = timer <= 10;
+    const urgent = b.isMyTurn && timer <= 10;
+    const myTries = b.sharedGuesses.filter((_, i) => {
+      // 내가 제출한 추측: 짝수/홀수 인덱스 (p1은 0,2,4... p2는 1,3,5...)
+      return b.mySlot === 'p1' ? i % 2 === 0 : i % 2 === 1;
+    }).length;
+
     return (
       <main>
+        {/* HUD */}
         <div className="battle-hud">
-          <div className="battle-hud-player me">
+          <div className={`battle-hud-player me${b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'ME' : '나'}</div>
             <div className="battle-hud-nick">{b.myNick}</div>
-            <div className="battle-hud-tries">{b.guesses.length}{isEn ? ' tries' : '번'}</div>
+            <div className="battle-hud-tries">{myTries}{isEn ? ' tries' : '번'}</div>
+            {b.isMyTurn && <div className="battle-hud-turn-arrow">▶</div>}
           </div>
 
           <div className="battle-hud-center">
             <div className="battle-hud-vs">VS</div>
-            <div className={`battle-timer${urgent ? ' urgent' : ''}`}>
-              {skipped
-                ? (isEn ? 'SKIP!' : '턴 넘김!')
-                : `${timer}s`}
+            <div className={`battle-timer${urgent ? ' urgent' : ''}${!b.isMyTurn ? ' inactive' : ''}`}>
+              {b.isMyTurn ? `${timer}s` : '—'}
             </div>
           </div>
 
-          <div className="battle-hud-player op">
+          <div className={`battle-hud-player op${!b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
-            <div className="battle-hud-tries">
-              {b.opTries != null ? `${b.opTries}${isEn ? ' tries' : '번'}` : '-'}
-              {b.opSolved && <span className="battle-solved-mark"> ✓</span>}
-            </div>
+            <div className="battle-hud-tries">{b.opTries || 0}{isEn ? ' tries' : '번'}</div>
+            {!b.isMyTurn && <div className="battle-hud-turn-arrow">◀</div>}
           </div>
         </div>
 
-        {b.gameOver && !b.room?.status?.includes('finished') && (
-          <div className="battle-waiting-msg">
-            {isEn ? '⏳ Waiting for opponent to finish...' : '⏳ 상대가 마무리하기를 기다리는 중...'}
-          </div>
-        )}
+        {/* 턴 안내 배너 */}
+        <div className={`battle-turn-banner${b.isMyTurn ? ' my-turn' : ' op-turn'}`}>
+          {b.isMyTurn
+            ? (isEn ? '🎯 Your Turn!' : '🎯 내 턴! 포켓몬 이름을 입력하세요')
+            : (isEn ? '⏳ Opponent\'s Turn...' : '⏳ 상대방 턴... 기다려주세요')}
+        </div>
 
-        <Autocomplete onSubmit={handleSubmit} disabled={b.gameOver} lang={lang} />
-        <GuessTable guesses={b.guesses} answer={b.answer} lang={lang} />
+        <Autocomplete onSubmit={handleSubmit} disabled={!b.isMyTurn} lang={lang} />
+        <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
       </main>
     );
   }
 
-  // ── FINISHED ──────────────────────────────────────────────
+  // ── FINISHED ─────────────────────────────────────────────
   if (b.phase === 'finished') {
     const answerName = b.answer ? displayName(b.answer, lang) : '?';
+    const myTries = b.room ? (b.mySlot === 'p1' ? b.room.p1_tries : b.room.p2_tries) : 0;
     return (
       <main>
         <div className={`result-banner show${b.iWon ? '' : ' fail'}`}>
@@ -208,35 +194,27 @@ export function BattlePage({ user, lang }) {
             {b.answer && <img src={spr(b.answer.id)} alt={answerName} />}
             <div>
               <div className="res-t">
-                {b.iWon
-                  ? (isEn ? '🏆 Victory!' : '🏆 승리!')
-                  : (b.winner ? (isEn ? '💀 Defeat...' : '💀 패배...') : (isEn ? '🤝 Draw!' : '🤝 무승부!'))}
+                {b.iWon ? (isEn ? '🏆 Victory!' : '🏆 승리!') : (isEn ? '💀 Defeat...' : '💀 패배...')}
               </div>
               <div className="res-s">{isEn ? `Answer: ${answerName}` : `정답: ${answerName}`}</div>
             </div>
           </div>
-
           <div className="battle-result-scores">
             <div className={`battle-result-score${b.iWon ? ' winner' : ''}`}>
               <div className="battle-result-nick">{b.myNick}</div>
-              <div className="battle-result-tries">{b.guesses.length}{isEn ? ' tries' : '번'}</div>
+              <div className="battle-result-tries">{myTries}{isEn ? ' tries' : '번'}</div>
               {b.iWon && <div className="battle-result-crown">👑</div>}
             </div>
             <div className="battle-result-vs">VS</div>
             <div className={`battle-result-score${!b.iWon && b.winner ? ' winner' : ''}`}>
               <div className="battle-result-nick">{b.opNick || '???'}</div>
-              <div className="battle-result-tries">
-                {b.opTries != null ? `${b.opTries}${isEn ? ' tries' : '번'}` : '-'}
-              </div>
+              <div className="battle-result-tries">{b.opTries || 0}{isEn ? ' tries' : '번'}</div>
               {!b.iWon && b.winner && <div className="battle-result-crown">👑</div>}
             </div>
           </div>
-
-          <button className="next-btn" onClick={b.reset}>
-            {isEn ? '▶ Play Again' : '▶ 다시 대전'}
-          </button>
+          <button className="next-btn" onClick={b.reset}>{isEn ? '▶ Play Again' : '▶ 다시 대전'}</button>
         </div>
-        <GuessTable guesses={b.guesses} answer={b.answer} lang={lang} />
+        <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
       </main>
     );
   }

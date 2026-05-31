@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import DB from '../data/pokemon.js';
 import { createClient } from '@supabase/supabase-js';
 
-// 배틀 전용 클라이언트 — 세션 없이 anon key만 사용
 const bc = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -16,12 +15,8 @@ function generateCode() {
 
 function getIdentity(user) {
   if (user) return {
-    uid: user.id,
-    anon: null,
-    nick: user.user_metadata?.pokeclue_nickname
-      || user.user_metadata?.full_name
-      || user.email?.split('@')[0]
-      || '트레이너',
+    uid: user.id, anon: null,
+    nick: user.user_metadata?.pokeclue_nickname || user.user_metadata?.full_name || user.email?.split('@')[0] || '트레이너',
   };
   try {
     const s = JSON.parse(localStorage.getItem('pokeclue_anon') || 'null');
@@ -31,20 +26,18 @@ function getIdentity(user) {
 }
 
 export function useBattle(user) {
-  const [phase, setPhase] = useState('select');
+  const [phase, setPhase] = useState('select'); // select|waiting|searching|playing|finished|timeout
   const [roomCode, setRoomCode] = useState('');
   const [room, setRoom] = useState(null);
-  const [mySlot, setMySlot] = useState(null);
+  const [mySlot, setMySlot] = useState(null); // 'p1'|'p2'
   const [answer, setAnswer] = useState(null);
-  const [guesses, setGuesses] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
   const [error, setError] = useState('');
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
 
   useEffect(() => () => {
     if (channelRef.current) bc.removeChannel(channelRef.current);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    clearTimeout(timeoutRef.current);
   }, []);
 
   function subscribeRoom(code) {
@@ -55,15 +48,10 @@ export function useBattle(user) {
         event: 'UPDATE', schema: 'public', table: 'battle_rooms', filter: `id=eq.${code}`,
       }, ({ new: r }) => {
         setRoom(r);
-        if (r.status === 'playing') {
-          clearTimeout(timeoutRef.current);
-          setPhase('playing');
-        }
+        if (r.status === 'playing') { clearTimeout(timeoutRef.current); setPhase('playing'); }
         if (r.status === 'finished') setPhase('finished');
       })
-      .subscribe((status, err) => {
-        if (err) console.error('[Battle] realtime subscribe error', err);
-      });
+      .subscribe((st, err) => { if (err) console.error('[Battle] realtime error', err); });
   }
 
   function startTimeout() {
@@ -71,101 +59,61 @@ export function useBattle(user) {
     timeoutRef.current = setTimeout(() => setPhase('timeout'), 60000);
   }
 
-  // ── 방 생성 공통 함수 ─────────────────────────────────────
   async function createRoom(me) {
     const code = generateCode();
     const poke = DB[Math.floor(Math.random() * DB.length)];
     const { error: e } = await bc.from('battle_rooms').insert({
-      id: code,
-      answer_id: String(poke.id),
-      status: 'waiting',
-      p1_uid: me.uid,
-      p1_anon: me.anon,
-      p1_nick: me.nick,
+      id: code, answer_id: String(poke.id), status: 'waiting',
+      current_turn: 'p1', shared_guesses: [],
+      p1_uid: me.uid, p1_anon: me.anon, p1_nick: me.nick,
     });
-    if (e) {
-      console.error('[Battle] createRoom error', e);
-      throw new Error(e.message || e.code || JSON.stringify(e));
-    }
+    if (e) throw new Error(e.message || e.code || JSON.stringify(e));
     return { code, poke };
   }
 
-  // ── 친구 방 만들기 ────────────────────────────────────────
   async function createFriendRoom() {
     setError('');
     const me = getIdentity(user);
-    let result;
-    try { result = await createRoom(me); }
-    catch (err) { setError(`방 생성 실패: ${err.message}`); return; }
-    setRoomCode(result.code);
-    setMySlot('p1');
-    setAnswer(result.poke);
-    setPhase('waiting');
-    subscribeRoom(result.code);
-    startTimeout();
+    try {
+      const result = await createRoom(me);
+      setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
+      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
+    } catch (err) { setError(`방 생성 실패: ${err.message}`); }
   }
 
-  // ── 코드로 방 참가 ────────────────────────────────────────
   async function joinFriendRoom(code) {
     setError('');
     const upper = (code || '').toUpperCase().trim();
     if (upper.length !== 6) { setError('코드는 6자리예요.'); return; }
-
-    // 방 조회 (status 무관하게 조회해서 더 나은 에러 메시지 제공)
-    const { data, error: e } = await bc
-      .from('battle_rooms')
-      .select('*')
-      .eq('id', upper);
-
-    if (e) { console.error('[Battle] joinFriendRoom select error', e); setError('서버 오류가 발생했어요.'); return; }
-    if (!data || data.length === 0) { setError('방을 찾을 수 없어요. 코드를 확인해주세요.'); return; }
-
-    const roomData = data[0];
-    if (roomData.status !== 'waiting') {
-      setError(roomData.status === 'playing' ? '이미 시작된 방이에요.' : '종료된 방이에요.');
-      return;
-    }
-
     const me = getIdentity(user);
-    // 본인 방 참가 방지 (uid 기준, anon은 테스트를 위해 허용)
-    if (me.uid && roomData.p1_uid === me.uid) {
-      setError('내가 만든 방에는 입장할 수 없어요.'); return;
-    }
+
+    const { data, error: e } = await bc.from('battle_rooms').select('*').eq('id', upper);
+    if (e) { setError('서버 오류가 발생했어요.'); return; }
+    if (!data?.length) { setError('방을 찾을 수 없어요.'); return; }
+
+    const r = data[0];
+    if (r.status !== 'waiting') { setError(r.status === 'playing' ? '이미 시작된 방이에요.' : '종료된 방이에요.'); return; }
+    if (me.uid && r.p1_uid === me.uid) { setError('내가 만든 방에는 입장할 수 없어요.'); return; }
 
     const { error: e2 } = await bc.from('battle_rooms').update({
-      p2_uid: me.uid,
-      p2_anon: me.anon,
-      p2_nick: me.nick,
-      status: 'playing',
+      p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing',
     }).eq('id', upper).eq('status', 'waiting');
+    if (e2) { setError('입장에 실패했어요.'); return; }
 
-    if (e2) { console.error('[Battle] joinFriendRoom update error', e2); setError('입장에 실패했어요.'); return; }
-
-    const poke = DB.find(p => String(p.id) === String(roomData.answer_id));
-    setRoomCode(upper);
-    setMySlot('p2');
-    setAnswer(poke);
-    setRoom({ ...roomData, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' });
-    setPhase('playing');
-    subscribeRoom(upper);
+    const poke = DB.find(p => String(p.id) === String(r.answer_id));
+    const joined = { ...r, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
+    setRoomCode(upper); setMySlot('p2'); setAnswer(poke); setRoom(joined);
+    setPhase('playing'); subscribeRoom(upper);
   }
 
-  // ── 랜덤 대전 ─────────────────────────────────────────────
   async function findRandom() {
-    setError('');
-    setPhase('searching');
+    setError(''); setPhase('searching');
     const me = getIdentity(user);
 
-    const { data } = await bc
-      .from('battle_rooms')
-      .select('*')
-      .eq('status', 'waiting')
-      .order('created_at', { ascending: true })
-      .limit(10);
-
+    const { data } = await bc.from('battle_rooms').select('*').eq('status', 'waiting')
+      .order('created_at', { ascending: true }).limit(10);
     const available = (data || []).filter(r =>
-      (!me.uid || r.p1_uid !== me.uid) &&
-      (!me.anon || r.p1_anon !== me.anon)
+      (!me.uid || r.p1_uid !== me.uid) && (!me.anon || r.p1_anon !== me.anon)
     );
 
     if (available.length > 0) {
@@ -173,73 +121,83 @@ export function useBattle(user) {
       const { error: e } = await bc.from('battle_rooms').update({
         p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing',
       }).eq('id', target.id).eq('status', 'waiting');
-
       if (!e) {
         const poke = DB.find(p => String(p.id) === String(target.answer_id));
-        setRoomCode(target.id);
-        setMySlot('p2');
-        setAnswer(poke);
-        setRoom({ ...target, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' });
-        setPhase('playing');
-        subscribeRoom(target.id);
-        return;
+        const joined = { ...target, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
+        setRoomCode(target.id); setMySlot('p2'); setAnswer(poke); setRoom(joined);
+        setPhase('playing'); subscribeRoom(target.id); return;
       }
     }
 
-    // 빈 방 없음 → 새로 만들고 대기
-    let result;
-    try { result = await createRoom(me); }
-    catch (err) { setPhase('select'); setError(`방 생성 실패: ${err.message}`); return; }
-    setRoomCode(result.code);
-    setMySlot('p1');
-    setAnswer(result.poke);
-    setPhase('waiting');
-    subscribeRoom(result.code);
-    startTimeout();
+    try {
+      const result = await createRoom(me);
+      setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
+      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
+    } catch (err) { setPhase('select'); setError(`방 생성 실패: ${err.message}`); }
   }
 
-  // ── 추측 제출 ─────────────────────────────────────────────
+  // 추측 제출 — 내 턴일 때만
   const submitGuess = useCallback(async (pokemonId) => {
-    if (gameOver || !answer) return;
-    const g = DB.find(x => String(x.id) === String(pokemonId));
-    if (!g || guesses.find(x => x.id === g.id)) return;
+    if (!answer || !roomCode) return;
+    const currentGuesses = room?.shared_guesses || [];
+    if (currentGuesses.includes(String(pokemonId))) return;
 
-    const next = [...guesses, g];
-    setGuesses(next);
+    const g = DB.find(x => String(x.id) === String(pokemonId));
+    if (!g) return;
+
+    const newGuesses = [...currentGuesses, String(pokemonId)];
     const isOk = String(g.id) === String(answer.id);
-    const col = mySlot === 'p1'
-      ? { p1_tries: next.length, p1_solved: isOk }
-      : { p2_tries: next.length, p2_solved: isOk };
+    const nextTurn = mySlot === 'p1' ? 'p2' : 'p1';
+    const myTriesKey = mySlot === 'p1' ? 'p1_tries' : 'p2_tries';
+    const mySolvedKey = mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
+
+    const update = {
+      shared_guesses: newGuesses,
+      current_turn: nextTurn,
+      [myTriesKey]: (room?.[myTriesKey] || 0) + 1,
+    };
 
     if (isOk) {
-      setGameOver(true);
-      const { error: e } = await bc.from('battle_rooms')
-        .update({ ...col, status: 'finished', winner: mySlot })
-        .eq('id', roomCode);
-      if (e) console.error('[Battle] finish update error', e);
+      const { error: e } = await bc.from('battle_rooms').update({
+        ...update, [mySolvedKey]: true, status: 'finished', winner: mySlot,
+      }).eq('id', roomCode);
+      if (e) console.error('[Battle] submitGuess error', e);
     } else {
-      await bc.from('battle_rooms').update(col).eq('id', roomCode);
+      const { error: e } = await bc.from('battle_rooms').update(update).eq('id', roomCode);
+      if (e) console.error('[Battle] submitGuess error', e);
     }
-  }, [gameOver, answer, guesses, mySlot, roomCode]);
+  }, [answer, roomCode, room, mySlot]);
 
-  // ── 리셋 ──────────────────────────────────────────────────
+  // 턴 넘기기 (타이머 만료)
+  const skipTurn = useCallback(async () => {
+    if (!roomCode) return;
+    const nextTurn = mySlot === 'p1' ? 'p2' : 'p1';
+    await bc.from('battle_rooms').update({ current_turn: nextTurn }).eq('id', roomCode);
+  }, [roomCode, mySlot]);
+
   function reset() {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
     channelRef.current = null;
     setPhase('select'); setRoomCode(''); setRoom(null); setMySlot(null);
-    setAnswer(null); setGuesses([]); setGameOver(false); setError('');
+    setAnswer(null); setError('');
   }
 
   const me = getIdentity(user);
+  const currentTurn = room?.current_turn || 'p1';
+  const isMyTurn = phase === 'playing' && currentTurn === mySlot;
+  const sharedGuesses = useMemo(() =>
+    (room?.shared_guesses || []).map(id => DB.find(p => String(p.id) === String(id))).filter(Boolean),
+    [room?.shared_guesses]
+  );
   const opNick  = room ? (mySlot === 'p1' ? room.p2_nick  : room.p1_nick)  : null;
-  const opTries = room ? (mySlot === 'p1' ? room.p2_tries : room.p1_tries) : null;
-  const opSolved = room ? (mySlot === 'p1' ? room.p2_solved : room.p1_solved) : false;
+  const opTries = room ? (mySlot === 'p1' ? room.p2_tries : room.p1_tries) : 0;
+  const iWon = room?.winner === mySlot;
 
   return {
-    phase, roomCode, room, mySlot, answer, guesses, gameOver, error,
-    myNick: me.nick, opNick, opTries, opSolved,
-    iWon: room?.winner === mySlot, winner: room?.winner,
-    createFriendRoom, joinFriendRoom, findRandom, submitGuess, reset,
+    phase, roomCode, room, mySlot, answer, error,
+    myNick: me.nick, opNick, opTries, iWon, winner: room?.winner,
+    isMyTurn, currentTurn, sharedGuesses,
+    createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, reset,
   };
 }
