@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import DB from '../data/pokemon.js';
 import { pickAnswer, getTodayStr } from '../utils/game.js';
-import { supabase } from '../lib/supabase.js';
+import { supabasePublic } from '../lib/supabase.js';
 
 const ANON_KEY = 'pokeclue_anon';
 
@@ -57,7 +57,7 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
       || user.user_metadata?.name
       || user.email?.split('@')[0]
       || '트레이너';
-    const { error } = await supabase
+    const { error } = await supabasePublic
       .from('daily_results')
       .upsert(
         { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname },
@@ -68,7 +68,7 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
     const anonSubmittedKey = `pokeclue_anon_submitted_${today}`;
     if (localStorage.getItem(anonSubmittedKey)) return;
     const anon = getAnonIdentity();
-    const { error } = await supabase
+    const { error } = await supabasePublic
       .from('daily_results')
       .insert({ anon_id: anon.id, date: today, tries, solved, used_filter: usedFilter, nickname: anon.nickname });
     if (error) { console.error('daily_results anon insert error', error); return; }
