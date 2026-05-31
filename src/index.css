@@ -475,22 +475,22 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 
 /* ── Welcome Modal ── */
 .wc-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;}
-.wc-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:32px 28px 24px;max-width:520px;width:100%;position:relative;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
-.wc-modal::-webkit-scrollbar{width:8px;}
+.wc-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:32px 28px 24px;max-width:560px;width:100%;position:relative;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+.wc-modal::-webkit-scrollbar{width:10px;}
 .wc-modal::-webkit-scrollbar-track{background:#ddd;border-left:2px solid #222;}
 .wc-modal::-webkit-scrollbar-thumb{background:#444;}
-.wc-close{position:absolute;top:10px;right:12px;font-family:'Press Start 2P',monospace;font-size:8px;background:#222;color:white;border:2px solid #555;padding:6px 10px;cursor:pointer;box-shadow:2px 2px 0 #000;}
+.wc-close{position:absolute;top:10px;right:12px;font-family:'Press Start 2P',monospace;font-size:9px;background:#222;color:white;border:2px solid #555;padding:7px 11px;cursor:pointer;box-shadow:2px 2px 0 #000;}
 .wc-close:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-.wc-title{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--red);text-align:center;line-height:2;margin-bottom:20px;padding-right:32px;}
-.wc-body{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.wc-body p{font-family:'Press Start 2P',monospace;font-size:9px;color:#333;line-height:2.4;}
-.wc-mode-title{font-family:'Press Start 2P',monospace;font-size:10px !important;color:#1a1a1a !important;margin-top:4px;}
-.wc-footer-note{color:var(--muted) !important;font-size:8px !important;}
-.wc-divider{height:2px;background:#e0e0e0;margin:4px 0;}
-.wc-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.wc-btn-never{font-family:'Press Start 2P',monospace;font-size:9px;background:var(--red);color:white;border:3px solid #222;padding:12px 20px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
+.wc-title{font-family:'Press Start 2P',monospace;font-size:16px;font-weight:900;color:var(--red);text-align:center;line-height:2;margin-bottom:22px;padding-right:36px;}
+.wc-body{display:flex;flex-direction:column;gap:14px;margin-bottom:26px;}
+.wc-body p{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;color:#222;line-height:2.6;}
+.wc-mode-title{font-size:11px !important;font-weight:900 !important;color:#1a1a1a !important;margin-top:6px;}
+.wc-footer-note{color:var(--muted) !important;font-size:9px !important;}
+.wc-divider{height:2px;background:#d0c8b8;margin:6px 0;}
+.wc-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;flex-shrink:0;}
+.wc-btn-never{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;background:var(--red);color:white;border:3px solid #222;padding:13px 22px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
 .wc-btn-never:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
-.wc-btn-ok{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#222;border:3px solid #222;padding:12px 24px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
+.wc-btn-ok{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;background:white;color:#222;border:3px solid #222;padding:13px 28px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
 .wc-btn-ok:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
 
 /* ── Responsive ── */
