@@ -211,6 +211,7 @@ export function BattlePage({ user, lang }) {
   if (b.phase === 'finished') {
     const answerName = b.answer ? displayName(b.answer, lang) : '?';
     const myTries = b.room ? (b.mySlot === 'p1' ? b.room.p1_tries : b.room.p2_tries) : 0;
+    const round = b.room?.round || 1;
     return (
       <main>
         <div className={`result-banner show${b.iWon ? '' : ' fail'}`}>
@@ -219,6 +220,9 @@ export function BattlePage({ user, lang }) {
             <div>
               <div className="res-t">
                 {b.iWon ? (isEn ? '🏆 Victory!' : '🏆 승리!') : (isEn ? '💀 Defeat...' : '💀 패배...')}
+              </div>
+              <div className="res-s" style={{fontSize:'8px',color:'var(--muted)'}}>
+                {isEn ? `Round ${round}` : `${round}라운드`}
               </div>
               <div className="res-s">{isEn ? `Answer: ${answerName}` : `정답: ${answerName}`}</div>
             </div>

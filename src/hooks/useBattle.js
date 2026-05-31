@@ -189,17 +189,20 @@ export function useBattle(user) {
     const opReady = room?.[opKey];
 
     if (opReady) {
-      // 상대도 준비됨 → 새 게임 시작
+      // 상대도 준비됨 → 새 게임 시작 (라운드 홀수=p1 선공, 짝수=p2 선공)
+      const nextRound = (room?.round || 1) + 1;
+      const firstTurn = nextRound % 2 === 0 ? 'p2' : 'p1';
       const newPoke = DB[Math.floor(Math.random() * DB.length)];
       await bc.from('battle_rooms').update({
         answer_id: String(newPoke.id),
         status: 'playing',
-        current_turn: 'p1',
+        current_turn: firstTurn,
         shared_guesses: [],
         p1_tries: 0, p1_solved: false,
         p2_tries: 0, p2_solved: false,
         winner: null,
         p1_rematch: false, p2_rematch: false,
+        round: nextRound,
       }).eq('id', roomCode);
       setAnswer(newPoke);
       setPhase('playing');
