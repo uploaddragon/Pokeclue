@@ -191,10 +191,10 @@ export function compareForm(guess, answer) {
   const gBase  = guess.baseId  ?? guess.id;
   const aBase  = answer.baseId ?? answer.id;
 
-  if (gForm === aForm)                           return 'cc'; // 완전 일치
-  if (gBase === aBase)                           return 'cp'; // 같은 포켓몬, 다른 폼
-  if (REGIONAL.has(gForm) && REGIONAL.has(aForm)) return 'cp'; // 둘 다 리전폼 (다른 포켓몬)
-  return 'cw';                                               // 무관
+  if (gForm === aForm)                             return 'cc'; // 완전 일치
+  if (REGIONAL.has(gForm) && REGIONAL.has(aForm)) return 'cc'; // 둘 다 리전폼 → 폼 정보 일치
+  if (gBase === aBase)                             return 'cp'; // 같은 포켓몬, 다른 폼
+  return 'cw';                                                  // 무관
 }
 
 export function arrow(val, ans) {
