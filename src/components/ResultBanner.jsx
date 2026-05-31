@@ -9,18 +9,20 @@ function useInlineRanking(win) {
 
   useEffect(() => {
     if (!win) return;
-    async function fetch() {
+    async function fetchRanking() {
       const { data } = await supabase
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, nickname')
+        .select('id, user_id, anon_id, tries, nickname, used_filter')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
-        .limit(10);
+        .limit(50);
       setRows(data || []);
       setLoading(false);
     }
-    fetch();
+    // 저장 완료 후 fetch되도록 1.5초 딜레이
+    const timer = setTimeout(fetchRanking, 1500);
+    return () => clearTimeout(timer);
   }, [win]);
 
   return { rows, loading };
@@ -38,12 +40,16 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
     try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
   })();
 
+  const cleanRows  = rows.filter(r => !r.used_filter);
+  const filterRows = rows.filter(r => r.used_filter);
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
   const myRow = rows.find(r =>
     (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId)
   );
-  const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
+  const myRank = myRow
+    ? (myRow.used_filter ? filterRows : cleanRows).indexOf(myRow) + 1
+    : null;
 
   return (
     <div className={`result-banner show${win ? '' : ' fail'}`}>
@@ -76,27 +82,61 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
             </div>
           </div>
 
-          <div className="res-ranking-list">
-            {loading ? (
-              <div className="res-ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
-            ) : rows.length === 0 ? (
-              <div className="res-ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
-            ) : (
-              rows.map((r, i) => {
-                const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
-                return (
-                  <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
-                    <span className="res-rank-pos">
-                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
-                    </span>
-                    <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
-                    <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
-                    {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
+          {loading ? (
+            <div className="res-ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
+          ) : rows.length === 0 ? (
+            <div className="res-ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
+          ) : (
+            <>
+              {/* 필터 미사용 섹션 */}
+              {cleanRows.length > 0 && (
+                <>
+                  <div className="res-ranking-section-title">
+                    ✨ {isEn ? 'No Filter' : '필터 미사용'}
                   </div>
-                );
-              })
-            )}
-          </div>
+                  <div className="res-ranking-list">
+                    {cleanRows.slice(0, 10).map((r, i) => {
+                      const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
+                      return (
+                        <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
+                          <span className="res-rank-pos">
+                            {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
+                          </span>
+                          <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
+                          <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
+                          {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* 필터 사용 섹션 */}
+              {filterRows.length > 0 && (
+                <>
+                  <div className="res-ranking-section-title filter">
+                    🗂️ {isEn ? 'Filter Used' : '필터 사용'}
+                  </div>
+                  <div className="res-ranking-list">
+                    {filterRows.slice(0, 10).map((r, i) => {
+                      const isMe = (user && r.user_id === user.id) || (!user && anonId && r.anon_id === anonId);
+                      return (
+                        <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
+                          <span className="res-rank-pos">
+                            {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
+                          </span>
+                          <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
+                          <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
+                          {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>
