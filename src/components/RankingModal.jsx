@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase.js';
+import { supabasePublic } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
 
 export function RankingModal({ onClose, user, lang }) {
@@ -9,7 +9,7 @@ export function RankingModal({ onClose, user, lang }) {
 
   useEffect(() => {
     async function fetchRanking() {
-      const { data, error } = await supabase
+      const { data, error } = await supabasePublic
         .from('daily_results')
         .select('id, user_id, anon_id, tries, solved, used_filter, nickname')
         .eq('date', getTodayStr())

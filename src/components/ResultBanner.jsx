@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { spr } from '../utils/sprite.js';
 import { displayName, getTodayStr } from '../utils/game.js';
-import { supabase } from '../lib/supabase.js';
+import { supabasePublic } from '../lib/supabase.js';
 
 function useInlineRanking(win) {
   const [rows, setRows] = useState([]);
@@ -10,7 +10,7 @@ function useInlineRanking(win) {
   useEffect(() => {
     if (!win) return;
     async function fetchRanking() {
-      const { data } = await supabase
+      const { data } = await supabasePublic
         .from('daily_results')
         .select('id, user_id, anon_id, tries, nickname, used_filter')
         .eq('date', getTodayStr())
