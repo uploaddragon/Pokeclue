@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { ProfileModal } from './ProfileModal.jsx';
 
-export function UserMenu({ user, onSignOut, lang }) {
+export function UserMenu({ user, onSignOut, onUpdateNickname, lang }) {
   const isEn = lang === 'en';
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -14,7 +16,10 @@ export function UserMenu({ user, onSignOut, lang }) {
   }, []);
 
   const avatar = user.user_metadata?.avatar_url;
-  const name   = user.user_metadata?.full_name || user.email;
+  const name =
+    user.user_metadata?.pokeclue_nickname ||
+    user.user_metadata?.full_name ||
+    user.email;
 
   return (
     <div className="user-menu-wrap" ref={ref}>
@@ -34,10 +39,23 @@ export function UserMenu({ user, onSignOut, lang }) {
             </div>
           </div>
           <div className="user-dropdown-divider" />
+          <button className="user-dropdown-btn" onClick={() => { setOpen(false); setProfileOpen(true); }}>
+            {isEn ? '⚙ Profile' : '⚙ 프로필 설정'}
+          </button>
+          <div className="user-dropdown-divider" />
           <button className="user-dropdown-btn signout" onClick={() => { setOpen(false); onSignOut(); }}>
             {isEn ? 'Sign out' : '로그아웃'}
           </button>
         </div>
+      )}
+
+      {profileOpen && (
+        <ProfileModal
+          user={user}
+          lang={lang}
+          onClose={() => setProfileOpen(false)}
+          onSave={onUpdateNickname}
+        />
       )}
     </div>
   );

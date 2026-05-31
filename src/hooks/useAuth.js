@@ -38,5 +38,13 @@ export function useAuth() {
     await supabase.auth.signOut();
   }
 
-  return { user, loading, signInWithGoogle, signInWithDiscord, signOut };
+  async function updateNickname(nickname) {
+    const { data, error } = await supabase.auth.updateUser({
+      data: { pokeclue_nickname: nickname },
+    });
+    if (!error) setUser(data.user);
+    return error;
+  }
+
+  return { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname };
 }

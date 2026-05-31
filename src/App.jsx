@@ -19,7 +19,7 @@ export default function App() {
   const [rankingOpen, setRankingOpen] = useState(false);
   const welcome = useWelcomeModal();
 
-  const { user, loading, signInWithGoogle, signInWithDiscord, signOut } = useAuth();
+  const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user);
 
@@ -37,6 +37,7 @@ export default function App() {
         user={user} authLoading={loading}
         onLoginClick={() => setAuthOpen(true)}
         onSignOut={signOut}
+        onUpdateNickname={updateNickname}
       />
 
       {authOpen && (

@@ -66,7 +66,8 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
 
   if (user) {
     // 로그인 유저
-    const nickname = user.user_metadata?.full_name
+    const nickname = user.user_metadata?.pokeclue_nickname
+      || user.user_metadata?.full_name
       || user.user_metadata?.name
       || user.email?.split('@')[0]
       || '트레이너';

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { UserMenu } from './UserMenu.jsx';
 
-export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut }) {
+export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut, onUpdateNickname }) {
   const isEn = lang === 'en';
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef(null);
@@ -57,7 +57,7 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
             )}
           </div>
           {authLoading ? null : user
-            ? <UserMenu user={user} onSignOut={onSignOut} lang={lang} />
+            ? <UserMenu user={user} onSignOut={onSignOut} onUpdateNickname={onUpdateNickname} lang={lang} />
             : <button className="nav-btn login-btn" onClick={onLoginClick}>{isEn ? 'Login' : '로그인'}</button>
           }
         </div>
