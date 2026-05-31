@@ -48,7 +48,13 @@ export function useBattle(user) {
         event: 'UPDATE', schema: 'public', table: 'battle_rooms', filter: `id=eq.${code}`,
       }, ({ new: r }) => {
         setRoom(r);
-        if (r.status === 'playing') { clearTimeout(timeoutRef.current); setPhase('playing'); }
+        if (r.status === 'playing') {
+          clearTimeout(timeoutRef.current);
+          // 리매치로 인한 재시작 시 answer 갱신
+          const poke = DB.find(p => String(p.id) === String(r.answer_id));
+          if (poke) setAnswer(poke);
+          setPhase('playing');
+        }
         if (r.status === 'finished') setPhase('finished');
       })
       .subscribe((st, err) => { if (err) console.error('[Battle] realtime error', err); });
@@ -175,6 +181,35 @@ export function useBattle(user) {
     await bc.from('battle_rooms').update({ current_turn: nextTurn }).eq('id', roomCode);
   }, [roomCode, mySlot]);
 
+  // 리매치 요청 — 양측 모두 누르면 같은 방에서 새 게임 시작
+  const requestRematch = useCallback(async () => {
+    if (!roomCode || !mySlot) return;
+    const myKey  = mySlot === 'p1' ? 'p1_rematch' : 'p2_rematch';
+    const opKey  = mySlot === 'p1' ? 'p2_rematch' : 'p1_rematch';
+    const opReady = room?.[opKey];
+
+    if (opReady) {
+      // 상대도 준비됨 → 새 게임 시작
+      const newPoke = DB[Math.floor(Math.random() * DB.length)];
+      await bc.from('battle_rooms').update({
+        answer_id: String(newPoke.id),
+        status: 'playing',
+        current_turn: 'p1',
+        shared_guesses: [],
+        p1_tries: 0, p1_solved: false,
+        p2_tries: 0, p2_solved: false,
+        winner: null,
+        p1_rematch: false, p2_rematch: false,
+      }).eq('id', roomCode);
+      setAnswer(newPoke);
+      setPhase('playing');
+    } else {
+      // 먼저 누름 → 대기
+      await bc.from('battle_rooms').update({ [myKey]: true }).eq('id', roomCode);
+      setPhase('rematch_wait');
+    }
+  }, [roomCode, mySlot, room]);
+
   // 항복 — 상대방 승리로 처리
   const giveUp = useCallback(async () => {
     if (!roomCode) return;
@@ -209,6 +244,6 @@ export function useBattle(user) {
     phase, roomCode, room, mySlot, answer, error,
     myNick: me.nick, opNick, opTries, iWon, winner: room?.winner,
     isMyTurn, currentTurn, sharedGuesses,
-    createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, reset,
+    createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, requestRematch, reset,
   };
 }

@@ -122,6 +122,22 @@ export function BattlePage({ user, lang }) {
     );
   }
 
+  // ── REMATCH WAIT ─────────────────────────────────────────
+  if (b.phase === 'rematch_wait') {
+    return (
+      <main>
+        <div className="hero"><div className="hero-t">⚔ {isEn ? 'Battle Mode' : '대전 모드'}</div></div>
+        <div className="battle-waiting">
+          <div className="battle-waiting-icon">⏳</div>
+          <div className="battle-waiting-title">
+            {isEn ? 'Waiting for opponent to accept rematch...' : '상대방이 다시 대전을 수락하길 기다리는 중...'}
+          </div>
+          <button className="battle-cancel-btn" onClick={b.reset}>{isEn ? 'Cancel' : '취소'}</button>
+        </div>
+      </main>
+    );
+  }
+
   // ── TIMEOUT ──────────────────────────────────────────────
   if (b.phase === 'timeout') {
     return (
@@ -220,7 +236,14 @@ export function BattlePage({ user, lang }) {
               {!b.iWon && b.winner && <div className="battle-result-crown">👑</div>}
             </div>
           </div>
-          <button className="next-btn" onClick={b.reset}>{isEn ? '▶ Play Again' : '▶ 다시 대전'}</button>
+          <div style={{display:'flex',gap:'12px',justifyContent:'center',flexWrap:'wrap'}}>
+            <button className="next-btn" onClick={b.requestRematch}>
+              {isEn ? '🔄 Rematch' : '🔄 다시 대전'}
+            </button>
+            <button className="next-btn" style={{background:'#555'}} onClick={b.reset}>
+              {isEn ? '✕ Leave' : '✕ 나가기'}
+            </button>
+          </div>
         </div>
         <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
       </main>
