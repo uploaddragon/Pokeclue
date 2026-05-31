@@ -280,7 +280,7 @@ const DB = [
   {id:501,ko:'수댕이',en:'Oshawott',gen:5,t1:'물',t2:'없음',evo:1,len:3,enLen:8},{id:502,ko:'쌍검자비',en:'Dewott',gen:5,t1:'물',t2:'없음',evo:2,len:4,enLen:6},{id:503,ko:'대검귀',en:'Samurott',gen:5,t1:'물',t2:'없음',evo:3,len:3,enLen:8},
   {id:504,ko:'보르쥐',en:'Patrat',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:6},{id:505,ko:'보르그',en:'Watchog',gen:5,t1:'노말',t2:'없음',evo:2,len:3,enLen:7},
   {id:506,ko:'요테리',en:'Lillipup',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:8},{id:507,ko:'하데리어',en:'Herdier',gen:5,t1:'노말',t2:'없음',evo:2,len:4,enLen:7},{id:508,ko:'바란드',en:'Stoutland',gen:5,t1:'노말',t2:'없음',evo:3,len:3,enLen:9},
-  {id:509,ko:'쌔비냥',en:'Purrloin',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:8},{id:510,ko:'레파르다스',en:'Liepard',gen:5,t1:'노말',t2:'없음',evo:2,len:5,enLen:7},
+  {id:509,ko:'쌔비냥',en:'Purrloin',gen:5,t1:'악',t2:'없음',evo:1,len:3,enLen:8},{id:510,ko:'레파르다스',en:'Liepard',gen:5,t1:'악',t2:'없음',evo:2,len:5,enLen:7},
   {id:511,ko:'야나프',en:'Pansage',gen:5,t1:'풀',t2:'없음',evo:1,len:3,enLen:7},{id:512,ko:'야나키',en:'Simisage',gen:5,t1:'풀',t2:'없음',evo:2,len:3,enLen:8},
   {id:513,ko:'바오프',en:'Pansear',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3,enLen:7},{id:514,ko:'바오키',en:'Simisear',gen:5,t1:'불꽃',t2:'없음',evo:2,len:3,enLen:8},
   {id:515,ko:'앗차프',en:'Panpour',gen:5,t1:'물',t2:'없음',evo:1,len:3,enLen:7},{id:516,ko:'앗차키',en:'Simipour',gen:5,t1:'물',t2:'없음',evo:2,len:3,enLen:8},
