@@ -79,8 +79,8 @@ export function WelcomeModal({ onClose, onNeverShow, lang }) {
           </p>
           <p>
             {isEn
-              ? '5 daily attempts · 10 tries per round · No filter. Clear within 10 tries → Dex registration, attempt NOT deducted. Fail → attempt deducted.'
-              : '하루 5번의 도전 기회 · 라운드당 시도 10회 · 필터 불가. 10회 안에 맞추면 도감 등록되고 기회가 차감되지 않습니다. 실패하면 기회가 1 차감됩니다.'}
+              ? '3 daily attempts · 7 tries per round · No filter. Clear within 7 tries → Dex registration, attempt NOT deducted. Fail → attempt deducted.'
+              : '하루 3번의 도전 기회 · 라운드당 시도 7회 · 필터 불가. 7회 안에 맞추면 도감 등록되고 기회가 차감되지 않습니다. 실패하면 기회가 1 차감됩니다.'}
           </p>
 
           <div className="wc-divider" />

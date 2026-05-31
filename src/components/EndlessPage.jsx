@@ -27,10 +27,10 @@ function ModeSelect({ onSelect, lang }) {
           <div className="endless-card-icon">★</div>
           <div className="endless-card-title">{isEn ? 'Challenge' : '챌린지'}</div>
           <ul className="endless-card-desc">
-            <li>{isEn ? 'Within 10 tries' : '10번 이내 정답'}</li>
+            <li>{isEn ? 'Within 7 tries' : '7번 이내 정답'}</li>
             <li>{isEn ? 'No filter' : '필터 불가'}</li>
             <li>{isEn ? 'Dex registration on clear' : '클리어 시 도감 등록'}</li>
-            <li>{isEn ? '5 attempts per day' : '하루 5회 도전'}</li>
+            <li>{isEn ? '3 attempts per day' : '하루 3회 도전'}</li>
           </ul>
         </div>
       </div>
