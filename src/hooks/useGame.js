@@ -1,9 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import DB from '../data/pokemon.js';
 import { pickAnswer, getTodayStr } from '../utils/game.js';
 import { supabase } from '../lib/supabase.js';
 
-// 익명 유저용 ID/닉네임 (localStorage에 고정 저장)
 const ANON_KEY = 'pokeclue_anon';
 
 function getAnonIdentity() {
@@ -11,12 +10,8 @@ function getAnonIdentity() {
     const saved = JSON.parse(localStorage.getItem(ANON_KEY) || 'null');
     if (saved?.id && saved?.nickname) return saved;
   } catch {}
-  // 없으면 새로 생성
   const randomPoke = DB[Math.floor(Math.random() * DB.length)];
-  const identity = {
-    id: crypto.randomUUID(),
-    nickname: `익명의 ${randomPoke.ko}`,
-  };
+  const identity = { id: crypto.randomUUID(), nickname: `익명의 ${randomPoke.ko}` };
   localStorage.setItem(ANON_KEY, JSON.stringify(identity));
   return identity;
 }
@@ -30,25 +25,18 @@ function loadDailyState() {
     const saved = JSON.parse(raw);
     if (saved.date !== getTodayStr()) return null;
     return saved;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
 function saveDailyState(state) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
 }
 
 function initState() {
   const saved = loadDailyState();
   const answer = pickAnswer();
-
   if (saved) {
-    const guesses = saved.guessIds
-      .map(id => DB.find(p => p.id === id))
-      .filter(Boolean);
+    const guesses = saved.guessIds.map(id => DB.find(p => p.id === id)).filter(Boolean);
     return {
       answer,
       guesses,
@@ -57,7 +45,6 @@ function initState() {
       result: saved.result ?? null,
     };
   }
-
   return { answer, guesses: [], gameOver: false, usedFilter: false, result: null };
 }
 
@@ -65,7 +52,6 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
   const today = getTodayStr();
 
   if (user) {
-    // 로그인 유저
     const nickname = user.user_metadata?.pokeclue_nickname
       || user.user_metadata?.full_name
       || user.user_metadata?.name
@@ -73,31 +59,18 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
       || '트레이너';
     const { error } = await supabase
       .from('daily_results')
-      .upsert({
-        user_id: user.id,
-        date: today,
-        tries,
-        solved,
-        used_filter: usedFilter,
-        nickname,
-      }, { onConflict: 'user_id,date' });
+      .upsert(
+        { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname },
+        { onConflict: 'user_id,date' }
+      );
     if (error) console.error('daily_results upsert error', error);
   } else {
-    // 익명 유저 — 오늘 이미 저장했으면 스킵
     const anonSubmittedKey = `pokeclue_anon_submitted_${today}`;
     if (localStorage.getItem(anonSubmittedKey)) return;
-
     const anon = getAnonIdentity();
     const { error } = await supabase
       .from('daily_results')
-      .insert({
-        anon_id: anon.id,
-        date: today,
-        tries,
-        solved,
-        used_filter: usedFilter,
-        nickname: anon.nickname,
-      });
+      .insert({ anon_id: anon.id, date: today, tries, solved, used_filter: usedFilter, nickname: anon.nickname });
     if (error) { console.error('daily_results anon insert error', error); return; }
     localStorage.setItem(anonSubmittedKey, '1');
   }
@@ -108,6 +81,7 @@ export function useGame(unlockDex, user) {
   const { answer, guesses, gameOver, usedFilter, result } = state;
   const [filterOpen, setFilterOpen] = useState(false);
 
+  // localStorage 동기화
   useEffect(() => {
     saveDailyState({
       date: getTodayStr(),
@@ -118,12 +92,17 @@ export function useGame(unlockDex, user) {
     });
   }, [guesses, gameOver, usedFilter, result]);
 
-  // 로그인 시점에 이미 클리어한 상태라면 user_id로 재저장
+  // 클리어 후 Supabase 저장 — result.win이 켜지거나 user가 바뀔 때 실행
+  // setState 안에서 호출하지 않고 effect에서 처리
+  const savedForUserRef = useRef(null); // 마지막으로 저장한 user.id (중복 저장 방지)
+
   useEffect(() => {
-    if (user && result?.win) {
-      saveDailyToSupabase(user, { tries: guesses.length, solved: true, usedFilter });
-    }
-  }, [user]);
+    if (!result?.win) return;
+    const userId = user?.id ?? 'anon';
+    if (savedForUserRef.current === userId) return; // 이미 저장함
+    savedForUserRef.current = userId;
+    saveDailyToSupabase(user, { tries: guesses.length, solved: true, usedFilter });
+  }, [result?.win, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submitGuess = useCallback((pokemonId) => {
     if (gameOver) return;
@@ -141,16 +120,15 @@ export function useGame(unlockDex, user) {
       if (isOk) {
         const isShiny = !prev.usedFilter;
         const shinyPct = isShiny ? '5%' : '1%';
-        const newResult = { win: true, shinyPct };
         const shinyUnlock = isShiny && Math.random() < 0.05;
         unlockDex(prev.answer, shinyUnlock, next.length);
-        saveDailyToSupabase(user, { tries: next.length, solved: true, usedFilter: prev.usedFilter });
-        return { ...prev, guesses: next, gameOver: true, result: newResult };
+        // Supabase 저장은 위 useEffect에서 담당 (setState 안에서 async 호출 금지)
+        return { ...prev, guesses: next, gameOver: true, result: { win: true, shinyPct } };
       }
 
       return { ...prev, guesses: next };
     });
-  }, [gameOver, unlockDex, user]);
+  }, [gameOver, unlockDex]);
 
   const openFilter = useCallback(() => {
     setState(prev => ({ ...prev, usedFilter: true }));
@@ -166,6 +144,7 @@ export function useGame(unlockDex, user) {
 
   const resetGame = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    savedForUserRef.current = null;
     setState(initState());
     setFilterOpen(false);
   }, []);
