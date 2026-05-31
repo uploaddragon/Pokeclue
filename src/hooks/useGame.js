@@ -76,7 +76,7 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
   }
 }
 
-export function useGame(unlockDex, user) {
+export function useGame(unlockDex, user, authLoading) {
   const [state, setState] = useState(initState);
   const { answer, guesses, gameOver, usedFilter, result } = state;
   const [filterOpen, setFilterOpen] = useState(false);
@@ -98,11 +98,12 @@ export function useGame(unlockDex, user) {
 
   useEffect(() => {
     if (!result?.win) return;
+    if (authLoading) return; // auth 확인 전엔 저장 금지 (익명 오저장 방지)
     const userId = user?.id ?? 'anon';
     if (savedForUserRef.current === userId) return; // 이미 저장함
     savedForUserRef.current = userId;
     saveDailyToSupabase(user, { tries: guesses.length, solved: true, usedFilter });
-  }, [result?.win, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [result?.win, user?.id, authLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submitGuess = useCallback((pokemonId) => {
     if (gameOver) return;

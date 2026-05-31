@@ -21,7 +21,7 @@ export default function App() {
 
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
-  const game = useGame(unlockDex, user);
+  const game = useGame(unlockDex, user, loading);
 
   async function handleGoogleLogin() {
     await signInWithGoogle();
