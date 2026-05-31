@@ -6,6 +6,7 @@ import { EndlessPage } from './components/EndlessPage.jsx';
 import { DexPage } from './components/DexPage.jsx';
 import { AuthModal } from './components/AuthModal.jsx';
 import { RankingModal } from './components/RankingModal.jsx';
+import { WelcomeModal, useWelcomeModal } from './components/WelcomeModal.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
@@ -16,6 +17,7 @@ export default function App() {
   const [lang, setLang] = useState('ko');
   const [authOpen, setAuthOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
+  const welcome = useWelcomeModal();
 
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut } = useAuth();
   const { dex, unlockDex } = useDex(user);
@@ -48,6 +50,10 @@ export default function App() {
 
       {rankingOpen && (
         <RankingModal onClose={() => setRankingOpen(false)} user={user} lang={lang} />
+      )}
+
+      {welcome.open && (
+        <WelcomeModal onClose={welcome.close} onNeverShow={welcome.closeForever} lang={lang} />
       )}
 
       {page === 'game' && gameTab === 'daily' && (
