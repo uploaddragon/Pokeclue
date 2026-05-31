@@ -17,8 +17,8 @@ export function RankingModal({ onClose, user, lang }) {
         .order('tries', { ascending: true })
         .limit(50);
 
-      if (error) { console.error(error); setLoading(false); return; }
-      setRows(data);
+      if (error) { console.error('ranking fetch error', error); }
+      setRows(data ?? []);
       setLoading(false);
     }
     fetchRanking();
