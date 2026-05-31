@@ -85,7 +85,7 @@ export function useBattle(user) {
     });
     if (e) {
       console.error('[Battle] createRoom error', e);
-      return null;
+      throw new Error(e.message || e.code || JSON.stringify(e));
     }
     return { code, poke };
   }
@@ -94,8 +94,9 @@ export function useBattle(user) {
   async function createFriendRoom() {
     setError('');
     const me = getIdentity(user);
-    const result = await createRoom(me);
-    if (!result) { setError('방 생성에 실패했어요. Supabase 테이블을 확인해주세요.'); return; }
+    let result;
+    try { result = await createRoom(me); }
+    catch (err) { setError(`방 생성 실패: ${err.message}`); return; }
     setRoomCode(result.code);
     setMySlot('p1');
     setAnswer(result.poke);
@@ -186,8 +187,9 @@ export function useBattle(user) {
     }
 
     // 빈 방 없음 → 새로 만들고 대기
-    const result = await createRoom(me);
-    if (!result) { setPhase('select'); setError('방 생성에 실패했어요.'); return; }
+    let result;
+    try { result = await createRoom(me); }
+    catch (err) { setPhase('select'); setError(`방 생성 실패: ${err.message}`); return; }
     setRoomCode(result.code);
     setMySlot('p1');
     setAnswer(result.poke);
