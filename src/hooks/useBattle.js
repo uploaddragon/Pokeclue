@@ -196,20 +196,18 @@ export function useBattle(user) {
       .single();
 
     if (data?.p1_rematch && data?.p2_rematch) {
-      // 양쪽 준비됨: p1이 새 게임 시작, p2는 realtime 대기
-      if (mySlot === 'p1') {
-        const nextRound = (data.round || 1) + 1;
-        const firstTurn = nextRound % 2 === 0 ? 'p2' : 'p1';
-        const newPoke = DB[Math.floor(Math.random() * DB.length)];
-        await bc.from('battle_rooms').update({
-          answer_id: String(newPoke.id),
-          status: 'playing', current_turn: firstTurn, shared_guesses: [],
-          p1_tries: 0, p1_solved: false, p2_tries: 0, p2_solved: false,
-          winner: null, p1_rematch: false, p2_rematch: false, round: nextRound,
-        }).eq('id', roomCode);
-        // answer·phase는 realtime의 status='playing' 이벤트에서 갱신
-      }
-      // p2는 realtime이 status='playing' 이벤트를 받을 때까지 대기
+      // 두 번째로 누른 사람이 새 게임 시작
+      // .eq 조건이 낙관적 잠금 역할 — 동시에 눌러도 한 번만 실행됨
+      const nextRound = (data.round || 1) + 1;
+      const firstTurn = nextRound % 2 === 0 ? 'p2' : 'p1';
+      const newPoke = DB[Math.floor(Math.random() * DB.length)];
+      await bc.from('battle_rooms').update({
+        answer_id: String(newPoke.id),
+        status: 'playing', current_turn: firstTurn, shared_guesses: [],
+        p1_tries: 0, p1_solved: false, p2_tries: 0, p2_solved: false,
+        winner: null, p1_rematch: false, p2_rematch: false, round: nextRound,
+      }).eq('id', roomCode).eq('p1_rematch', true).eq('p2_rematch', true);
+      // answer·phase는 realtime의 status='playing' 이벤트에서 양쪽 모두 갱신됨
     }
   }, [roomCode, mySlot]);
 
