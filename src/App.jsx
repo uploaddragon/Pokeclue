@@ -14,7 +14,7 @@ import { useAuth } from './hooks/useAuth.js';
 
 export default function App() {
   const [page, setPage] = useState('game');       // 'game' | 'dex'
-  const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless'
+  const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless' | 'battle'
   const [lang, setLang] = useState('ko');
   const [authOpen, setAuthOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
@@ -79,11 +79,11 @@ export default function App() {
       {page === 'game' && gameTab === 'endless' && (
         <EndlessPage unlockDex={unlockDex} lang={lang} />
       )}
+      {page === 'game' && gameTab === 'battle' && (
+        <BattlePage user={user} lang={lang} />
+      )}
       {page === 'dex' && (
         <DexPage dex={dex} lang={lang} />
-      )}
-      {page === 'battle' && (
-        <BattlePage user={user} lang={lang} />
       )}
       <Footer />
     </div>
