@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase.js';
+import { getTodayStr } from '../utils/game.js';
 
 export function useAuth() {
   const [user, setUser] = useState(null);
@@ -42,7 +43,15 @@ export function useAuth() {
     const { data, error } = await supabase.auth.updateUser({
       data: { pokeclue_nickname: nickname },
     });
-    if (!error) setUser(data.user);
+    if (!error) {
+      setUser(data.user);
+      // 오늘 랭킹 기록의 닉네임도 즉시 업데이트
+      await supabase
+        .from('daily_results')
+        .update({ nickname })
+        .eq('user_id', data.user.id)
+        .eq('date', getTodayStr());
+    }
     return error;
   }
 

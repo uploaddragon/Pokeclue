@@ -96,14 +96,22 @@ export function useGame(unlockDex, user, authLoading) {
   // setState 안에서 호출하지 않고 effect에서 처리
   const savedForUserRef = useRef(null); // 마지막으로 저장한 user.id (중복 저장 방지)
 
+  const nickname = user?.user_metadata?.pokeclue_nickname
+    || user?.user_metadata?.full_name
+    || user?.user_metadata?.name
+    || user?.email?.split('@')[0]
+    || null;
+
   useEffect(() => {
     if (!result?.win) return;
-    if (authLoading) return; // auth 확인 전엔 저장 금지 (익명 오저장 방지)
+    if (authLoading) return;
     const userId = user?.id ?? 'anon';
-    if (savedForUserRef.current === userId) return; // 이미 저장함
-    savedForUserRef.current = userId;
+    // user_id + nickname 조합을 키로 써서 닉네임 변경 시에도 재저장
+    const saveKey = `${userId}::${nickname ?? ''}`;
+    if (savedForUserRef.current === saveKey) return;
+    savedForUserRef.current = saveKey;
     saveDailyToSupabase(user, { tries: guesses.length, solved: true, usedFilter });
-  }, [result?.win, user?.id, authLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [result?.win, user?.id, authLoading, nickname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submitGuess = useCallback((pokemonId) => {
     if (gameOver) return;
