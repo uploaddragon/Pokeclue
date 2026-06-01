@@ -749,9 +749,13 @@ const DB = [
   {id:'mega/rayquaza',   ko:'메가레쿠쟈',   en:'Mega Rayquaza',   baseId:384,form:'mega',gen:3,t1:'드래곤',t2:'비행',  evo:1,len:5,enLen:13},
   {id:'mega/salamence',  ko:'메가보만다',   en:'Mega Salamence',  baseId:373,form:'mega',gen:3,t1:'드래곤',t2:'비행',  evo:3,len:5,enLen:14},
   {id:'mega/metagross',  ko:'메가메타그로스',en:'Mega Metagross',  baseId:376,form:'mega',gen:3,t1:'강철', t2:'에스퍼',evo:3,len:7,enLen:14},
+  {id:10070,             ko:'메가샤크니아', en:'Mega Sharpedo',   baseId:319,form:'mega',gen:3,t1:'물',   t2:'악',    evo:2,len:6,enLen:13},
+  {id:10087,             ko:'메가폭타',     en:'Mega Camerupt',   baseId:323,form:'mega',gen:3,t1:'불꽃', t2:'땅',    evo:2,len:4,enLen:13},
+  {id:10074,             ko:'메가얼음귀신', en:'Mega Glalie',     baseId:362,form:'mega',gen:3,t1:'얼음', t2:'없음',  evo:2,len:6,enLen:11},
 
   // ── 메가진화 (4세대) ──
-  {id:'mega/lucario',    ko:'메가루카리오', en:'Mega Lucario',    baseId:448,form:'mega',gen:4,t1:'격투', t2:'강철',  evo:2,len:6,enLen:12},
+  {id:10059,             ko:'메가루카리오', en:'Mega Lucario',    baseId:448,form:'mega',gen:4,t1:'격투', t2:'강철',  evo:2,len:6,enLen:12},
+  {id:10058,             ko:'메가한카리아스',en:'Mega Garchomp',  baseId:445,form:'mega',gen:4,t1:'드래곤',t2:'땅',   evo:3,len:7,enLen:13},
   {id:'mega/lopunny',    ko:'메가이어롭',   en:'Mega Lopunny',    baseId:428,form:'mega',gen:4,t1:'노말', t2:'격투',  evo:2,len:5,enLen:12},
   {id:'mega/gallade',    ko:'메가엘레이드', en:'Mega Gallade',    baseId:475,form:'mega',gen:4,t1:'에스퍼',t2:'격투', evo:3,len:6,enLen:12},
 
