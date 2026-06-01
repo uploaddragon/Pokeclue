@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import DB from '../data/pokemon.js';
 import { pickAnswer, getTodayStr } from '../utils/game.js';
-import { supabasePublic } from '../lib/supabase.js';
+import { supabase, supabasePublic } from '../lib/supabase.js';
 
 const ANON_KEY = 'pokeclue_anon';
 
@@ -57,7 +57,8 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
       || user.user_metadata?.name
       || user.email?.split('@')[0]
       || '트레이너';
-    const { error } = await supabasePublic
+    // 로그인 유저는 반드시 인증된 클라이언트(supabase) 사용 — RLS auth.uid() 검사 통과
+    const { error } = await supabase
       .from('daily_results')
       .upsert(
         { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname },
