@@ -24,7 +24,7 @@ const DB = [
   {id:54,ko:'고라파덕',en:'Psyduck',gen:1,t1:'물',t2:'없음',evo:1,len:4,enLen:7},{id:55,ko:'골덕',en:'Golduck',gen:1,t1:'물',t2:'없음',evo:2,len:2,enLen:7},
   {id:56,ko:'망키',en:'Mankey',gen:1,t1:'격투',t2:'없음',evo:1,len:2,enLen:6},{id:57,ko:'성원숭',en:'Primeape',gen:1,t1:'격투',t2:'없음',evo:2,len:3,enLen:8},
   {id:58,ko:'가디',en:'Growlithe',gen:1,t1:'불꽃',t2:'없음',evo:1,len:2,enLen:9},{id:59,ko:'윈디',en:'Arcanine',gen:1,t1:'불꽃',t2:'없음',evo:2,len:2,enLen:8},
-  {id:60,ko:'발챙이',en:'Poliwag',gen:1,t1:'물',t2:'없음',evo:1,len:3,enLen:7},{id:61,ko:'수륙챙이',en:'Poliwhirl',gen:1,t1:'물',t2:'없음',evo:2,len:4,enLen:9},{id:62,ko:'강챙이',en:'Poliwrath',gen:1,t1:'물',t2:'격투',evo:3,len:3,enLen:9},
+  {id:60,ko:'발챙이',en:'Poliwag',gen:1,t1:'물',t2:'없음',evo:1,len:3,enLen:7},{id:61,ko:'슈륙챙이',en:'Poliwhirl',gen:1,t1:'물',t2:'없음',evo:2,len:4,enLen:9},{id:62,ko:'강챙이',en:'Poliwrath',gen:1,t1:'물',t2:'격투',evo:3,len:3,enLen:9},
   {id:63,ko:'캐이시',en:'Abra',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:3,enLen:4},{id:64,ko:'윤겔라',en:'Kadabra',gen:1,t1:'에스퍼',t2:'없음',evo:2,len:3,enLen:7},{id:65,ko:'후딘',en:'Alakazam',gen:1,t1:'에스퍼',t2:'없음',evo:3,len:2,enLen:8},
   {id:66,ko:'알통몬',en:'Machop',gen:1,t1:'격투',t2:'없음',evo:1,len:3,enLen:6},{id:67,ko:'근육몬',en:'Machoke',gen:1,t1:'격투',t2:'없음',evo:2,len:3,enLen:7},{id:68,ko:'괴력몬',en:'Machamp',gen:1,t1:'격투',t2:'없음',evo:3,len:3,enLen:7},
   {id:69,ko:'모다피',en:'Bellsprout',gen:1,t1:'풀',t2:'독',evo:1,len:3,enLen:10},{id:70,ko:'우츠동',en:'Weepinbell',gen:1,t1:'풀',t2:'독',evo:2,len:3,enLen:10},{id:71,ko:'우츠보트',en:'Victreebel',gen:1,t1:'풀',t2:'독',evo:3,len:4,enLen:10},
