@@ -141,7 +141,7 @@ const DB = [
   {id:265,ko:'개무소',en:'Wurmple',gen:3,t1:'벌레',t2:'없음',evo:1,len:3,enLen:7},{id:266,ko:'실쿤',en:'Silcoon',gen:3,t1:'벌레',t2:'없음',evo:2,len:2,enLen:7},{id:267,ko:'뷰티플라이',en:'Beautifly',gen:3,t1:'벌레',t2:'비행',evo:3,len:5,enLen:9},
   {id:268,ko:'카스쿤',en:'Cascoon',gen:3,t1:'벌레',t2:'없음',evo:2,len:3,enLen:7},{id:269,ko:'독케일',en:'Dustox',gen:3,t1:'벌레',t2:'독',evo:3,len:3,enLen:6},
   {id:270,ko:'연꽃몬',en:'Lotad',gen:3,t1:'물',t2:'풀',evo:1,len:3,enLen:5},{id:271,ko:'로토스',en:'Lombre',gen:3,t1:'물',t2:'풀',evo:2,len:3,enLen:6},{id:272,ko:'로파파',en:'Ludicolo',gen:3,t1:'물',t2:'풀',evo:3,len:3,enLen:8},
-  {id:273,ko:'도토리몬',en:'Seedot',gen:3,t1:'풀',t2:'없음',evo:1,len:4,enLen:6},{id:274,ko:'잎새코',en:'Nuzleaf',gen:3,t1:'풀',t2:'악',evo:2,len:3,enLen:7},{id:275,ko:'다탱구',en:'Shiftry',gen:3,t1:'풀',t2:'악',evo:3,len:3,enLen:7},
+  {id:273,ko:'도토링',en:'Seedot',gen:3,t1:'풀',t2:'없음',evo:1,len:3,enLen:6},{id:274,ko:'잎새코',en:'Nuzleaf',gen:3,t1:'풀',t2:'악',evo:2,len:3,enLen:7},{id:275,ko:'다탱구',en:'Shiftry',gen:3,t1:'풀',t2:'악',evo:3,len:3,enLen:7},
   {id:276,ko:'테일로',en:'Taillow',gen:3,t1:'노말',t2:'비행',evo:1,len:3,enLen:7},{id:277,ko:'스왈로',en:'Swellow',gen:3,t1:'노말',t2:'비행',evo:2,len:3,enLen:7},
   {id:278,ko:'갈모매',en:'Wingull',gen:3,t1:'물',t2:'비행',evo:1,len:3,enLen:7},{id:279,ko:'패리퍼',en:'Pelipper',gen:3,t1:'물',t2:'비행',evo:2,len:3,enLen:8},
   {id:280,ko:'랄토스',en:'Ralts',gen:3,t1:'에스퍼',t2:'페어리',evo:1,len:3,enLen:5},{id:281,ko:'킬리아',en:'Kirlia',gen:3,t1:'에스퍼',t2:'페어리',evo:2,len:3,enLen:6},{id:282,ko:'가디안',en:'Gardevoir',gen:3,t1:'에스퍼',t2:'페어리',evo:3,len:3,enLen:9},
@@ -544,7 +544,7 @@ const DB = [
   {id:846,ko:'찌로꼬치',en:'Arrokuda',gen:8,t1:'물',t2:'없음',evo:1,len:4,enLen:8},{id:847,ko:'꼬치조',en:'Barraskewda',gen:8,t1:'물',t2:'없음',evo:2,len:3,enLen:11},
   {id:848,ko:'일레즌',en:'Toxel',gen:8,t1:'전기',t2:'독',  evo:1,len:3,enLen:5},{id:849,ko:'스트린더',en:'Toxtricity',gen:8,t1:'전기',t2:'독',evo:2,len:4,enLen:10},
   {id:850,ko:'태우지네',en:'Sizzlipede',gen:8,t1:'불꽃',t2:'벌레',evo:1,len:4,enLen:10},{id:851,ko:'다태우지네',en:'Centiskorch',gen:8,t1:'불꽃',t2:'벌레',evo:2,len:5,enLen:11},
-  {id:852,ko:'때때무노',en:'Clobbopus',gen:8,t1:'격투',t2:'없음',evo:1,len:4,enLen:9},{id:853,ko:'케오퍼스',en:'Grapploct',gen:8,t1:'격투',t2:'물',evo:2,len:4,enLen:9},
+  {id:852,ko:'때때무노',en:'Clobbopus',gen:8,t1:'격투',t2:'없음',evo:1,len:4,enLen:9},{id:853,ko:'케오퍼스',en:'Grapploct',gen:8,t1:'격투',t2:'없음',evo:2,len:4,enLen:9},
   {id:854,ko:'데인차',en:'Sinistea',gen:8,t1:'고스트',t2:'없음',evo:1,len:3,enLen:8},{id:855,ko:'포트데스',en:'Polteageist',gen:8,t1:'고스트',t2:'없음',evo:2,len:4,enLen:11},
   {id:856,ko:'몸지브림',en:'Hatenna',gen:8,t1:'에스퍼',t2:'없음',evo:1,len:4,enLen:7},{id:857,ko:'손지브림',en:'Hattrem',gen:8,t1:'에스퍼',t2:'없음',evo:2,len:4,enLen:7},{id:858,ko:'브리무음',en:'Hatterene',gen:8,t1:'에스퍼',t2:'페어리',evo:3,len:4,enLen:9},
   {id:859,ko:'메롱꿍',en:'Impidimp',gen:8,t1:'악',  t2:'페어리',evo:1,len:3,enLen:8},{id:860,ko:'쏘겨모',en:'Morgrem',gen:8,t1:'악',t2:'페어리',evo:2,len:3,enLen:7},{id:861,ko:'오롱털',en:'Grimmsnarl',gen:8,t1:'악',t2:'페어리',evo:3,len:3,enLen:10},
@@ -637,7 +637,7 @@ const DB = [
   {id:985,ko:'우렁찬꼬리',en:'Scream Tail',gen:9,t1:'페어리',t2:'에스퍼',evo:1,len:5,enLen:11},
   {id:986,ko:'사나운버섯',en:'Brute Bonnet',gen:9,t1:'풀',t2:'악',    evo:1,len:5,enLen:12},
   {id:987,ko:'날개치는머리',en:'Flutter Mane',gen:9,t1:'고스트',t2:'페어리',evo:1,len:6,enLen:12},
-  {id:988,ko:'땅을기어는날개',en:'Slither Wing',gen:9,t1:'벌레',t2:'격투',evo:1,len:7,enLen:12},
+  {id:988,ko:'땅을기는날개',en:'Slither Wing',gen:9,t1:'벌레',t2:'격투',evo:1,len:6,enLen:12},
   {id:989,ko:'모래털가죽',en:'Sandy Shocks',gen:9,t1:'전기',t2:'땅',  evo:1,len:5,enLen:12},
   {id:990,ko:'무쇠바퀴',en:'Iron Treads',gen:9,t1:'땅',  t2:'강철',  evo:1,len:4,enLen:11},
   {id:991,ko:'무쇠보따리',en:'Iron Bundle',gen:9,t1:'얼음',t2:'물',  evo:1,len:5,enLen:11},
@@ -751,6 +751,7 @@ const DB = [
   {id:'mega/metagross',  ko:'메가메타그로스',en:'Mega Metagross',  baseId:376,form:'mega',gen:3,t1:'강철', t2:'에스퍼',evo:3,len:7,enLen:14},
 
   // ── 메가진화 (4세대) ──
+  {id:'mega/lucario',    ko:'메가루카리오', en:'Mega Lucario',    baseId:448,form:'mega',gen:4,t1:'격투', t2:'강철',  evo:2,len:6,enLen:12},
   {id:'mega/lopunny',    ko:'메가이어롭',   en:'Mega Lopunny',    baseId:428,form:'mega',gen:4,t1:'노말', t2:'격투',  evo:2,len:5,enLen:12},
   {id:'mega/gallade',    ko:'메가엘레이드', en:'Mega Gallade',    baseId:475,form:'mega',gen:4,t1:'에스퍼',t2:'격투', evo:3,len:6,enLen:12},
 
