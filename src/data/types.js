@@ -1,3 +1,26 @@
+// 타입칩 bg/fg 색상 (새 디자인용)
+export const TCHIP_COL = {
+  '노말':   {bg:'#A8A878', fg:'#fff'},
+  '불꽃':   {bg:'#F08030', fg:'#fff'},
+  '물':     {bg:'#5C90E8', fg:'#fff'},
+  '전기':   {bg:'#F2C94C', fg:'#3a2c05'},
+  '풀':     {bg:'#78C850', fg:'#fff'},
+  '얼음':   {bg:'#74CEC0', fg:'#fff'},
+  '격투':   {bg:'#C03028', fg:'#fff'},
+  '독':     {bg:'#A040A0', fg:'#fff'},
+  '땅':     {bg:'#D8A84E', fg:'#3a2c05'},
+  '비행':   {bg:'#A890F0', fg:'#fff'},
+  '에스퍼': {bg:'#F05A8E', fg:'#fff'},
+  '벌레':   {bg:'#A8B820', fg:'#fff'},
+  '바위':   {bg:'#B8A038', fg:'#fff'},
+  '고스트': {bg:'#705898', fg:'#fff'},
+  '드래곤': {bg:'#7038F8', fg:'#fff'},
+  '악':     {bg:'#705848', fg:'#fff'},
+  '강철':   {bg:'#9FA8C4', fg:'#fff'},
+  '페어리': {bg:'#EE99AC', fg:'#222'},
+  '없음':   {bg:'#ccc',    fg:'#555'},
+};
+
 export const TYPE_EN = {
   '노말':'Normal','불꽃':'Fire','물':'Water','전기':'Electric',
   '풀':'Grass','얼음':'Ice','격투':'Fighting','독':'Poison',

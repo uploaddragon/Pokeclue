@@ -3,7 +3,8 @@ import { spr } from '../utils/sprite.js';
 import { displayName, getTodayStr } from '../utils/game.js';
 import { supabasePublic } from '../lib/supabase.js';
 
-function useInlineRanking(win) {
+/* ── Ranking data hook ── */
+export function useInlineRanking(win) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +21,6 @@ function useInlineRanking(win) {
       setRows(data || []);
       setLoading(false);
     }
-    // 저장 완료 후 fetch되도록 1.5초 딜레이
     const timer = setTimeout(fetchRanking, 1500);
     return () => clearTimeout(timer);
   }, [win]);
@@ -28,13 +28,10 @@ function useInlineRanking(win) {
   return { rows, loading };
 }
 
-export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko', user }) {
-  if (!result) return null;
-  const { win, shinyPct } = result;
-  const isEn = lang === 'en';
-  const name = displayName(answer, lang);
-
+/* ── Ranking Panel (오른쪽 aside) ── */
+export function RankingPanel({ win, user, lang = 'ko' }) {
   const { rows, loading } = useInlineRanking(win);
+  const isEn = lang === 'en';
 
   const anonId = (() => {
     try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
@@ -42,70 +39,134 @@ export function ResultBanner({ answer, result, guessCount, onReset, lang = 'ko',
 
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
-  const myRow = rows.find(r =>
-    (user && r.user_id === user.id) || (anonId && r.anon_id === anonId)
-  );
-  const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
 
   return (
-    <div className={`result-banner show${win ? '' : ' fail'}`}>
-      {/* 포켓몬 + 결과 */}
-      <div className="res-poke">
-        <img src={spr(answer.id)} alt={name} />
-        <div>
-          <div className="res-t">
-            {win
-              ? `★ ${name} ${isEn ? 'correct!' : '정답!'}`
-              : `${isEn ? 'Answer: ' : '정답: '}${name}`}
-          </div>
-          <div className="res-s">
-            {win
-              ? (isEn ? `Cleared in ${guessCount} tries!  Shiny rate: ${shinyPct}` : `${guessCount}번 만에 클리어!  이로치 확률: ${shinyPct}`)
-              : (isEn ? 'Better luck next time!' : '다음에 다시 도전해보세요!')}
-          </div>
+    <div className="panel rank-panel">
+      <div className="rhead">
+        <span className="rt">🏆 {isEn ? "Today's Ranking" : '오늘의 랭킹'}</span>
+        <span className="rstat">
+          {isEn ? 'Solvers ' : '클리어 '}<b>{total}</b>
+          {' · '}
+          {isEn ? 'Avg ' : '평균 '}<b>{avg}{isEn ? '' : '번'}</b>
+        </span>
+      </div>
+      <div className="rlist">
+        {loading ? (
+          <div className="rank-loading">{isEn ? 'Loading...' : '불러오는 중...'}</div>
+        ) : rows.length === 0 ? (
+          <div className="rank-loading">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
+        ) : (
+          rows.slice(0, 20).map((r, i) => {
+            const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
+            return (
+              <div key={r.id ?? i} className={`ritem${isMe ? ' me' : ''}`}>
+                {i === 0 ? <div className="medal">🥇</div>
+                 : i === 1 ? <div className="medal">🥈</div>
+                 : i === 2 ? <div className="medal">🥉</div>
+                 : <div className="pos">{i + 1}</div>}
+                <div className="who">
+                  {r.nickname || (isEn ? 'Trainer' : '트레이너')}
+                  {!r.used_filter && (
+                    <span className="nofilter">✓ {isEn ? 'No filter' : '필터 미사용'}</span>
+                  )}
+                </div>
+                <div className="tries">{r.tries}<small>{isEn ? ' tries' : '번'}</small></div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Legend Panel ── */
+export function LegendPanel({ lang = 'ko' }) {
+  const isEn = lang === 'en';
+  return (
+    <div className="panel new-legend">
+      <span className="lg-lab">{isEn ? 'Hint' : '힌트 색'}</span>
+      <span className="lg">
+        <span className="sw" style={{ background: 'var(--correct)' }} />
+        {isEn ? 'Exact' : '정확'}
+      </span>
+      <span className="lg">
+        <span className="sw" style={{ background: 'var(--partial)' }} />
+        {isEn ? 'Partial' : '부분 일치'}
+      </span>
+      <span className="lg">
+        <span className="sw" style={{ background: 'var(--miss)' }} />
+        {isEn ? 'Miss · ▲▼' : '불일치 · ▲▼'}
+      </span>
+    </div>
+  );
+}
+
+/* ── Reveal Card (정답 공개) ── */
+export function ResultBanner({ answer, result, guessCount, lang = 'ko', user }) {
+  if (!result) return null;
+  const { win, shinyPct } = result;
+  const isEn = lang === 'en';
+  const name = displayName(answer, lang);
+
+  const { rows, loading } = useInlineRanking(win);
+  const anonId = (() => {
+    try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
+  })();
+
+  const total = rows.length;
+  const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
+
+  if (win) {
+    return (
+      <div className={`panel reveal win-reveal`}>
+        <div className="spritebig">
+          <img src={spr(answer.id)} alt={name}
+            onError={e => {
+              if (answer.baseId && !e.target.dataset.fb) {
+                e.target.dataset.fb = '1';
+                e.target.src = spr(answer.baseId);
+              }
+            }}
+          />
+        </div>
+        <h2><span className="star">★</span> {name} {isEn ? 'correct!' : '정답!'}</h2>
+        <div className="sub">
+          <b>{guessCount}{isEn ? '' : '번'}</b>{isEn ? ` tr${guessCount === 1 ? 'y' : 'ies'} to clear!` : ' 만에 클리어했어요'}
+        </div>
+        <div className="pills">
+          <span className="pill">
+            <span className="k">{isEn ? "Today's solvers" : '오늘의 클리어'}</span>
+            <span className="vv px">{loading ? '...' : `${total}${isEn ? '' : '명'}`}</span>
+          </span>
+          <span className="pill">
+            <span className="k">{isEn ? 'Avg' : '평균'}</span>
+            <span className="vv px">{loading ? '...' : `${avg}${isEn ? ' tries' : '번'}`}</span>
+          </span>
+          <span className="pill shiny">
+            <span className="k">✦ {isEn ? 'Shiny rate' : '이로치 확률'}</span>
+            <span className="vv px">{shinyPct}</span>
+          </span>
         </div>
       </div>
+    );
+  }
 
-      {/* 랭킹 인라인 (정답일 때만) */}
-      {win && (
-        <div className="res-ranking">
-          <div className="res-ranking-header">
-            <span className="res-ranking-title">🏆 {isEn ? "Today's Ranking" : '오늘의 랭킹'}</span>
-            <div className="res-ranking-stats">
-              <span>{isEn ? 'Solvers' : '클리어'} <strong>{total}</strong></span>
-              <span>{isEn ? 'Avg' : '평균'} <strong>{avg}{isEn ? ' tries' : '번'}</strong></span>
-              {myRank && <span className="res-my-rank">{isEn ? 'My rank' : '내 순위'} <strong>#{myRank}</strong></span>}
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="res-ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
-          ) : rows.length === 0 ? (
-            <div className="res-ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
-          ) : (
-            <div className="res-ranking-list">
-              {rows.slice(0, 20).map((r, i) => {
-                const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
-                return (
-                  <div key={r.id ?? i} className={`res-ranking-row${isMe ? ' me' : ''}`}>
-                    <span className="res-rank-pos">
-                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}
-                    </span>
-                    <span className="res-rank-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
-                    <span className="res-rank-tries-wrap">
-                      <span className="res-rank-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
-                      {!r.used_filter && (
-                        <span className="res-rank-no-filter">{isEn ? 'no filter!' : '필터 미사용!'}</span>
-                      )}
-                    </span>
-                    {isMe && <span className="res-rank-me">{isEn ? 'ME' : '나'}</span>}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
+  // fail
+  return (
+    <div className="panel reveal fail-reveal">
+      <div className="spritebig">
+        <img src={spr(answer.id)} alt={name}
+          onError={e => {
+            if (answer.baseId && !e.target.dataset.fb) {
+              e.target.dataset.fb = '1';
+              e.target.src = spr(answer.baseId);
+            }
+          }}
+        />
+      </div>
+      <h2>{isEn ? 'Answer: ' : '정답: '}{name}</h2>
+      <div className="sub">{isEn ? 'Better luck next time!' : '다음에 다시 도전해보세요!'}</div>
     </div>
   );
 }

@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import DB from '../data/pokemon.js';
 import { spr, padId } from '../utils/sprite.js';
 import { TypeBadge } from './TypeBadge.jsx';
 import { TICON } from '../data/types.js';
 import { displayName } from '../utils/game.js';
 
-export function Autocomplete({ onSubmit, disabled, lang = 'ko' }) {
+export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disabled, lang = 'ko' }, ref) {
   const [value, setValue] = useState('');
   const [matches, setMatches] = useState([]);
   const [sel, setSel] = useState(-1);
@@ -34,6 +34,13 @@ export function Autocomplete({ onSubmit, disabled, lang = 'ko' }) {
     setMatches([]);
     setSel(-1);
   }
+
+  function trySubmit() {
+    if (sel >= 0 && matches[sel]) { pick(matches[sel]); }
+    else if (matches.length > 0)  { pick(matches[0]); }
+  }
+
+  useImperativeHandle(ref, () => ({ submit: trySubmit }), [matches, sel]);
 
   function handleKeyDown(e) {
     if (e.key === 'ArrowDown') {
@@ -102,4 +109,4 @@ export function Autocomplete({ onSubmit, disabled, lang = 'ko' }) {
       )}
     </div>
   );
-}
+});

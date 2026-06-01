@@ -1,30 +1,41 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --red:#CC0000;--reddark:#8B0000;--yellow:#FFCB05;
-  --bg:#f0ebe0;--border:#c0b89a;--muted:#666;
-  --correct:#2e7d32;--partial:#e65100;--wrong:#b71c1c;
-  --shadow:#000;
+  /* ── 새 디자인 토큰 ── */
+  --red:#E63329;   --red-d:#C42B22;   --red-dd:#9E2018;
+  --bg:#ECE6D7;    --ink:#15171A;     --panel:#FFFFFF;
+  --line:#E4E0D3;  --muted:#7C786C;
+  --correct:#5AAE5A;  --correct-d:#479147;
+  --partial:#E8812E;  --partial-d:#C4651A;
+  --miss:#C42B22;     --miss-d:#9E2018;
+  --gold:#F6C944;
+  --shadow:4px 4px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+  /* backward compat */
+  --reddark:var(--red-d);  --yellow:var(--gold);
+  --border:#c0b89a;        --wrong:var(--miss);
 }
-body{font-family:'Noto Sans KR',sans-serif;color:#1a1a1a;background:var(--bg);}
+body{font-family:'Pretendard','Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
+.px{font-family:'Galmuri11','Press Start 2P',monospace;letter-spacing:.02em;}
+.px9{font-family:'Galmuri9','Galmuri11',monospace;}
 
 .app{min-height:100vh;display:flex;flex-direction:column;}
 
 /* ── Header ── */
 header{
   background:var(--red);
-  border-bottom:4px solid #222;
+  border-bottom:3px solid var(--ink);
   position:relative;
-  /* 헤더 아래 노란 줄은 game-tabs가 없을 때만 보임 */
 }
 .header-top{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;height:68px;
+  padding:0 22px;height:64px;
+  max-width:1180px;margin:0 auto;
 }
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-tiles{display:flex;gap:3px;}
-.lt{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;border:2px solid #000;font-family:'Press Start 2P',monospace;}
-.lt.red{background:var(--red);color:white;}
-.lt.wht{background:white;color:#000;}
+.lt{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid var(--ink);border-radius:3px;font-family:'Galmuri11','Press Start 2P',monospace;}
+.lt.red{background:#fff;color:var(--red);}
+.lt.wht{background:var(--ink);color:#fff;}
 .logo-ball{margin-left:10px;display:flex;align-items:center;}
 .pokeball{width:30px;height:30px;border:3px solid #000;border-radius:50%;overflow:hidden;position:relative;box-shadow:2px 2px 0 #000;}
 .pokeball-top{height:50%;background:#CC0000;}
@@ -33,18 +44,19 @@ header{
 .pokeball-btn{width:8px;height:8px;border-radius:50%;background:white;border:2px solid #000;}
 
 /* ── Nav buttons ── */
-.nav{display:flex;align-items:center;gap:6px;}
+.nav{display:flex;align-items:center;gap:8px;}
 .nav-divider{width:1px;height:22px;background:rgba(255,255,255,0.3);margin:0 4px;}
 .nav-btn{
-  background:rgba(0,0,0,0.35);color:white;
-  border:2px solid rgba(255,255,255,0.2);
-  font-family:'Press Start 2P',monospace;font-size:8px;
-  padding:9px 14px;cursor:pointer;
-  transition:background 0.1s,transform 0.1s;
+  background:var(--red-d);color:white;
+  border:2px solid var(--ink);border-radius:7px;
+  font-family:'Galmuri11','Press Start 2P',monospace;font-size:13px;
+  padding:7px 14px;cursor:pointer;
+  box-shadow:2px 2px 0 var(--ink);
+  transition:background 0.1s;
   white-space:nowrap;
 }
-.nav-btn:hover{background:rgba(0,0,0,0.55);}
-.nav-btn.on{background:var(--yellow);color:#222;border-color:#000;}
+.nav-btn:hover{background:var(--red-dd);}
+.nav-btn.on{background:var(--gold);color:var(--ink);border-color:var(--ink);}
 .lang-btn{
   background:rgba(255,255,255,0.15);
   border:2px solid rgba(255,255,255,0.5);
@@ -78,30 +90,185 @@ header{
 /* ── Game Tabs (Daily / Endless) ── */
 .game-tabs{
   display:flex;
-  border-top:2px solid rgba(0,0,0,0.25);
-  background:rgba(0,0,0,0.18);
+  background:var(--red-d);
+  border-bottom:3px solid var(--ink);
+  max-width:100%;
+}
+.game-tabs .tab-inner{
+  max-width:1180px;margin:0 auto;width:100%;
+  display:flex;padding:0 22px;
 }
 .game-tab-btn{
-  flex:1;max-width:200px;
-  font-family:'Press Start 2P',monospace;font-size:8px;
-  padding:10px 8px;
+  font-family:'Galmuri11','Press Start 2P',monospace;font-size:14px;
+  padding:12px 22px;
   background:transparent;color:rgba(255,255,255,0.65);
-  border:none;border-bottom:3px solid transparent;
+  border:none;border-bottom:4px solid transparent;
   cursor:pointer;
-  transition:background 0.1s,color 0.1s,border-color 0.1s;
-  letter-spacing:0.5px;
+  transition:color 0.1s,border-color 0.1s;
+  white-space:nowrap;display:flex;align-items:center;gap:7px;
 }
-.game-tab-btn:hover{background:rgba(255,255,255,0.1);color:white;}
-.game-tab-btn.on{
-  color:white;font-weight:bold;
-  border-bottom:3px solid var(--yellow);
-  background:rgba(255,255,255,0.08);
-}
+.game-tab-btn:hover{color:white;}
+.game-tab-btn.on{color:white;border-bottom-color:var(--gold);}
 /* 헤더 아래 노란 줄 */
-.header-yellow-bar{height:4px;background:var(--yellow);}
+.header-yellow-bar{height:4px;background:var(--gold);}
 
 /* ── Main ── */
-main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:24px 16px 40px;}
+main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:26px 22px 60px;}
+
+/* ════════════════════════════════════════
+   NEW GAME UI (데일리 리디자인)
+   ════════════════════════════════════════ */
+
+/* ── Panel ── */
+.panel{background:var(--panel);border:2.5px solid var(--ink);border-radius:14px;box-shadow:var(--shadow);}
+
+/* ── Status Bar ── */
+.statusbar{display:flex;align-items:center;gap:14px;padding:14px 20px;margin-bottom:18px;}
+.statusbar-title{font-family:'Galmuri11',monospace;font-size:16px;font-weight:700;}
+.statusbar-title .star{color:var(--gold);}
+.statusbar .spacer{flex:1;}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted);}
+.chip b{font-family:'Galmuri11',monospace;color:var(--red);font-size:15px;}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--red);flex-shrink:0;}
+
+/* ── Input Row ── */
+.inputrow{display:flex;gap:10px;margin-bottom:14px;align-items:stretch;}
+.inputrow .search-wrap{flex:1;margin-bottom:0;}
+.inputrow #inp{
+  width:100%;font-family:'Galmuri11',monospace;font-size:15px;
+  padding:15px 18px;border:2.5px solid var(--ink);border-radius:12px;
+  background:#fff;box-shadow:var(--shadow-sm);outline:none;height:100%;
+}
+.inputrow #inp::placeholder{color:#b6b2a6;font-family:'Pretendard',sans-serif;}
+.inputrow #inp:focus{border-color:var(--red);}
+.inputrow #inp:disabled{opacity:.45;cursor:not-allowed;}
+.btn{
+  font-family:'Galmuri11',monospace;font-size:13px;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:0 18px;min-height:52px;
+  border:2.5px solid var(--ink);border-radius:12px;
+  cursor:pointer;box-shadow:var(--shadow-sm);white-space:nowrap;
+  transition:transform .1s,box-shadow .1s;
+}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink);}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+.btn.go{background:var(--correct);color:#fff;}
+.btn.ghost{background:#fff;color:var(--ink);}
+.btn.ghost.active{background:var(--gold);border-color:var(--ink);}
+
+/* ── Comparison Grid ── */
+.grid-card{overflow:hidden;margin-bottom:0;}
+.ghead,.grow{display:grid;grid-template-columns:1.7fr .85fr 1.05fr 1.05fr 1fr .9fr .9fr;}
+.ghead{background:var(--ink);position:sticky;top:0;z-index:2;}
+.ghead div{font-family:'Galmuri11',monospace;font-size:12.5px;color:#fff;text-align:center;padding:12px 6px;letter-spacing:.02em;}
+.ghead div:first-child{text-align:left;padding-left:18px;}
+.gbody{}
+.grow{border-top:2px solid var(--ink);}
+.grow:first-child{border-top:0;}
+.cell{
+  padding:10px 6px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  text-align:center;border-left:2px solid rgba(21,23,26,.10);
+  min-height:64px;
+}
+.cell:first-child{border-left:0;}
+.cell-val{font-family:'Galmuri11',monospace;font-size:14px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.cell .arrow{font-size:15px;line-height:1;}
+.cell.correct{background:var(--correct);color:#fff;}
+.cell.partial{background:var(--partial);color:#fff;}
+.cell.miss{background:var(--miss);color:#fff;}
+/* 포켓몬 셀 */
+.cell.mon{flex-direction:row;justify-content:flex-start;gap:10px;padding-left:16px;background:#fff;color:var(--ink);}
+.cell.mon .sprite{
+  width:42px;height:42px;flex:0 0 42px;
+  image-rendering:pixelated;
+  display:flex;align-items:center;justify-content:center;
+  background:#f2efe6;border:2px solid var(--ink);border-radius:8px;overflow:hidden;
+}
+.cell.mon .sprite img{width:42px;height:42px;image-rendering:pixelated;}
+.cell.mon .nm{font-family:'Galmuri11',monospace;font-size:14px;font-weight:700;text-align:left;line-height:1.4;}
+.cell.mon.win{background:#eafaea;}
+/* 타입 칩 */
+.tchip{
+  font-family:'Galmuri11',monospace;font-size:12px;
+  padding:3px 9px;border-radius:6px;
+  border:2px solid rgba(0,0,0,.20);
+  line-height:1.4;white-space:nowrap;
+}
+.cell-none{font-family:'Galmuri11',monospace;font-size:12px;opacity:.55;}
+
+/* ── Clear Screen Layout ── */
+.clearwrap{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start;}
+.leftcol{display:flex;flex-direction:column;gap:18px;}
+.rightcol{display:flex;flex-direction:column;gap:18px;}
+
+/* ── Reveal Card ── */
+.reveal{padding:24px 24px 20px;text-align:center;}
+.reveal .spritebig{
+  width:104px;height:104px;margin:0 auto 14px;
+  image-rendering:pixelated;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:#f2efe6;border:2.5px solid var(--ink);border-radius:14px;
+}
+.reveal .spritebig img{width:104px;height:104px;image-rendering:pixelated;}
+.reveal h2{font-family:'Galmuri11',monospace;font-size:22px;margin-bottom:6px;line-height:1.5;}
+.reveal h2 .star{color:var(--gold);}
+.reveal .sub{font-size:14px;color:var(--muted);font-weight:600;}
+.reveal .sub b{color:var(--ink);}
+.reveal .pills{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.pill{
+  font-family:'Galmuri11',monospace;font-size:12px;
+  padding:8px 14px;border:2px solid var(--ink);border-radius:9px;
+  background:#fff;display:flex;align-items:center;gap:7px;
+  box-shadow:2px 2px 0 var(--ink);
+}
+.pill .k{color:var(--muted);font-family:'Pretendard',sans-serif;font-size:12px;}
+.pill .vv{color:var(--red);}
+.pill.shiny{background:#fff7e0;}
+/* 정답 카드 초록 강조 */
+.reveal.win-reveal{border-color:var(--correct)!important;box-shadow:4px 4px 0 var(--correct-d)!important;}
+/* 실패 카드 */
+.reveal.fail-reveal{border-color:var(--miss)!important;box-shadow:4px 4px 0 var(--miss-d)!important;}
+
+/* ── Ranking Panel ── */
+.rank-panel{overflow:hidden;}
+.rank-panel .rhead{
+  display:flex;align-items:center;gap:10px;
+  padding:15px 20px;border-bottom:2.5px solid var(--ink);
+  background:#faf8f1;
+}
+.rank-panel .rhead .rt{font-family:'Galmuri11',monospace;font-size:15px;}
+.rank-panel .rhead .rstat{
+  margin-left:auto;font-size:12px;color:var(--muted);font-weight:600;
+}
+.rank-panel .rhead .rstat b{font-family:'Galmuri11',monospace;color:var(--ink);font-size:14px;}
+.rlist{}
+.ritem{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px;border-top:1.5px solid var(--line);
+}
+.ritem:first-child{border-top:0;}
+.ritem .pos{width:30px;text-align:center;font-family:'Galmuri11',monospace;font-size:15px;color:var(--muted);flex:0 0 auto;}
+.ritem .medal{font-size:20px;width:30px;text-align:center;flex:0 0 auto;}
+.ritem .who{font-size:14px;font-weight:600;flex:1;overflow:hidden;}
+.ritem .nofilter{display:block;margin-top:2px;font-size:11px;color:var(--correct-d);font-weight:700;}
+.ritem .tries{flex-shrink:0;font-family:'Galmuri11',monospace;font-size:15px;}
+.ritem .tries small{font-family:'Pretendard',sans-serif;font-size:11px;color:var(--muted);}
+.ritem.me{background:#fff7e0;}
+.rank-loading{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
+
+/* ── New Legend ── */
+.new-legend{
+  display:flex;gap:16px;flex-wrap:wrap;
+  padding:13px 20px;align-items:center;
+}
+.new-legend .lg-lab{font-family:'Galmuri11',monospace;font-size:12px;color:var(--muted);margin-right:4px;}
+.new-legend .lg{display:flex;align-items:center;gap:7px;font-size:13px;color:#4a4d51;font-weight:600;}
+.new-legend .sw{width:16px;height:16px;border-radius:4px;border:2px solid var(--ink);flex-shrink:0;}
+
+/* ════════════════════════════════════════
+   END NEW GAME UI
+   ════════════════════════════════════════ */
 
 /* ── Hero ── */
 .hero{
@@ -575,15 +742,29 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .wc-btn-ok:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
 
 /* ── Responsive ── */
+@media(max-width:880px){
+  .clearwrap{grid-template-columns:1fr;}
+  .ghead,.grow{grid-template-columns:1.5fr .7fr .9fr .9fr .8fr .7fr .7fr;}
+  .ghead div{font-size:10px;padding:9px 3px;}
+  .cell-val{font-size:12px;}
+  .cell.mon .sprite{width:34px;height:34px;flex:0 0 34px;}
+  .cell.mon .sprite img{width:34px;height:34px;}
+  .cell.mon .nm{font-size:12px;}
+  .tchip{font-size:10px;padding:2px 5px;}
+  .cell{min-height:54px;}
+}
 @media(max-width:640px){
   .header-top{padding:0 14px;}
-  .nav-btn{font-size:7px;padding:8px 10px;}
+  .nav-btn{font-size:11px;padding:6px 10px;}
   .logo-tiles{display:none;}
-  main{padding:16px 12px 32px;}
+  main{padding:16px 12px 40px;}
   .how{grid-template-columns:1fr;}
   .footer-inner{grid-template-columns:1fr 1fr;gap:16px;}
   .endless-select{flex-direction:column;align-items:center;}
   .endless-card{max-width:90%;width:100%;}
   table{font-size:8px;}
   .challenge-meta{gap:16px;}
+  .statusbar{flex-wrap:wrap;gap:10px;}
+  .reveal h2{font-size:17px;}
+  .pills{gap:7px;}
 }

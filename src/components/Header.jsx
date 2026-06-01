@@ -65,18 +65,20 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
       </div>
       {page === 'game' ? (
         <div className="game-tabs">
-          <button
-            className={`game-tab-btn${gameTab === 'daily' ? ' on' : ''}`}
-            onClick={() => onGameTab('daily')}
-          >
-            {isEn ? '📅 Daily' : '📅 데일리'}
-          </button>
-          <button
-            className={`game-tab-btn${gameTab === 'endless' ? ' on' : ''}`}
-            onClick={() => onGameTab('endless')}
-          >
-            {isEn ? '∞ Endless' : '∞ 엔드리스'}
-          </button>
+          <div className="tab-inner">
+            <button
+              className={`game-tab-btn${gameTab === 'daily' ? ' on' : ''}`}
+              onClick={() => onGameTab('daily')}
+            >
+              {isEn ? '📅 Daily' : '📅 데일리'}
+            </button>
+            <button
+              className={`game-tab-btn${gameTab === 'endless' ? ' on' : ''}`}
+              onClick={() => onGameTab('endless')}
+            >
+              {isEn ? '∞ Endless' : '∞ 엔드리스'}
+            </button>
+          </div>
         </div>
       ) : (
         <div className="header-yellow-bar" />
