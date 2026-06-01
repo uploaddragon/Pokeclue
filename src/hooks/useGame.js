@@ -52,12 +52,19 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
   const today = getTodayStr();
 
   if (user) {
+    // 세션 유효성 먼저 확인 (클라이언트 초기화 타이밍 이슈 방지)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      console.warn('daily_results: 세션 없음, 저장 건너뜀');
+      return;
+    }
+
     const nickname = user.user_metadata?.pokeclue_nickname
       || user.user_metadata?.full_name
       || user.user_metadata?.name
       || user.email?.split('@')[0]
       || '트레이너';
-    // 로그인 유저는 반드시 인증된 클라이언트(supabase) 사용 — RLS auth.uid() 검사 통과
+
     const { error } = await supabase
       .from('daily_results')
       .upsert(
@@ -65,6 +72,7 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
         { onConflict: 'user_id,date' }
       );
     if (error) console.error('daily_results upsert error', error);
+    else console.log('daily_results 저장 성공:', nickname);
   } else {
     const anonSubmittedKey = `pokeclue_anon_submitted_${today}`;
     if (localStorage.getItem(anonSubmittedKey)) return;

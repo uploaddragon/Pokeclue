@@ -11,8 +11,12 @@ if (!url || !key) {
 export const supabase = createClient(url, key);
 
 // 항상 anon 권한으로 읽는 클라이언트 (공개 랭킹 조회용)
-// 로그인 상태에서도 RLS authenticated 정책에 막히지 않음
+// storageKey를 다르게 줘서 supabase 인증 클라이언트와 세션 충돌 방지
 export const supabasePublic = createClient(url, key, {
-  auth: { persistSession: false, autoRefreshToken: false },
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    storageKey: 'pokeclue-public-anon',
+  },
   global: { headers: { Authorization: `Bearer ${key}` } },
 });
