@@ -241,7 +241,7 @@ const DB = [
   {id:441,ko:'페라페',en:'Chatot',gen:4,t1:'노말',t2:'비행',evo:1,len:3,enLen:6},{id:442,ko:'화강돌',en:'Spiritomb',gen:4,t1:'고스트',t2:'악',evo:1,len:3,enLen:9},
   {id:443,ko:'딥상어동',en:'Gible',gen:4,t1:'드래곤',t2:'땅',evo:1,len:4,enLen:5},{id:444,ko:'한바이트',en:'Gabite',gen:4,t1:'드래곤',t2:'땅',evo:2,len:4,enLen:6},{id:445,ko:'한카리아스',en:'Garchomp',gen:4,t1:'드래곤',t2:'땅',evo:3,len:5,enLen:8},
   {id:446,ko:'먹고자',en:'Munchlax',gen:4,t1:'노말',t2:'없음',evo:1,len:3,enLen:8},
-  {id:447,ko:'리오루',en:'Riolu',gen:4,t1:'격투',t2:'없음',evo:1,len:3,enLen:5},{id:448,ko:'루카리오',en:'Lucario',gen:4,t1:'격투',t2:'강철',evo:2,len:4,enLen:7},
+  {id:447,ko:'리오르',en:'Riolu',gen:4,t1:'격투',t2:'없음',evo:1,len:3,enLen:5},{id:448,ko:'루카리오',en:'Lucario',gen:4,t1:'격투',t2:'강철',evo:2,len:4,enLen:7},
   {id:449,ko:'히포포타스',en:'Hippopotas',gen:4,t1:'땅',t2:'없음',evo:1,len:5,enLen:10},{id:450,ko:'하마돈',en:'Hippowdon',gen:4,t1:'땅',t2:'없음',evo:2,len:3,enLen:9},
   {id:451,ko:'스콜피',en:'Skorupi',gen:4,t1:'독',t2:'벌레',evo:1,len:3,enLen:7},{id:452,ko:'드래피온',en:'Drapion',gen:4,t1:'독',t2:'악',evo:2,len:4,enLen:7},
   {id:453,ko:'삐딱구리',en:'Croagunk',gen:4,t1:'독',t2:'격투',evo:1,len:4,enLen:8},{id:454,ko:'독개굴',en:'Toxicroak',gen:4,t1:'독',t2:'격투',evo:2,len:3,enLen:9},
