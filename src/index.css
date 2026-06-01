@@ -550,24 +550,42 @@ tr:last-child td{border-bottom:none;}
 .dex-modal-cleared{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);margin-top:10px;line-height:2.2;background:white;border:2px solid #eee;padding:8px 12px;}
 
 /* ── Endless Mode Select ── */
-.endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:28px 0;}
+/* ── Endless Hero ── */
+.endless-hero{text-align:center;padding:28px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:36px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
+
+/* ── Endless Mode Select ── */
+.endless-select{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
 .endless-card{
   background:white;border:4px solid #222;
   box-shadow:6px 6px 0 #000;
-  padding:30px 24px;min-width:200px;max-width:260px;
+  padding:28px 24px 20px;min-width:220px;max-width:280px;
   cursor:pointer;text-align:center;
   transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;
+  display:flex;flex-direction:column;gap:0;
 }
 .endless-card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000;border-color:var(--red);}
 .endless-card.challenge{border-color:#b87000;}
 .endless-card.challenge:hover{border-color:var(--reddark);}
-.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:30px;margin-bottom:16px;color:var(--red);}
+.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:32px;margin-bottom:12px;color:var(--red);}
 .endless-card.challenge .endless-card-icon{color:#c17a00;}
-.endless-card-title{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:18px;color:#1a1a1a;}
-.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;}
+.endless-card-title{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:6px;color:#1a1a1a;}
+.endless-card-sub{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:18px;line-height:1.7;}
+.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;}
 .endless-card-desc li{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);line-height:2.1;padding-left:14px;position:relative;}
 .endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);}
 .endless-card.challenge .endless-card-desc li::before{color:#c17a00;}
+.endless-card-note{color:#aaa !important;}
+.endless-card-cta{font-family:'Press Start 2P',monospace;font-size:9px;margin-top:20px;padding:10px 14px;background:var(--red);color:white;border:2px solid #222;box-shadow:3px 3px 0 #000;}
+.endless-card-cta.challenge{background:#c17a00;}
+.endless-card:hover .endless-card-cta{box-shadow:1px 1px 0 #000;}
+
+/* ── Endless Game Header ── */
+.endless-game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.endless-back-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#444;border:2px solid #aaa;padding:8px 14px;cursor:pointer;box-shadow:2px 2px 0 #999;transition:transform 0.1s,box-shadow 0.1s;}
+.endless-back-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #999;border-color:#666;color:#111;}
+.endless-mode-tag{font-family:'Press Start 2P',monospace;font-size:9px;background:var(--red);color:white;padding:6px 12px;border:2px solid #222;box-shadow:2px 2px 0 #000;}
+.endless-mode-tag.challenge{background:#c17a00;}
 
 /* ── Footer ── */
 footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
@@ -679,89 +697,141 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .ranking-btn{background:#1a1a1a;}
 
 /* ── Battle Mode ── */
-.battle-select{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:28px 0;}
-.battle-mode-card{background:white;border:4px solid #222;box-shadow:6px 6px 0 #000;padding:32px 28px;min-width:200px;max-width:260px;cursor:pointer;text-align:center;transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;}
+.battle-hero{text-align:center;padding:28px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:32px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
+
+/* Select */
+.battle-select{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
+.battle-mode-card{
+  background:white;border:4px solid #222;box-shadow:6px 6px 0 #000;
+  padding:28px 24px 20px;min-width:220px;max-width:280px;
+  cursor:pointer;text-align:center;
+  transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;
+  display:flex;flex-direction:column;gap:0;
+}
 .battle-mode-card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000;border-color:var(--red);}
 .battle-mode-card.friend{border-color:#2e7d32;}
 .battle-mode-card.friend:hover{border-color:#1b5e20;}
-.battle-mode-icon{font-size:36px;margin-bottom:14px;}
-.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:12px;color:#1a1a1a;margin-bottom:12px;}
-.battle-mode-desc{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);line-height:2;}
+.battle-mode-icon{font-size:32px;margin-bottom:12px;}
+.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:12px;color:#1a1a1a;margin-bottom:6px;}
+.battle-mode-sub{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:16px;line-height:1.7;}
+.battle-mode-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:9px;flex:1;margin:0;padding:0;}
+.battle-mode-desc li{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);line-height:2.1;padding-left:14px;position:relative;}
+.battle-mode-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);}
+.battle-mode-card.friend .battle-mode-desc li::before{color:#2e7d32;}
+.battle-mode-cta{font-family:'Press Start 2P',monospace;font-size:9px;margin-top:20px;padding:10px 14px;background:var(--red);color:white;border:2px solid #222;box-shadow:3px 3px 0 #000;}
+.battle-mode-cta.friend{background:#2e7d32;}
+.battle-mode-card:hover .battle-mode-cta{box-shadow:1px 1px 0 #000;}
 
-.battle-friend-panel{max-width:600px;margin:0 auto;padding:20px 0;}
-.battle-back-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#222;border:2px solid #222;padding:10px 16px;cursor:pointer;box-shadow:3px 3px 0 #000;margin-bottom:20px;transition:transform 0.1s,box-shadow 0.1s;}
-.battle-back-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000;}
+/* Friend panel */
+.battle-friend-panel{max-width:600px;margin:0 auto;padding:4px 0 28px;}
+.battle-friend-header{margin-bottom:20px;}
 .battle-friend-options{display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;}
 .battle-friend-box{flex:1;min-width:200px;background:white;border:3px solid #222;box-shadow:4px 4px 0 #000;padding:24px 20px;display:flex;flex-direction:column;gap:14px;text-align:center;}
 .battle-friend-box-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#1a1a1a;}
-.battle-friend-box-desc{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);line-height:2;}
+.battle-friend-box-desc{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:var(--muted);line-height:1.65;}
 .battle-friend-sep{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--muted);display:flex;align-items:center;padding:0 4px;}
-.battle-code-input{width:100%;padding:12px 14px;font-family:'Press Start 2P',monospace;font-size:14px;border:3px solid #222;box-shadow:3px 3px 0 #222;text-align:center;letter-spacing:4px;outline:none;}
+.battle-code-input{width:100%;padding:12px 14px;font-family:'Press Start 2P',monospace;font-size:14px;border:3px solid #222;box-shadow:3px 3px 0 #222;text-align:center;letter-spacing:4px;outline:none;box-sizing:border-box;}
 .battle-code-input:focus{border-color:var(--red);}
 .battle-action-btn{font-family:'Press Start 2P',monospace;font-size:10px;background:var(--red);color:white;border:3px solid #222;padding:13px 20px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
 .battle-action-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
-.battle-error{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--wrong);margin-top:14px;text-align:center;line-height:2;}
+.battle-error{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:600;color:var(--wrong);margin-top:14px;text-align:center;}
 
-.battle-waiting{display:flex;flex-direction:column;align-items:center;gap:20px;padding:48px 20px;text-align:center;}
-.battle-waiting-icon{font-size:48px;}
-.battle-waiting-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#1a1a1a;line-height:2;}
-.battle-waiting-msg{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);text-align:center;padding:12px;background:#f9f9f9;border:2px solid #eee;margin-bottom:8px;line-height:2;}
-.battle-room-code-box{background:white;border:4px solid #222;box-shadow:5px 5px 0 #000;padding:20px 32px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+/* Waiting */
+.battle-waiting{display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 20px;text-align:center;}
+.battle-waiting-icon{font-size:52px;}
+.battle-waiting-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#1a1a1a;line-height:2;display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;}
+.battle-dots span{animation:battle-dot-blink 1.2s infinite;opacity:0;}
+.battle-dots span:nth-child(1){animation-delay:0s;}
+.battle-dots span:nth-child(2){animation-delay:0.3s;}
+.battle-dots span:nth-child(3){animation-delay:0.6s;}
+@keyframes battle-dot-blink{0%,60%,100%{opacity:0;}30%{opacity:1;}}
+.battle-room-code-box{background:white;border:4px solid #222;box-shadow:5px 5px 0 #000;padding:20px 36px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 .battle-room-code-label{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);}
 .battle-room-code-val{font-family:'Press Start 2P',monospace;font-size:28px;color:var(--red);letter-spacing:6px;}
 .battle-copy-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:#222;color:white;border:2px solid #555;padding:10px 18px;cursor:pointer;box-shadow:3px 3px 0 #000;transition:transform 0.1s;}
 .battle-copy-btn:hover{transform:translate(-1px,-1px);}
-.battle-cancel-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#888;border:2px solid #bbb;padding:10px 18px;cursor:pointer;}
+.battle-cancel-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#888;border:2px solid #bbb;padding:10px 18px;cursor:pointer;transition:color 0.1s,border-color 0.1s;}
 .battle-cancel-btn:hover{color:#222;border-color:#555;}
 
-.battle-hud{display:flex;align-items:center;background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;margin-bottom:16px;overflow:hidden;}
-.battle-hud-player{flex:1;padding:14px 18px;text-align:center;}
-.battle-hud-player.me{background:#e8f5e9;}
-.battle-hud-player.op{background:#fff3e0;}
-.battle-hud-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);margin-bottom:4px;}
-.battle-hud-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.battle-hud-tries{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--red);}
-.battle-hud-center{display:flex;flex-direction:column;align-items:center;gap:6px;background:#1a1a1a;padding:12px 16px;align-self:stretch;justify-content:center;}
-.battle-hud-vs{font-family:'Press Start 2P',monospace;font-size:11px;color:rgba(255,255,255,0.6);}
-.battle-timer{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--yellow);min-width:52px;text-align:center;transition:color 0.3s;}
+/* HUD */
+.battle-hud{display:flex;align-items:stretch;background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;margin-bottom:12px;overflow:hidden;}
+.battle-hud-player{flex:1;padding:14px 16px;text-align:center;display:flex;flex-direction:column;gap:4px;}
+.battle-hud-player.me{background:#f0faf0;}
+.battle-hud-player.op{background:#fff8f0;}
+.battle-hud-player.active{box-shadow:inset 0 0 0 3px var(--yellow);}
+.battle-hud-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
+.battle-hud-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.battle-hud-tries{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--red);line-height:1.4;}
+.battle-hud-tries-unit{font-size:9px;color:var(--muted);}
+.battle-hud-arrow{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;margin-top:2px;}
+.battle-hud-arrow.my{color:var(--correct);}
+.battle-hud-arrow.op{color:#c17a00;}
+.battle-hud-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#1a1a1a;padding:10px 14px;min-width:72px;}
+.battle-hud-vs{font-family:'Press Start 2P',monospace;font-size:10px;color:rgba(255,255,255,0.5);}
+.battle-timer{font-family:'Press Start 2P',monospace;font-size:20px;color:var(--yellow);text-align:center;transition:color 0.3s;line-height:1;}
+.battle-timer-unit{font-size:10px;color:rgba(255,255,200,0.7);margin-left:2px;}
 .battle-timer.urgent{color:var(--wrong);animation:blink 0.6s infinite step-start;}
 .battle-timer.inactive{color:#555;}
-.battle-hud-player.active{box-shadow:inset 0 0 0 3px var(--yellow);}
-.battle-hud-turn-arrow{font-size:14px;color:var(--yellow);margin-top:4px;}
-.battle-turn-banner{font-family:'Press Start 2P',monospace;font-size:10px;text-align:center;padding:12px;margin-bottom:12px;border:2px solid #222;line-height:2;}
-.battle-turn-banner.my-turn{background:#e8f5e9;color:var(--correct);border-color:var(--correct);}
-.battle-turn-banner.op-turn{background:#f9f9f9;color:var(--muted);border-color:#ddd;}
-.battle-solved-mark{color:var(--correct);}
+.battle-timer-bar-wrap{width:48px;height:4px;background:rgba(255,255,255,0.15);border-radius:0;}
+.battle-timer-bar{height:4px;background:var(--yellow);transition:width 1s linear;}
+.battle-timer-bar.urgent{background:var(--wrong);}
 
-.battle-giveup-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#888;border:2px solid #bbb;padding:10px 20px;cursor:pointer;transition:color 0.1s,border-color 0.1s;}
+/* Turn banner */
+.battle-turn-banner{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:700;text-align:center;padding:11px 16px;margin-bottom:12px;border:2px solid #222;}
+.battle-turn-banner.my-turn{background:#e8f5e9;color:#2e7d32;border-color:#2e7d32;}
+.battle-turn-banner.op-turn{background:#f9f9f9;color:var(--muted);border-color:#ddd;}
+
+/* Give up */
+.battle-giveup-wrap{text-align:center;margin-top:16px;}
+.battle-giveup-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#aaa;border:2px solid #ddd;padding:10px 20px;cursor:pointer;transition:color 0.1s,border-color 0.1s;}
 .battle-giveup-btn:hover{color:var(--wrong);border-color:var(--wrong);}
-.battle-result-scores{display:flex;align-items:center;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap;}
-.battle-result-score{background:white;border:3px solid #222;box-shadow:3px 3px 0 #000;padding:16px 24px;text-align:center;min-width:120px;position:relative;}
+
+/* Result */
+.battle-result-banner{border:4px solid #222;box-shadow:6px 6px 0 #000;padding:28px 24px;margin-bottom:20px;display:flex;flex-direction:column;gap:20px;align-items:center;text-align:center;}
+.battle-result-banner.win{background:#fffde7;border-color:var(--yellow);}
+.battle-result-banner.lose{background:#fafafa;border-color:#aaa;}
+.battle-result-top{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.battle-result-emoji{font-size:44px;line-height:1;}
+.battle-result-verdict{font-family:'Press Start 2P',monospace;font-size:16px;color:#1a1a1a;}
+.battle-result-round{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);}
+.battle-result-answer{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.battle-result-sprite{width:72px;height:72px;image-rendering:pixelated;}
+.battle-result-answer-label{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);}
+.battle-result-answer-name{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--red);}
+.battle-result-scores{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;}
+.battle-result-score{background:white;border:3px solid #222;box-shadow:3px 3px 0 #000;padding:16px 28px;text-align:center;min-width:120px;display:flex;flex-direction:column;gap:6px;align-items:center;}
 .battle-result-score.winner{border-color:var(--yellow);background:#fff9e6;}
-.battle-result-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;margin-bottom:8px;}
-.battle-result-tries{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--red);}
-.battle-result-crown{font-size:20px;margin-top:6px;}
-.battle-result-vs{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--muted);}
+.battle-result-crown{font-size:22px;line-height:1;}
+.battle-result-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;}
+.battle-result-tries{font-family:'Press Start 2P',monospace;font-size:20px;color:var(--red);line-height:1;}
+.battle-result-tries-unit{font-size:9px;color:var(--muted);}
+.battle-result-vs-mid{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--muted);}
+.battle-result-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.battle-leave-btn{font-family:'Press Start 2P',monospace;font-size:10px;background:white;color:#666;border:3px solid #aaa;padding:13px 20px;cursor:pointer;box-shadow:3px 3px 0 #999;transition:transform 0.1s,box-shadow 0.1s;}
+.battle-leave-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #999;color:#222;border-color:#555;}
 
 /* ── Welcome Modal ── */
-.wc-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;}
-.wc-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:32px 28px 24px;max-width:560px;width:100%;position:relative;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
-.wc-modal::-webkit-scrollbar{width:10px;}
-.wc-modal::-webkit-scrollbar-track{background:#ddd;border-left:2px solid #222;}
-.wc-modal::-webkit-scrollbar-thumb{background:#444;}
-.wc-close{position:absolute;top:10px;right:12px;font-family:'Press Start 2P',monospace;font-size:9px;background:#222;color:white;border:2px solid #555;padding:7px 11px;cursor:pointer;box-shadow:2px 2px 0 #000;}
-.wc-close:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-.wc-title{font-family:'Press Start 2P',monospace;font-size:16px;font-weight:900;color:var(--red);text-align:center;line-height:2;margin-bottom:22px;padding-right:36px;}
-.wc-body{display:flex;flex-direction:column;gap:14px;margin-bottom:26px;}
-.wc-body p{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;color:#222;line-height:2.6;}
-.wc-mode-title{font-size:11px !important;font-weight:900 !important;color:#1a1a1a !important;margin-top:6px;}
-.wc-footer-note{color:var(--muted) !important;font-size:9px !important;}
-.wc-divider{height:2px;background:#d0c8b8;margin:6px 0;}
-.wc-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;flex-shrink:0;}
-.wc-btn-never{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;background:var(--red);color:white;border:3px solid #222;padding:13px 22px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
-.wc-btn-never:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
-.wc-btn-ok{font-family:'Press Start 2P',monospace;font-size:10px;font-weight:700;background:white;color:#222;border:3px solid #222;padding:13px 28px;cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
-.wc-btn-ok:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
+.wc-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;}
+.wc-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:28px 28px 22px;max-width:500px;width:100%;position:relative;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+.wc-modal::-webkit-scrollbar{width:8px;}
+.wc-modal::-webkit-scrollbar-track{background:#e8e0d0;}
+.wc-modal::-webkit-scrollbar-thumb{background:#888;border-radius:0;}
+.wc-close{position:absolute;top:10px;right:10px;font-family:'Press Start 2P',monospace;font-size:8px;background:#222;color:white;border:none;padding:8px 11px;cursor:pointer;line-height:1;}
+.wc-close:hover{background:#444;}
+.wc-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--red);text-align:center;line-height:2;margin-bottom:20px;padding-right:28px;}
+.wc-body{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.wc-body p{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13.5px;font-weight:500;color:#333;line-height:1.75;margin:0;}
+.wc-mode-block{background:white;border:2px solid #ddd;padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.wc-mode-title{font-family:'Press Start 2P',monospace;font-size:9px !important;color:#1a1a1a !important;line-height:2 !important;margin:0 !important;}
+.wc-mode-desc{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:#555;line-height:1.65;margin:0;}
+.wc-footer-note{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:12px !important;color:var(--muted) !important;font-weight:500;}
+.wc-divider{height:2px;background:#d0c8b8;margin:4px 0;}
+.wc-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;flex-shrink:0;margin-top:4px;}
+.wc-btn-never{font-family:'Press Start 2P',monospace;font-size:9px;font-weight:700;background:transparent;color:#888;border:2px solid #ccc;padding:11px 16px;cursor:pointer;transition:color 0.1s,border-color 0.1s;}
+.wc-btn-never:hover{color:#444;border-color:#888;}
+.wc-btn-ok{font-family:'Press Start 2P',monospace;font-size:9px;font-weight:700;background:var(--red);color:white;border:3px solid #222;padding:11px 22px;cursor:pointer;box-shadow:3px 3px 0 #000;transition:transform 0.1s,box-shadow 0.1s;}
+.wc-btn-ok:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000;}
 
 /* ── Responsive ── */
 @media(max-width:880px){
@@ -784,6 +854,12 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   .footer-inner{grid-template-columns:1fr 1fr;gap:16px;}
   .endless-select{flex-direction:column;align-items:center;}
   .endless-card{max-width:90%;width:100%;}
+  .endless-game-header{margin-bottom:4px;}
+  .battle-select{flex-direction:column;align-items:center;}
+  .battle-mode-card{max-width:90%;width:100%;}
+  .battle-friend-options{flex-direction:column;}
+  .battle-friend-sep{justify-content:center;}
+  .battle-hud-center{min-width:56px;padding:8px 10px;}
   table{font-size:8px;}
   .challenge-meta{gap:16px;}
   .statusbar{flex-wrap:wrap;gap:10px;}

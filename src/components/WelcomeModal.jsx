@@ -31,64 +31,56 @@ export function WelcomeModal({ onClose, onNeverShow, lang }) {
         <div className="wc-body">
           <p>
             {isEn
-              ? "The goal is to guess today's Pokémon."
-              : '이 게임의 목표는 [오늘의 포켓몬]을 맞추는 것입니다.'}
+              ? "Guess today's hidden Pokémon by entering any Pokémon name. The game shows how close your guess is — by letter count, type, generation, and more — using arrows and colors."
+              : '숨겨진 오늘의 포켓몬을 맞춰보세요! 포켓몬 이름을 입력하면 정답과의 연관성을 글자 수, 타입, 세대 등의 항목으로 알려줍니다.'}
           </p>
           <p>
             {isEn
-              ? 'You have unlimited attempts — but try to guess quickly and climb the rankings!'
-              : '기회는 무한대입니다. 하지만 빠르게 답을 맞춰 랭킹에 올라보세요!'}
+              ? 'Unlimited attempts — guess as fast as you can to climb the rankings!'
+              : '시도 횟수는 무제한입니다. 최대한 빠르게 맞춰 랭킹에 도전해보세요!'}
           </p>
           <p>
             {isEn
-              ? "Enter any Pokémon's name and the game will show how closely it relates to today's answer — by letter count, type, generation, and more — using arrows and colors."
-              : '랜덤한 포켓몬의 이름을 입력하면, 오늘의 포켓몬과의 연관성을 업/다운, 색으로 알려줍니다. (글자 수, 타입, 세대 등...)'}
+              ? 'Guess correctly and that Pokémon is registered in your Pokédex!'
+              : '정답을 맞히면 해당 포켓몬이 도감에 등록됩니다.'}
           </p>
 
           <div className="wc-divider" />
 
+          <p>
+            {isEn
+              ? '💡 Stuck? Use [Filter] to narrow down the list based on your clues — but the shiny rate drops from 5% → 1%.'
+              : '💡 막막하다면 [필터 열람]으로 후보를 좁혀보세요. 단, 이로치 확률이 5% → 1%로 줄어듭니다.'}
+          </p>
           <p>
             {isEn
               ? 'Mega-evolved and Gigantamax Pokémon belong to the region of their base form.'
-              : '메가진화 및 거다이맥스 포켓몬은 해당 포켓몬의 일반 형태가 유래된 지역에 속합니다.'}
-          </p>
-          <p>
-            {isEn
-              ? "Stuck? Click [Filter] to narrow the list based on your clues. Note: the shiny rate drops from 5% → 1%."
-              : '너무 어렵다면 [필터 열람]을 클릭해 보세요! 지금까지 추측한 단서에 따라 포켓몬 명단을 필터링해 줍니다. 단, 이로치 확률은 5% → 1%로 감소합니다.'}
-          </p>
-          <p>
-            {isEn
-              ? "Guess correctly and that Pokémon is registered in your Pokédex!"
-              : '정답을 맞췄다면, 해당 포켓몬은 본인의 도감에 등록됩니다.'}
+              : '메가진화·거다이맥스 포켓몬의 세대는 원래 포켓몬 기준으로 분류됩니다.'}
           </p>
 
           <div className="wc-divider" />
 
-          <p className="wc-mode-title">
-            {isEn ? '∞  Endless — Normal' : '∞  엔드리스 모드 — 일반'}
-          </p>
-          <p>
-            {isEn
-              ? 'Unlimited play, filter allowed. Cleared Pokémon are NOT registered to your Dex.'
-              : '무한 플레이가 가능하며 필터를 사용할 수 있습니다. 단, 정답 포켓몬은 도감에 등록되지 않습니다.'}
-          </p>
-
-          <p className="wc-mode-title">
-            {isEn ? '★  Endless — Challenge' : '★  엔드리스 모드 — 챌린지'}
-          </p>
-          <p>
-            {isEn
-              ? '3 daily attempts · 8 tries per round · No filter. Clear within 8 tries → Dex registration, attempt NOT deducted. Fail → attempt deducted.'
-              : '하루 3번의 도전 기회 · 라운드당 시도 8회 · 필터 불가. 8회 안에 맞추면 도감 등록되고 기회가 차감되지 않습니다. 실패하면 기회가 1 차감됩니다.'}
-          </p>
+          <div className="wc-mode-block">
+            <p className="wc-mode-title">{isEn ? '∞  Endless — Normal' : '∞  엔드리스 — 일반'}</p>
+            <p className="wc-mode-desc">
+              {isEn
+                ? 'Unlimited play with filter. Cleared Pokémon are not registered to your Dex.'
+                : '필터 허용, 무한 플레이. 클리어한 포켓몬은 도감에 등록되지 않습니다.'}
+            </p>
+          </div>
+          <div className="wc-mode-block">
+            <p className="wc-mode-title">{isEn ? '★  Endless — Challenge' : '★  엔드리스 — 챌린지'}</p>
+            <p className="wc-mode-desc">
+              {isEn
+                ? '3 daily attempts · 8 tries per round · No filter. Clear → Dex registered + attempt saved. Fail → 1 attempt deducted.'
+                : '하루 3회 도전 · 8번 이내 정답 · 필터 불가. 클리어 시 도감 등록 + 기회 유지, 실패 시 기회 1 차감.'}
+            </p>
+          </div>
 
           <div className="wc-divider" />
 
           <p className="wc-footer-note">
-            {isEn
-              ? '🕛 Puzzle resets every midnight (KST).'
-              : '🕛 매일 자정 (한국 시간대) 에 퍼즐이 초기화됩니다.'}
+            {isEn ? '🕛 Puzzle resets every midnight (KST).' : '🕛 매일 자정(KST)에 퍼즐이 초기화됩니다.'}
           </p>
         </div>
 

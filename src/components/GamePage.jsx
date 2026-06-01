@@ -15,14 +15,14 @@ function InfoSection({ lang = 'ko', usedFilter }) {
           <div className="info-desc">{isEn ? <>A new Pokémon hides every day.<br />Type a name to guess!</> : <>매일 새 포켓몬이 숨겨집니다.<br />이름 입력으로 추리해보세요!</>}</div>
         </div>
         <div className="panel info-card">
-          <div className="info-icon">🗂️</div>
-          <div className="info-title px">{isEn ? 'Filter' : '필터 열람'}</div>
-          <div className="info-desc">{isEn ? <>Based on your guesses,<br />filters show possible Pokémon.</> : <>추측 결과를 바탕으로<br />가능한 포켓몬만 걸러줘요.</>}</div>
+          <div className="info-icon">🗂️✨</div>
+          <div className="info-title px">{isEn ? 'Filter & Shiny' : '필터 & 이로치'}</div>
+          <div className="info-desc">{isEn ? <>Filter shows possible Pokémon based on your clues.<br />But using it drops the shiny rate from 5% → 1%.<br />Try without filter!</> : <>필터는 단서를 토대로 해당하는 포켓몬 명단을 알려줍니다.<br />하지만 열람 시 이로치 확률이 5% → 1%로 떨어집니다.<br />필터 미사용으로 도전해보세요!</>}</div>
         </div>
         <div className="panel info-card">
-          <div className="info-icon">✨</div>
-          <div className="info-title px">{isEn ? 'Shiny Challenge' : '이로치 챌린지'}</div>
-          <div className="info-desc">{isEn ? <>Clear without filter<br />for 5% shiny chance!</> : <>필터 미사용 클리어 시<br />이로치 확률 5%!</>}</div>
+          <div className="info-icon">∞</div>
+          <div className="info-title px">{isEn ? 'Endless Mode' : '엔드리스 모드'}</div>
+          <div className="info-desc">{isEn ? <>Keep playing after the daily!<br />Challenge mode even lets you register Pokémon to your Dex!</> : <>데일리 후에도 계속 즐기세요.<br />챌린지 모드는 도감 등록도 가능합니다!</>}</div>
         </div>
       </div>
       <div className="panel shiny-info">
