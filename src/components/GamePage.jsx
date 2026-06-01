@@ -70,6 +70,7 @@ export function GamePage({
             <LegendPanel lang={lang} />
           </aside>
         </div>
+        <InfoSection lang={lang} usedFilter={usedFilter} />
       </main>
     );
   }
@@ -82,6 +83,7 @@ export function GamePage({
           guessCount={guesses.length} lang={lang} user={user} />
         <GuessTable guesses={guesses} answer={answer} lang={lang} />
         <LegendPanel lang={lang} />
+        <InfoSection lang={lang} usedFilter={usedFilter} />
       </main>
     );
   }
