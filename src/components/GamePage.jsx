@@ -4,6 +4,44 @@ import { FilterModal } from './FilterModal.jsx';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 
+function InfoSection({ lang = 'ko', usedFilter }) {
+  const isEn = lang === 'en';
+  return (
+    <div className="info-section">
+      <div className="info-cards">
+        <div className="panel info-card">
+          <div className="info-icon">🔍</div>
+          <div className="info-title px">{isEn ? 'Guess the Pokémon' : '포켓몬 추리'}</div>
+          <div className="info-desc">{isEn ? <>A new Pokémon hides every day.<br />Type a name to guess!</> : <>매일 새 포켓몬이 숨겨집니다.<br />이름 입력으로 추리해보세요!</>}</div>
+        </div>
+        <div className="panel info-card">
+          <div className="info-icon">🗂️</div>
+          <div className="info-title px">{isEn ? 'Filter' : '필터 열람'}</div>
+          <div className="info-desc">{isEn ? <>Based on your guesses,<br />filters show possible Pokémon.</> : <>추측 결과를 바탕으로<br />가능한 포켓몬만 걸러줘요.</>}</div>
+        </div>
+        <div className="panel info-card">
+          <div className="info-icon">✨</div>
+          <div className="info-title px">{isEn ? 'Shiny Challenge' : '이로치 챌린지'}</div>
+          <div className="info-desc">{isEn ? <>Clear without filter<br />for 5% shiny chance!</> : <>필터 미사용 클리어 시<br />이로치 확률 5%!</>}</div>
+        </div>
+      </div>
+      <div className="panel shiny-info">
+        <div className="shiny-info-title px">✦ {isEn ? 'Shiny Challenge System' : '이로치 챌린지 시스템'}</div>
+        <div className="shiny-info-rows">
+          <span className="shiny-info-row">
+            <span className="shiny-pct" style={{ background: usedFilter ? 'var(--miss)' : 'var(--correct)' }}>5%</span>
+            <span>{isEn ? 'Clear without using filter' : '필터 미사용 클리어'}</span>
+          </span>
+          <span className="shiny-info-row">
+            <span className="shiny-pct" style={{ background: 'var(--muted)' }}>1%</span>
+            <span>{isEn ? 'Used filter at least once' : '필터 1회 이상 사용'}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function GamePage({
   answer, guesses, gameOver, usedFilter,
   filterOpen, result,
@@ -89,6 +127,8 @@ export function GamePage({
       <GuessTable guesses={guesses} answer={answer} lang={lang} />
 
       <LegendPanel lang={lang} />
+
+      <InfoSection lang={lang} usedFilter={usedFilter} />
     </main>
   );
 }
