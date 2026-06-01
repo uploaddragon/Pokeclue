@@ -119,9 +119,12 @@ export function GuessTable({ guesses, answer, lang = 'ko', showWinRow = false })
         {showWinRow && (
           <GuessRow key="win-row" g={answer} answer={answer} lang={lang} isWin={true} />
         )}
-        {[...guesses].reverse().map(g => (
-          <GuessRow key={g.id} g={g} answer={answer} lang={lang} isWin={false} />
-        ))}
+        {[...guesses]
+          .filter(g => !(showWinRow && g.id === answer?.id))
+          .reverse()
+          .map(g => (
+            <GuessRow key={g.id} g={g} answer={answer} lang={lang} isWin={false} />
+          ))}
       </div>
     </div>
   );
