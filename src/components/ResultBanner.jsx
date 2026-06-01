@@ -28,9 +28,12 @@ export function useInlineRanking(win) {
   return { rows, loading };
 }
 
+const PAGE_SIZE = 10;
+
 /* ── Ranking Panel (오른쪽 aside) ── */
 export function RankingPanel({ win, user, lang = 'ko' }) {
   const { rows, loading } = useInlineRanking(win);
+  const [page, setPage] = useState(1);
   const isEn = lang === 'en';
 
   const anonId = (() => {
@@ -39,6 +42,8 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
 
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const pageRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="panel rank-panel">
@@ -56,14 +61,15 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
         ) : rows.length === 0 ? (
           <div className="rank-loading">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
         ) : (
-          rows.slice(0, 20).map((r, i) => {
+          pageRows.map((r, i) => {
+            const globalIdx = (page - 1) * PAGE_SIZE + i;
             const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
             return (
-              <div key={r.id ?? i} className={`ritem${isMe ? ' me' : ''}`}>
-                {i === 0 ? <div className="medal">🥇</div>
-                 : i === 1 ? <div className="medal">🥈</div>
-                 : i === 2 ? <div className="medal">🥉</div>
-                 : <div className="pos">{i + 1}</div>}
+              <div key={r.id ?? globalIdx} className={`ritem${isMe ? ' me' : ''}`}>
+                {globalIdx === 0 ? <div className="medal">🥇</div>
+                 : globalIdx === 1 ? <div className="medal">🥈</div>
+                 : globalIdx === 2 ? <div className="medal">🥉</div>
+                 : <div className="pos">{globalIdx + 1}</div>}
                 <div className="who">
                   {r.nickname || (isEn ? 'Trainer' : '트레이너')}
                   {!r.used_filter && (
@@ -76,6 +82,21 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
           })
         )}
       </div>
+      {totalPages > 1 && (
+        <div className="rank-pagination">
+          <button
+            className="rank-page-btn"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >◀</button>
+          <span className="rank-page-info">{page} / {totalPages}</span>
+          <button
+            className="rank-page-btn"
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >▶</button>
+        </div>
+      )}
     </div>
   );
 }
