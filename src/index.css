@@ -298,8 +298,8 @@ main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:26px 22px 60px;}
 }
 .hero::before{content:'★';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:22px;text-shadow:1px 1px 0 #000;}
 .hero::after{content:'★';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:22px;text-shadow:1px 1px 0 #000;}
-.hero-t{font-family:'Press Start 2P',monospace;font-size:11px;margin-bottom:10px;line-height:2.2;color:#1a1a1a;}
-.hero-s{font-size:12px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2;}
+.hero-t{font-family:'Galmuri11','Press Start 2P',monospace;font-size:18px;font-weight:900;margin-bottom:6px;line-height:1.6;color:var(--ink);letter-spacing:0.02em;}
+.hero-s{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:15px;font-weight:700;color:var(--muted);line-height:1.6;}
 .hero-s strong{color:var(--red);}
 
 /* ── Challenge Meta ── */
@@ -551,8 +551,8 @@ tr:last-child td{border-bottom:none;}
 
 /* ── Endless Mode Select ── */
 /* ── Endless Hero ── */
-.endless-hero{text-align:center;padding:28px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;}
-.endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:36px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
+.endless-hero{text-align:center;padding:32px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;text-shadow:3px 3px 0 #000;}
 
 /* ── Endless Mode Select ── */
 .endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
@@ -704,8 +704,8 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .ranking-btn{background:#1a1a1a;}
 
 /* ── Battle Mode ── */
-.battle-hero{text-align:center;padding:28px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;}
-.battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:32px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
+.battle-hero{text-align:center;padding:32px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;text-shadow:3px 3px 0 #000;}
 
 /* Select */
 .battle-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
