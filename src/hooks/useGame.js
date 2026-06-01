@@ -72,7 +72,6 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
         { onConflict: 'user_id,date' }
       );
     if (error) console.error('daily_results upsert error', error);
-    else console.log('daily_results 저장 성공:', nickname);
   } else {
     const anonSubmittedKey = `pokeclue_anon_submitted_${today}`;
     if (localStorage.getItem(anonSubmittedKey)) return;
