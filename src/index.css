@@ -552,7 +552,7 @@ tr:last-child td{border-bottom:none;}
 /* ── Endless Mode Select ── */
 /* ── Endless Hero ── */
 .endless-hero{text-align:center;padding:32px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;text-shadow:3px 3px 0 #000;}
+.endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;}
 
 /* ── Endless Mode Select ── */
 .endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
@@ -705,7 +705,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 
 /* ── Battle Mode ── */
 .battle-hero{text-align:center;padding:32px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;text-shadow:3px 3px 0 #000;}
+.battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;}
 
 /* Select */
 .battle-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
