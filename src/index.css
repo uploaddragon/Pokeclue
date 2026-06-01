@@ -555,30 +555,37 @@ tr:last-child td{border-bottom:none;}
 .endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:36px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
 
 /* ── Endless Mode Select ── */
-.endless-select{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
+.endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
 .endless-card{
-  background:white;border:4px solid #222;
-  box-shadow:6px 6px 0 #000;
-  padding:28px 24px 20px;min-width:220px;max-width:280px;
+  background:var(--panel);
+  border:2.5px solid var(--ink);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:32px 28px 24px;
+  min-width:240px;max-width:300px;
   cursor:pointer;text-align:center;
-  transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;
+  transition:transform 0.12s,box-shadow 0.12s;
   display:flex;flex-direction:column;gap:0;
 }
-.endless-card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000;border-color:var(--red);}
-.endless-card.challenge{border-color:#b87000;}
-.endless-card.challenge:hover{border-color:var(--reddark);}
-.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:32px;margin-bottom:12px;color:var(--red);}
+.endless-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
+.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:34px;margin-bottom:14px;color:var(--red);}
 .endless-card.challenge .endless-card-icon{color:#c17a00;}
-.endless-card-title{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:6px;color:#1a1a1a;}
-.endless-card-sub{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:18px;line-height:1.7;}
-.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;}
-.endless-card-desc li{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);line-height:2.1;padding-left:14px;position:relative;}
-.endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);}
+.endless-card-title{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:7px;color:var(--ink);}
+.endless-card-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.65;}
+.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;margin:0;padding:0;}
+.endless-card-desc li{font-size:13px;font-weight:600;color:#555;line-height:1.65;padding-left:18px;position:relative;}
+.endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:11px;}
 .endless-card.challenge .endless-card-desc li::before{color:#c17a00;}
 .endless-card-note{color:#aaa !important;}
-.endless-card-cta{font-family:'Press Start 2P',monospace;font-size:9px;margin-top:20px;padding:10px 14px;background:var(--red);color:white;border:2px solid #222;box-shadow:3px 3px 0 #000;}
+.endless-card-cta{
+  font-family:'Press Start 2P',monospace;font-size:10px;
+  margin-top:22px;padding:13px 16px;
+  background:var(--red);color:white;
+  border:2.5px solid var(--ink);border-radius:10px;
+  box-shadow:var(--shadow-sm);
+}
 .endless-card-cta.challenge{background:#c17a00;}
-.endless-card:hover .endless-card-cta{box-shadow:1px 1px 0 #000;}
+.endless-card:hover .endless-card-cta{box-shadow:2px 2px 0 var(--ink);}
 
 /* ── Endless Game Header ── */
 .endless-game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
@@ -701,27 +708,35 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-hero-badge{font-family:'Press Start 2P',monospace;font-size:32px;color:var(--red);line-height:1;text-shadow:2px 2px 0 #000;}
 
 /* Select */
-.battle-select{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
+.battle-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 32px;}
 .battle-mode-card{
-  background:white;border:4px solid #222;box-shadow:6px 6px 0 #000;
-  padding:28px 24px 20px;min-width:220px;max-width:280px;
+  background:var(--panel);
+  border:2.5px solid var(--ink);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:32px 28px 24px;
+  min-width:240px;max-width:300px;
   cursor:pointer;text-align:center;
-  transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;
+  transition:transform 0.12s,box-shadow 0.12s;
   display:flex;flex-direction:column;gap:0;
 }
-.battle-mode-card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000;border-color:var(--red);}
-.battle-mode-card.friend{border-color:#2e7d32;}
-.battle-mode-card.friend:hover{border-color:#1b5e20;}
-.battle-mode-icon{font-size:32px;margin-bottom:12px;}
-.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:12px;color:#1a1a1a;margin-bottom:6px;}
-.battle-mode-sub{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:16px;line-height:1.7;}
-.battle-mode-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:9px;flex:1;margin:0;padding:0;}
-.battle-mode-desc li{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);line-height:2.1;padding-left:14px;position:relative;}
-.battle-mode-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);}
+.battle-mode-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
+.battle-mode-icon{font-size:36px;margin-bottom:14px;}
+.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--ink);margin-bottom:7px;}
+.battle-mode-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.65;}
+.battle-mode-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;margin:0;padding:0;}
+.battle-mode-desc li{font-size:13px;font-weight:600;color:#555;line-height:1.65;padding-left:18px;position:relative;}
+.battle-mode-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:11px;}
 .battle-mode-card.friend .battle-mode-desc li::before{color:#2e7d32;}
-.battle-mode-cta{font-family:'Press Start 2P',monospace;font-size:9px;margin-top:20px;padding:10px 14px;background:var(--red);color:white;border:2px solid #222;box-shadow:3px 3px 0 #000;}
+.battle-mode-cta{
+  font-family:'Press Start 2P',monospace;font-size:10px;
+  margin-top:22px;padding:13px 16px;
+  background:var(--red);color:white;
+  border:2.5px solid var(--ink);border-radius:10px;
+  box-shadow:var(--shadow-sm);
+}
 .battle-mode-cta.friend{background:#2e7d32;}
-.battle-mode-card:hover .battle-mode-cta{box-shadow:1px 1px 0 #000;}
+.battle-mode-card:hover .battle-mode-cta{box-shadow:2px 2px 0 var(--ink);}
 
 /* Friend panel */
 .battle-friend-panel{max-width:600px;margin:0 auto;padding:4px 0 28px;}
@@ -853,10 +868,10 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   .how{grid-template-columns:1fr;}
   .footer-inner{grid-template-columns:1fr 1fr;gap:16px;}
   .endless-select{flex-direction:column;align-items:center;}
-  .endless-card{max-width:90%;width:100%;}
+  .endless-card{max-width:92%;width:100%;}
   .endless-game-header{margin-bottom:4px;}
   .battle-select{flex-direction:column;align-items:center;}
-  .battle-mode-card{max-width:90%;width:100%;}
+  .battle-mode-card{max-width:92%;width:100%;}
   .battle-friend-options{flex-direction:column;}
   .battle-friend-sep{justify-content:center;}
   .battle-hud-center{min-width:56px;padding:8px 10px;}
