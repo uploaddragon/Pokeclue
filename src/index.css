@@ -561,25 +561,25 @@ tr:last-child td{border-bottom:none;}
   border:2.5px solid var(--ink);
   border-radius:18px;
   box-shadow:var(--shadow);
-  padding:32px 28px 24px;
-  min-width:240px;max-width:300px;
+  padding:36px 34px 28px;
+  min-width:270px;max-width:340px;
   cursor:pointer;text-align:center;
   transition:transform 0.12s,box-shadow 0.12s;
   display:flex;flex-direction:column;gap:0;
 }
 .endless-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
-.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:34px;margin-bottom:14px;color:var(--red);}
+.endless-card-icon{font-family:'Press Start 2P',monospace;font-size:38px;margin-bottom:16px;color:var(--red);}
 .endless-card.challenge .endless-card-icon{color:#c17a00;}
-.endless-card-title{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:7px;color:var(--ink);}
-.endless-card-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.65;}
-.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;margin:0;padding:0;}
-.endless-card-desc li{font-size:13px;font-weight:600;color:#555;line-height:1.65;padding-left:18px;position:relative;}
-.endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:11px;}
+.endless-card-title{font-family:'Press Start 2P',monospace;font-size:14px;margin-bottom:8px;color:var(--ink);}
+.endless-card-sub{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:22px;line-height:1.65;}
+.endless-card-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:12px;flex:1;margin:0;padding:0;}
+.endless-card-desc li{font-size:14px;font-weight:600;color:#555;line-height:1.65;padding-left:20px;position:relative;}
+.endless-card-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:12px;}
 .endless-card.challenge .endless-card-desc li::before{color:#c17a00;}
 .endless-card-note{color:#aaa !important;}
 .endless-card-cta{
   font-family:'Press Start 2P',monospace;font-size:10px;
-  margin-top:22px;padding:13px 16px;
+  margin-top:26px;padding:15px 18px;
   background:var(--red);color:white;
   border:2.5px solid var(--ink);border-radius:10px;
   box-shadow:var(--shadow-sm);
@@ -714,23 +714,23 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   border:2.5px solid var(--ink);
   border-radius:18px;
   box-shadow:var(--shadow);
-  padding:32px 28px 24px;
-  min-width:240px;max-width:300px;
+  padding:36px 34px 28px;
+  min-width:270px;max-width:340px;
   cursor:pointer;text-align:center;
   transition:transform 0.12s,box-shadow 0.12s;
   display:flex;flex-direction:column;gap:0;
 }
 .battle-mode-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
-.battle-mode-icon{font-size:36px;margin-bottom:14px;}
-.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--ink);margin-bottom:7px;}
-.battle-mode-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.65;}
-.battle-mode-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;flex:1;margin:0;padding:0;}
-.battle-mode-desc li{font-size:13px;font-weight:600;color:#555;line-height:1.65;padding-left:18px;position:relative;}
-.battle-mode-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:11px;}
+.battle-mode-icon{font-size:38px;margin-bottom:16px;}
+.battle-mode-title{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--ink);margin-bottom:8px;}
+.battle-mode-sub{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:22px;line-height:1.65;}
+.battle-mode-desc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:12px;flex:1;margin:0;padding:0;}
+.battle-mode-desc li{font-size:14px;font-weight:600;color:#555;line-height:1.65;padding-left:20px;position:relative;}
+.battle-mode-desc li::before{content:'▸';position:absolute;left:0;color:var(--red);font-size:12px;}
 .battle-mode-card.friend .battle-mode-desc li::before{color:#2e7d32;}
 .battle-mode-cta{
   font-family:'Press Start 2P',monospace;font-size:10px;
-  margin-top:22px;padding:13px 16px;
+  margin-top:26px;padding:15px 18px;
   background:var(--red);color:white;
   border:2.5px solid var(--ink);border-radius:10px;
   box-shadow:var(--shadow-sm);
