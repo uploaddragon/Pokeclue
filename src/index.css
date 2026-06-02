@@ -549,15 +549,20 @@ tr:last-child td{border-bottom:none;}
 
 /* ── Dex Modal ── */
 .dex-modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);z-index:200;display:flex;align-items:center;justify-content:center;}
-.dex-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:28px 24px;max-width:320px;width:90%;position:relative;text-align:center;}
-.dex-modal-close{position:absolute;top:10px;right:10px;font-family:'Press Start 2P',monospace;font-size:8px;background:#222;color:white;border:2px solid #555;padding:6px 10px;cursor:pointer;box-shadow:2px 2px 0 #000;}
+.dex-modal{background:var(--bg);border:4px solid #222;border-radius:16px;box-shadow:8px 8px 0 #000;padding:32px 28px;max-width:400px;width:92%;position:relative;text-align:center;}
+.dex-modal-close{position:absolute;top:12px;right:12px;font-family:'Press Start 2P',monospace;font-size:9px;background:#222;color:white;border:2px solid #555;border-radius:6px;padding:7px 12px;cursor:pointer;box-shadow:2px 2px 0 #000;}
 .dex-modal-close:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-.dex-modal img{width:100px;height:100px;image-rendering:pixelated;margin:0 auto 14px;display:block;}
-.dex-modal-num{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);margin-bottom:6px;}
-.dex-modal-name{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:16px;line-height:1.8;color:#1a1a1a;}
-.dex-modal-row{display:flex;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-.dex-modal-shiny{font-family:'Press Start 2P',monospace;font-size:8px;color:#c17a00;margin-top:12px;background:#fff9e6;border:2px solid #ffd54f;padding:7px 12px;line-height:2;}
-.dex-modal-cleared{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);margin-top:10px;line-height:2.2;background:white;border:2px solid #eee;padding:8px 12px;}
+.dex-modal-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:14px;}
+.dex-toggle-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:white;color:#555;border:2px solid #ccc;border-radius:8px;padding:8px 16px;cursor:pointer;transition:all 0.1s;}
+.dex-toggle-btn.active{background:#222;color:white;border-color:#222;}
+.dex-toggle-btn.shiny.active{background:#c17a00;color:white;border-color:#c17a00;}
+.dex-modal img{width:130px;height:130px;image-rendering:pixelated;margin:0 auto 16px;display:block;}
+.dex-modal img.shiny-sprite{filter:drop-shadow(0 0 8px #ffd700);animation:shiny-glow 1.2s ease-in-out infinite alternate;}
+.dex-modal-num{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;}
+.dex-modal-name{font-family:'Press Start 2P',monospace;font-size:15px;margin-bottom:18px;line-height:1.8;color:#1a1a1a;}
+.dex-modal-row{display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.dex-modal-info{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;line-height:2.2;}
+.dex-modal-cleared{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);margin-top:10px;line-height:2.4;background:white;border:2px solid #eee;border-radius:8px;padding:10px 14px;}
 
 /* ── Endless Mode Select ── */
 /* ── Endless Hero ── */
