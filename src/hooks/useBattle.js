@@ -2,8 +2,6 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import DB from '../data/pokemon.js';
 import { supabase as bc } from '../lib/supabase.js';
 
-console.log('[Battle] MODULE LOADED', Date.now());
-
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
@@ -72,8 +70,7 @@ export function useBattle(user) {
   }, [phase, roomCode]);
 
   function startHeartbeat(code, slot, force = false) {
-    if (heartbeatRef.current && !force) return; // 이미 실행 중이면 중복 시작 방지 (rematch 시 force=true)
-    console.log('[Battle] startHeartbeat called', code, slot);
+    if (heartbeatRef.current && !force) return;
     const myHbKey = slot === 'p1' ? 'p1_heartbeat' : 'p2_heartbeat';
     const opHbKey = slot === 'p1' ? 'p2_heartbeat' : 'p1_heartbeat';
     const joinedAt = Date.now();
@@ -93,7 +90,6 @@ export function useBattle(user) {
       if (!opHb && elapsed < 20) return; // 유예시간
 
       const staleSec = opHb ? (Date.now() - new Date(opHb).getTime()) / 1000 : elapsed;
-      console.log(`[Battle] hb stale: ${staleSec.toFixed(1)}s`);
 
       if (staleSec > 12) {
         const mySlot_ = mySlotRef.current;
