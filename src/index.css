@@ -333,8 +333,11 @@ main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:26px 22px 60px;}
   background:white;padding:20px;text-align:center;margin-bottom:18px;
 }
 .result-banner.fail{border-color:var(--wrong);}
+.result-banner.shiny{border-color:#f0c040;background:linear-gradient(135deg,#fffde7 0%,#fff9c4 100%);box-shadow:5px 5px 0 #c8a000;}
 .res-poke{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:10px;flex-wrap:wrap;}
 .res-poke img{width:80px;height:80px;image-rendering:pixelated;flex-shrink:0;}
+.res-sprite.shiny-sprite{filter:drop-shadow(0 0 6px #ffd700);animation:shiny-glow 1.2s ease-in-out infinite alternate;}
+@keyframes shiny-glow{from{filter:drop-shadow(0 0 4px #ffd700);}to{filter:drop-shadow(0 0 12px #ffaa00);}}
 .res-t{font-family:'Press Start 2P',monospace;font-size:13px;margin-bottom:8px;line-height:2.2;color:#1a1a1a;}
 .res-s{font-size:11px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.2;}
 

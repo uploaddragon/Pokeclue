@@ -4,6 +4,7 @@ import { GuessTable } from './GuessTable.jsx';
 import { FilterModal } from './FilterModal.jsx';
 import { ResultBanner } from './ResultBanner.jsx';
 import { useEndlessNormal, useEndlessChallenge } from '../hooks/useEndless.js';
+import { spr, sprShiny } from '../utils/sprite.js';
 
 function ModeSelect({ onSelect, lang }) {
   const isEn = lang === 'en';
@@ -60,11 +61,23 @@ function NormalGame({ lang, onBack }) {
       </div>
 
       {g.result && (
-        <div className="result-banner show">
+        <div className={`result-banner show${g.result.isShiny ? ' shiny' : ''}`}>
           <div className="res-poke">
+            <img
+              src={g.result.isShiny ? sprShiny(g.answer.id) : spr(g.answer.id)}
+              alt={g.answer.ko}
+              className={`res-sprite${g.result.isShiny ? ' shiny-sprite' : ''}`}
+            />
             <div>
-              <div className="res-t">★ {isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}</div>
-              <div className="res-s">{isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`}</div>
+              <div className="res-t">
+                {g.result.isShiny ? '✨ ' : '★ '}
+                {isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}
+              </div>
+              <div className="res-s">
+                {g.result.isShiny
+                  ? (isEn ? '✨ Shiny! Lucky!' : '✨ 이로치 등장! 행운이에요!')
+                  : (isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`)}
+              </div>
             </div>
           </div>
           <button className="next-btn" onClick={g.nextPokemon}>

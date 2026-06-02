@@ -192,6 +192,11 @@ export function spr(id) {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${sprId}.png`;
 }
 
+export function sprShiny(id) {
+  const sprId = FORM_SPRITE_ID[id] ?? id;
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${sprId}.png`;
+}
+
 export function padId(id) {
   return String(id).padStart(3, '0');
 }
