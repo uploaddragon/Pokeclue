@@ -34,11 +34,34 @@ export function useBattle(user) {
   const [error, setError] = useState('');
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
+  const pollRef = useRef(null);
 
   useEffect(() => () => {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
+    clearInterval(pollRef.current);
   }, []);
+
+  // Realtime 폴백: waiting/searching 상태에서 2초마다 DB 직접 확인
+  useEffect(() => {
+    clearInterval(pollRef.current);
+    if ((phase !== 'waiting' && phase !== 'searching') || !roomCode) return;
+
+    pollRef.current = setInterval(async () => {
+      const { data } = await bc.from('battle_rooms').select('*').eq('id', roomCode).single();
+      if (!data) return;
+      if (data.status === 'playing') {
+        clearInterval(pollRef.current);
+        clearTimeout(timeoutRef.current);
+        const poke = DB.find(p => String(p.id) === String(data.answer_id));
+        if (poke) setAnswer(poke);
+        setRoom(data);
+        setPhase('playing');
+      }
+    }, 2000);
+
+    return () => clearInterval(pollRef.current);
+  }, [phase, roomCode]);
 
   function subscribeRoom(code) {
     if (channelRef.current) bc.removeChannel(channelRef.current);
