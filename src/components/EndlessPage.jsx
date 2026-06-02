@@ -57,7 +57,10 @@ function NormalGame({ lang, onBack }) {
       </div>
       <div className="hero">
         <div className="hero-t">{isEn ? 'Normal Endless' : '일반 엔드리스'}</div>
-        <div className="hero-s">{isEn ? 'Attempts: ' : '시도 횟수 : '}<strong>{g.guesses.length}</strong>{isEn ? '' : '번'}</div>
+        <div className="endless-stat-row">
+          <span className="endless-stat-label">{isEn ? 'Tries' : '시도'}</span>
+          <span className="endless-stat-val">{g.guesses.length}<span className="endless-stat-unit">{isEn ? '' : '번'}</span></span>
+        </div>
       </div>
 
       {g.result && (
@@ -65,7 +68,7 @@ function NormalGame({ lang, onBack }) {
           <div className="res-poke">
             <img
               src={g.result.isShiny ? sprShiny(g.answer.id) : spr(g.answer.id)}
-              alt={g.answer.ko}
+              alt={isEn ? g.answer.en || g.answer.ko : g.answer.ko}
               className={`res-sprite${g.result.isShiny ? ' shiny-sprite' : ''}`}
             />
             <div>
@@ -166,17 +169,24 @@ function ChallengeGame({ unlockDex, lang, onBack }) {
       </div>
 
       {g.result && (
-        <div className={`result-banner show${g.result.win ? '' : ' fail'}`}>
+        <div className={`result-banner show${g.result.win ? (g.result.isShiny ? ' shiny' : '') : ' fail'}`}>
           <div className="res-poke">
+            <img
+              src={g.result.win && g.result.isShiny ? sprShiny(g.answer.id) : spr(g.answer.id)}
+              alt={isEn ? g.answer.en || g.answer.ko : g.answer.ko}
+              className={`res-sprite${g.result.win && g.result.isShiny ? ' shiny-sprite' : ''}`}
+            />
             <div>
               <div className="res-t">
                 {g.result.win
-                  ? `★ ${isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}`
+                  ? `${g.result.isShiny ? '✨' : '★'} ${isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}`
                   : `${isEn ? 'Answer: ' : '정답: '}${isEn ? g.answer.en || g.answer.ko : g.answer.ko}`}
               </div>
               <div className="res-s">
                 {g.result.win
-                  ? (isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`)
+                  ? g.result.isShiny
+                    ? (isEn ? '✨ Shiny! Lucky!' : '✨ 이로치 등장! 행운이에요!')
+                    : (isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`)
                   : (isEn ? 'Failed — attempt used.' : '실패 — 도전 횟수가 차감됩니다.')}
               </div>
             </div>

@@ -147,7 +147,7 @@ export function useEndlessChallenge(unlockDex) {
       if (isCorrect) {
         const isShiny = Math.random() < 0.05;
         unlockDex(prev.answer, isShiny, next.length);
-        return { ...prev, guesses: next, gameOver: true, result: { win: true, shinyPct: '5%' } };
+        return { ...prev, guesses: next, gameOver: true, result: { win: true, isShiny } };
       }
       if (outOfTries) {
         const nextDaily = { ...daily, remaining: Math.max(0, daily.remaining - 1) };
