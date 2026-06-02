@@ -71,8 +71,8 @@ export function useBattle(user) {
     return () => clearInterval(pollRef.current);
   }, [phase, roomCode]);
 
-  function startHeartbeat(code, slot) {
-    if (heartbeatRef.current) return; // 이미 실행 중이면 중복 시작 방지
+  function startHeartbeat(code, slot, force = false) {
+    if (heartbeatRef.current && !force) return; // 이미 실행 중이면 중복 시작 방지 (rematch 시 force=true)
     console.log('[Battle] startHeartbeat called', code, slot);
     const myHbKey = slot === 'p1' ? 'p1_heartbeat' : 'p2_heartbeat';
     const opHbKey = slot === 'p1' ? 'p2_heartbeat' : 'p1_heartbeat';
@@ -141,9 +141,9 @@ export function useBattle(user) {
           const poke = DB.find(p => String(p.id) === String(r.answer_id));
           if (poke) setAnswer(poke);
           setPhase('playing');
-          startHeartbeat(code, slot);
+          startHeartbeat(code, slot, true); // rematch 포함 항상 재시작
         }
-        if (r.status === 'finished') setPhase('finished');
+        if (r.status === 'finished' && phaseRef.current !== 'rematch_wait') setPhase('finished');
       })
       .subscribe(async (st, err) => {
         if (err) console.error('[Battle] realtime error', err);
