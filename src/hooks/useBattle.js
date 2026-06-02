@@ -1,12 +1,8 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import DB from '../data/pokemon.js';
-import { createClient } from '@supabase/supabase-js';
+import { supabase as bc } from '../lib/supabase.js';
 
-const bc = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-  { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
-);
+console.log('[Battle] MODULE LOADED', Date.now());
 
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -35,20 +31,31 @@ export function useBattle(user) {
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
   const pollRef = useRef(null);
+  const heartbeatRef = useRef(null);
+  const phaseRef = useRef('select');
+  const mySlotRef = useRef(null);
+  const roomCodeRef = useRef('');
+
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
+  useEffect(() => { mySlotRef.current = mySlot; }, [mySlot]);
+  useEffect(() => { roomCodeRef.current = roomCode; }, [roomCode]);
 
   useEffect(() => () => {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
     clearInterval(pollRef.current);
+    clearInterval(heartbeatRef.current);
   }, []);
 
-  // Realtime 폴백: waiting/searching 상태에서 2초마다 DB 직접 확인
+
+  // Realtime 폴백: waiting/searching 상태에서 1초마다 DB 직접 확인
   useEffect(() => {
     clearInterval(pollRef.current);
     if ((phase !== 'waiting' && phase !== 'searching') || !roomCode) return;
 
     pollRef.current = setInterval(async () => {
-      const { data } = await bc.from('battle_rooms').select('*').eq('id', roomCode).single();
+      const { data, error: pe } = await bc.from('battle_rooms').select('*').eq('id', roomCode).single();
+      if (pe) { console.error('[Battle] poll error', pe); return; }
       if (!data) return;
       if (data.status === 'playing') {
         clearInterval(pollRef.current);
@@ -57,16 +64,74 @@ export function useBattle(user) {
         if (poke) setAnswer(poke);
         setRoom(data);
         setPhase('playing');
+        startHeartbeat(roomCode, mySlotRef.current || 'p1');
       }
-    }, 2000);
+    }, 1000);
 
     return () => clearInterval(pollRef.current);
   }, [phase, roomCode]);
 
-  function subscribeRoom(code) {
+  function startHeartbeat(code, slot) {
+    if (heartbeatRef.current) return; // 이미 실행 중이면 중복 시작 방지
+    console.log('[Battle] startHeartbeat called', code, slot);
+    const myHbKey = slot === 'p1' ? 'p1_heartbeat' : 'p2_heartbeat';
+    const opHbKey = slot === 'p1' ? 'p2_heartbeat' : 'p1_heartbeat';
+    const joinedAt = Date.now();
+
+    const tick = async () => {
+      const now = new Date().toISOString();
+      const { error: hbErr } = await bc.from('battle_rooms').update({ [myHbKey]: now }).eq('id', code);
+      if (hbErr) { console.error('[Battle] hb write error', hbErr); return; }
+
+      const { data, error: hbReadErr } = await bc.from('battle_rooms')
+        .select(`${opHbKey}, status`).eq('id', code).single();
+      if (hbReadErr) { console.error('[Battle] hb read error', hbReadErr); return; }
+      if (!data || data.status !== 'playing') return;
+
+      const opHb = data[opHbKey];
+      const elapsed = (Date.now() - joinedAt) / 1000;
+      if (!opHb && elapsed < 20) return; // 유예시간
+
+      const staleSec = opHb ? (Date.now() - new Date(opHb).getTime()) / 1000 : elapsed;
+      console.log(`[Battle] hb stale: ${staleSec.toFixed(1)}s`);
+
+      if (staleSec > 12) {
+        const mySlot_ = mySlotRef.current;
+        const { error: we } = await bc.from('battle_rooms')
+          .update({ status: 'finished', winner: mySlot_ })
+          .eq('id', code).eq('status', 'playing');
+        if (!we) {
+          clearInterval(heartbeatRef.current);
+          setRoom(r => ({ ...r, status: 'finished', winner: mySlot_ }));
+          setPhase('finished');
+        }
+      }
+    };
+
+    tick();
+    heartbeatRef.current = setInterval(tick, 3000);
+  }
+
+  function subscribeRoom(code, slot) {
     if (channelRef.current) bc.removeChannel(channelRef.current);
+    const opSlot = slot === 'p1' ? 'p2' : 'p1';
+
     channelRef.current = bc
-      .channel(`battle-${code}-${Date.now()}`)
+      .channel(`battle-${code}`)
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+        // playing 중에 상대방이 나가면 내가 승리
+        if (phaseRef.current !== 'playing') return;
+        const opLeft = leftPresences.some(p => p.slot === opSlot);
+        if (!opLeft) return;
+        const code_ = roomCodeRef.current;
+        const mySlot_ = mySlotRef.current;
+        if (!code_ || !mySlot_) return;
+        bc.from('battle_rooms')
+          .update({ status: 'finished', winner: mySlot_ })
+          .eq('id', code_)
+          .eq('status', 'playing')
+          .then(({ error: e }) => { if (e) console.error('[Battle] disconnect win error', e); });
+      })
       .on('postgres_changes', {
         event: 'UPDATE', schema: 'public', table: 'battle_rooms', filter: `id=eq.${code}`,
       }, ({ new: r }) => {
@@ -76,10 +141,16 @@ export function useBattle(user) {
           const poke = DB.find(p => String(p.id) === String(r.answer_id));
           if (poke) setAnswer(poke);
           setPhase('playing');
+          startHeartbeat(code, slot);
         }
         if (r.status === 'finished') setPhase('finished');
       })
-      .subscribe((st, err) => { if (err) console.error('[Battle] realtime error', err); });
+      .subscribe(async (st, err) => {
+        if (err) console.error('[Battle] realtime error', err);
+        if (st === 'SUBSCRIBED') {
+          await channelRef.current.track({ slot });
+        }
+      });
   }
 
   function startTimeout() {
@@ -105,7 +176,7 @@ export function useBattle(user) {
     try {
       const result = await createRoom(me);
       setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
-      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
+      setPhase('waiting'); subscribeRoom(result.code, 'p1'); startTimeout();
     } catch (err) { setError(`방 생성 실패: ${err.message}`); }
   }
 
@@ -131,36 +202,42 @@ export function useBattle(user) {
     const poke = DB.find(p => String(p.id) === String(r.answer_id));
     const joined = { ...r, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
     setRoomCode(upper); setMySlot('p2'); setAnswer(poke); setRoom(joined);
-    setPhase('playing'); subscribeRoom(upper);
+    setPhase('playing'); subscribeRoom(upper, 'p2'); startHeartbeat(upper, 'p2');
   }
 
   async function findRandom() {
     setError(''); setPhase('searching');
     const me = getIdentity(user);
 
-    const { data } = await bc.from('battle_rooms').select('*').eq('status', 'waiting')
-      .order('created_at', { ascending: true }).limit(10);
-    const available = (data || []).filter(r =>
-      (!me.uid || r.p1_uid !== me.uid) && (!me.anon || r.p1_anon !== me.anon)
-    );
+    // 최대 3번 재시도 — race condition 시 다른 방 찾기
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { data } = await bc.from('battle_rooms').select('*').eq('status', 'waiting')
+        .order('created_at', { ascending: true }).limit(10);
+      const available = (data || []).filter(r =>
+        (!me.uid || r.p1_uid !== me.uid) && (!me.anon || r.p1_anon !== me.anon)
+      );
 
-    if (available.length > 0) {
+      if (available.length === 0) break; // 빈 방 없음 → 새 방 생성
+
       const target = available[0];
-      const { error: e } = await bc.from('battle_rooms').update({
+      const { data: updated, error: e } = await bc.from('battle_rooms').update({
         p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing',
-      }).eq('id', target.id).eq('status', 'waiting');
-      if (!e) {
-        const poke = DB.find(p => String(p.id) === String(target.answer_id));
-        const joined = { ...target, p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing' };
-        setRoomCode(target.id); setMySlot('p2'); setAnswer(poke); setRoom(joined);
-        setPhase('playing'); subscribeRoom(target.id); return;
+      }).eq('id', target.id).eq('status', 'waiting').select();
+
+      if (!e && updated?.length > 0) {
+        // 업데이트된 행으로 내 정보 확인 (낙관적 잠금 성공)
+        const actual = updated[0];
+        const poke = DB.find(p => String(p.id) === String(actual.answer_id));
+        setRoomCode(actual.id); setMySlot('p2'); setAnswer(poke); setRoom(actual);
+        setPhase('playing'); subscribeRoom(actual.id, 'p2'); startHeartbeat(actual.id, 'p2'); return;
       }
+      // race condition → 다음 루프에서 다른 방 시도
     }
 
     try {
       const result = await createRoom(me);
       setRoomCode(result.code); setMySlot('p1'); setAnswer(result.poke);
-      setPhase('waiting'); subscribeRoom(result.code); startTimeout();
+      setPhase('waiting'); subscribeRoom(result.code, 'p1'); startTimeout();
     } catch (err) { setPhase('select'); setError(`방 생성 실패: ${err.message}`); }
   }
 
@@ -248,6 +325,8 @@ export function useBattle(user) {
   function reset() {
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
+    clearInterval(heartbeatRef.current);
+    heartbeatRef.current = null;
     channelRef.current = null;
     setPhase('select'); setRoomCode(''); setRoom(null); setMySlot(null);
     setAnswer(null); setError('');

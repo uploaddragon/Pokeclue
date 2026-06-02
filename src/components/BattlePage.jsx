@@ -242,12 +242,18 @@ export function BattlePage({ user, lang }) {
     const answerName = b.answer ? displayName(b.answer, lang) : '?';
     const myTries = b.room ? (b.mySlot === 'p1' ? b.room.p1_tries : b.room.p2_tries) : 0;
     const round = b.room?.round || 1;
+    const opTries = b.room ? (b.mySlot === 'p1' ? b.room.p2_tries : b.room.p1_tries) : 0;
+    const mySolved = b.room ? (b.mySlot === 'p1' ? b.room.p1_solved : b.room.p2_solved) : false;
+    const opDisconnected = b.iWon && !mySolved; // 내가 풀지 않았는데 이겼으면 상대 연결 끊김
     return (
       <main>
         <div className={`battle-result-banner${b.iWon ? ' win' : ' lose'}`}>
           <div className="battle-result-top">
             <div className="battle-result-emoji">{b.iWon ? '🏆' : '💀'}</div>
             <div className="battle-result-verdict">{b.iWon ? (isEn ? 'Victory!' : '승리!') : (isEn ? 'Defeat...' : '패배...')}</div>
+            {opDisconnected && (
+              <div className="battle-result-disconnect">{isEn ? '(Opponent disconnected)' : '(상대방 연결 끊김)'}</div>
+            )}
             <div className="battle-result-round">{isEn ? `Round ${round}` : `${round}라운드`}</div>
           </div>
 
