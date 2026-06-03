@@ -1,0 +1,2615 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)file:///C:/Users/%EC%A0%95%EC%97%B0%EC%9A%B0/Downloads/index_7.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokeWordle - 포켓몬 추리 게임</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./PokeWordle - 포켓몬 추리 게임_files/css2" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--red:#CC0000;--reddark:#8B0000;--yellow:#FFCB05;--bg:#f0ebe0;--border:#c0b89a;--muted:#666;--correct:#2e7d32;--partial:#e65100;--wrong:#b71c1c;}
+/* 본문은 Noto Sans KR, 포인트만 픽셀폰트 */
+body{font-family:'Noto Sans KR',sans-serif;color:#1a1a1a;background:var(--bg);}
+
+.app{min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:var(--red);border-bottom:4px solid #222;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:72px;position:relative;}
+header::after{content:'';position:absolute;bottom:-8px;left:0;right:0;height:4px;background:var(--yellow);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-tiles{display:flex;gap:3px;}
+.lt{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;border:2px solid #000;font-family:'Press Start 2P',monospace;}
+.lt.red{background:var(--red);color:white;}
+.lt.wht{background:white;color:#000;}
+.logo-ball{font-size:24px;margin-left:6px;}
+.nav{display:flex;gap:6px;}
+.nav-btn{background:#1a1a1a;color:white;border:3px solid #555;font-family:'Press Start 2P',monospace;font-size:8px;padding:8px 14px;cursor:pointer;box-shadow:3px 3px 0 #000;}
+.nav-btn:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 #000;}
+.nav-btn.on{background:var(--yellow);color:#000;border-color:#000;}
+
+main{flex:1;max-width:900px;margin:0 auto;width:100%;padding:24px 16px;}
+
+.hero{background:white;border:3px solid #222;box-shadow:5px 5px 0 #222;padding:18px 40px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;}
+.hero::before{content:'★';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:20px;text-shadow:1px 1px 0 #000;}
+.hero::after{content:'★';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--yellow);font-size:20px;text-shadow:1px 1px 0 #000;}
+.hero-t{font-family:'Press Start 2P',monospace;font-size:10px;margin-bottom:10px;line-height:2;}
+.hero-s{font-size:13px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);}
+.hero-s strong{color:var(--red);}
+
+.result-banner{border:3px solid var(--correct);box-shadow:5px 5px 0 #222;background:white;padding:20px;text-align:center;margin-bottom:16px;display:none;}
+.result-banner.show{display:block;}
+.result-banner.fail{border-color:var(--wrong);}
+.res-poke{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;}
+.res-poke img{width:80px;height:80px;image-rendering:pixelated;}
+.res-t{font-family:'Press Start 2P',monospace;font-size:10px;margin-bottom:8px;line-height:2;}
+.res-s{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.2;}
+.next-btn{background:var(--red);color:white;border:3px solid #222;font-family:'Press Start 2P',monospace;font-size:8px;padding:11px 22px;cursor:pointer;margin-top:12px;box-shadow:4px 4px 0 #000;}
+.next-btn:hover{transform:translate(1px,1px);box-shadow:3px 3px 0 #000;}
+
+
+
+
+
+
+
+
+
+.ctag.ok{background:#e8f5e9;border-color:var(--correct);color:var(--correct);}
+.ctag.no{background:#ffebee;border-color:var(--wrong);color:var(--wrong);}
+.ctag.rng{background:#fff8e1;border-color:#f9a825;color:#5d4037;}
+
+.fp-grid::-webkit-scrollbar{width:8px;}
+.fp-grid::-webkit-scrollbar-track{background:#ddd;border-left:2px solid #222;}
+.fp-grid::-webkit-scrollbar-thumb{background:#222;}
+
+
+
+
+
+
+
+.search-wrap{position:relative;margin-bottom:10px;}
+#inp{width:100%;padding:14px 18px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;border:3px solid #222;box-shadow:4px 4px 0 #222;background:white;color:#222;outline:none;}
+#inp:focus{border-color:var(--red);box-shadow:4px 4px 0 var(--red);}
+#inp::placeholder{color:#bbb;font-weight:500;}
+.ac{position:absolute;top:calc(100% + 2px);left:0;right:0;background:white;border:3px solid #222;box-shadow:6px 6px 0 #222;max-height:300px;overflow-y:auto;z-index:100;display:none;}
+.ac::-webkit-scrollbar{width:10px;}
+.ac::-webkit-scrollbar-track{background:#ddd;border-left:2px solid #222;}
+.ac::-webkit-scrollbar-thumb{background:#222;}
+.ac-item{padding:9px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;border-bottom:2px solid #eee;}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover,.ac-item.sel{background:var(--red);}
+.ac-item:hover *,.ac-item.sel *{color:white!important;}
+.ac-img{width:48px;height:48px;flex-shrink:0;background:#f0f0f0;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ac-img img{width:44px;height:44px;image-rendering:pixelated;}
+.ac-info{display:flex;flex-direction:column;gap:4px;}
+.ac-num{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);}
+.ac-name{font-size:11px;font-weight:700;font-family:'Press Start 2P',monospace;color:#222;line-height:1.8;}
+.ac-types{display:flex;gap:4px;margin-top:2px;}
+.mini-tbadge{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;color:white;border-radius:2px;text-shadow:1px 1px 0 rgba(0,0,0,0.3);}
+
+.tools{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.tool-btn{background:#222;color:white;border:3px solid #555;font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 16px;cursor:pointer;box-shadow:3px 3px 0 #000;}
+.tool-btn:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 #000;}
+.tool-btn:active{transform:translate(3px,3px);box-shadow:none;}
+.tool-btn.active-btn{background:var(--yellow);color:#000;border-color:#000;}
+.badge{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);display:flex;align-items:center;gap:6px;line-height:1.8;}
+.dot{width:9px;height:9px;background:var(--partial);border:2px solid #222;animation:blink 1s infinite step-start;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.tbl-wrap{background:white;border:3px solid #222;box-shadow:5px 5px 0 #222;overflow:hidden;margin-bottom:18px;display:none;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;}
+th{background:#222;color:white;font-family:'Press Start 2P',monospace;font-weight:700;font-size:9px;padding:13px 6px;text-align:center;border-right:2px solid #444;letter-spacing:0.2px;}
+th:first-child{text-align:left;padding-left:14px;}
+th:last-child{border-right:none;}
+td{padding:10px 6px;text-align:center;font-family:'Press Start 2P',monospace;font-weight:700;font-size:9px;border-bottom:2px solid #eee;border-right:1px solid #ddd;vertical-align:middle;line-height:1.7;}
+td:first-child{text-align:left;padding-left:10px;}
+td:last-child{border-right:none;}
+tr:last-child td{border-bottom:none;}
+.cc{background:var(--correct)!important;color:white;}
+.cp{background:var(--partial)!important;color:white;}
+.cw{background:var(--wrong)!important;color:white;}
+.pk{display:flex;align-items:center;gap:8px;}
+.pk img{width:44px;height:44px;image-rendering:pixelated;}
+.pk span{font-size:10px;font-weight:700;font-family:'Press Start 2P',monospace;line-height:1.8;}
+
+/* 타입 배지 - 이모지 + 이름 */
+.tbadge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;color:white;border-radius:3px;border:2px solid rgba(0,0,0,0.2);text-shadow:1px 1px 0 rgba(0,0,0,0.3);white-space:nowrap;}
+.tbadge .ticon{font-size:14px;line-height:1;}
+
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.how-c{background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;padding:16px;text-align:center;}
+.how-i{font-size:26px;margin-bottom:8px;}
+.how-t{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--red);margin-bottom:8px;line-height:1.9;}
+.how-d{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.2;}
+.leg{background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;padding:14px 18px;margin-bottom:12px;}
+.leg-t{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);margin-bottom:12px;border-bottom:2px solid #eee;padding-bottom:8px;line-height:1.8;}
+.leg-r{display:flex;align-items:center;gap:12px;font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;flex-wrap:wrap;line-height:2.2;}
+.ld{width:18px;height:18px;border:2px solid #222;flex-shrink:0;}
+.shiny-card{background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;padding:14px 18px;margin-bottom:20px;}
+.shiny-t{font-family:'Press Start 2P',monospace;font-size:8px;color:#e65100;margin-bottom:10px;text-align:center;border-bottom:2px solid #eee;padding-bottom:8px;}
+.shiny-r{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.5;}
+.shiny-p{color:var(--red);font-weight:900;}
+
+footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
+.footer-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;}
+.footer-logo{font-family:'Press Start 2P',monospace;font-size:12px;color:white;margin-bottom:10px;}
+.footer-logo span{color:var(--yellow);}
+.footer-tagline{font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:#888;line-height:2.2;}
+.footer-col h4{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--yellow);margin-bottom:12px;}
+.footer-col a{display:block;font-size:9px;font-weight:700;font-family:'Press Start 2P',monospace;color:#aaa;text-decoration:none;margin-bottom:10px;cursor:pointer;line-height:1.8;}
+.footer-col a:hover{color:white;}
+.footer-bottom{max-width:900px;margin:24px auto 0;border-top:1px solid #333;padding-top:16px;text-align:center;font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;color:#555;line-height:1.8;}
+
+/* ── 도감 ── */
+#dex-page{display:none;}
+#dex-page.show{display:block;}
+#game-page{display:block;}
+#game-page.hide{display:none;}
+
+.dex-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.dex-breadcrumb{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);}
+.dex-breadcrumb span{color:var(--red);}
+.dex-total{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--red);}
+
+.dex-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.dex-filter-btn{background:white;color:#222;border:3px solid #222;font-family:'Press Start 2P',monospace;font-size:8px;padding:8px 14px;cursor:pointer;box-shadow:3px 3px 0 #000;}
+.dex-filter-btn:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 #000;}
+.dex-filter-btn.on{background:var(--red);color:white;border-color:var(--red-dark);}
+
+.dex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:24px;}
+
+.dex-card{
+  background:white;border:3px solid #222;
+  box-shadow:3px 3px 0 #222;
+  padding:10px 6px 8px;
+  text-align:center;
+  position:relative;
+  cursor:default;
+}
+.dex-card.unlocked{cursor:pointer;}
+.dex-card.unlocked:hover{background:#fff5f5;border-color:var(--red);}
+
+.dex-card img{width:56px;height:56px;image-rendering:pixelated;display:block;margin:0 auto 4px;}
+.dex-card .silhouette{width:56px;height:56px;display:block;margin:0 auto 4px;filter:brightness(0);}
+.dex-card-num{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);margin-bottom:3px;}
+.dex-card-name{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;}
+.dex-card-name.hidden{color:#bbb;}
+
+.shiny-star{
+  position:absolute;top:4px;right:4px;
+  font-size:13px;line-height:1;
+}
+
+/* 도감 상세 모달 */
+.dex-modal-bg{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.6);
+  z-index:200;
+  display:none;
+  align-items:center;justify-content:center;
+}
+.dex-modal-bg.show{display:flex;}
+.dex-modal{
+  background:var(--bg);
+  border:4px solid #222;
+  box-shadow:8px 8px 0 #000;
+  padding:24px;
+  max-width:320px;
+  width:90%;
+  position:relative;
+  text-align:center;
+}
+.dex-modal-close{
+  position:absolute;top:8px;right:10px;
+  font-family:'Press Start 2P',monospace;font-size:8px;
+  background:#222;color:white;border:2px solid #555;
+  padding:5px 8px;cursor:pointer;box-shadow:2px 2px 0 #000;
+}
+.dex-modal-close:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
+.dex-modal img{width:96px;height:96px;image-rendering:pixelated;margin:0 auto 12px;display:block;}
+.dex-modal-num{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);margin-bottom:6px;}
+.dex-modal-name{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:14px;line-height:1.8;}
+.dex-modal-row{display:flex;justify-content:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.dex-modal-shiny{font-family:'Press Start 2P',monospace;font-size:8px;color:#c17a00;margin-top:10px;background:#fff9e6;border:2px solid #ffd54f;padding:6px 10px;}
+.dex-modal-cleared{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);margin-top:8px;line-height:1.8;}
+/* ── 필터 모달 ── */
+.fp-modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);z-index:150;display:none;align-items:flex-start;justify-content:center;padding-top:20px;}
+.fp-modal-bg.show{display:flex;}
+.fp-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;width:90%;max-width:960px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.fp-modal-head{background:var(--red);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:3px solid #222;}
+.fp-modal-head-left{display:flex;flex-direction:column;gap:4px;}
+.fp-modal-title{font-family:'Press Start 2P',monospace;font-size:10px;color:white;}
+.fp-modal-sub{font-family:'Press Start 2P',monospace;font-size:8px;color:rgba(255,255,255,0.75);display:flex;align-items:center;gap:6px;}
+.fp-modal-sub .warn{color:var(--yellow);}
+.fp-modal-count{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--yellow);}
+.fp-close-btn{background:white;color:#222;border:3px solid #222;font-family:'Press Start 2P',monospace;font-size:8px;padding:9px 16px;cursor:pointer;box-shadow:3px 3px 0 #000;flex-shrink:0;}
+.fp-close-btn:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 #000;}
+
+.fp-tags-bar{padding:10px 14px;border-bottom:2px solid #ddd;display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:44px;flex-shrink:0;background:white;}
+.fp-tags-bar.empty-tags{color:var(--muted);font-family:'Press Start 2P',monospace;font-size:8px;}
+.ctag{border:2px solid #222;padding:5px 10px;font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;display:inline-flex;align-items:center;line-height:1.8;}
+.ctag.ok{background:#e8f5e9;border-color:var(--correct);color:var(--correct);}
+.ctag.no{background:#ffebee;border-color:var(--wrong);color:var(--wrong);}
+.ctag.rng{background:#fff8e1;border-color:#f9a825;color:#5d4037;}
+
+.fp-grid{padding:12px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;overflow-y:auto;flex:1;}
+.fp-grid::-webkit-scrollbar{width:8px;}
+.fp-grid::-webkit-scrollbar-track{background:#ddd;border-left:2px solid #222;}
+.fp-grid::-webkit-scrollbar-thumb{background:#222;}
+.fp-card{border:3px solid #222;padding:10px 6px 8px;text-align:center;cursor:pointer;background:white;box-shadow:3px 3px 0 #222;transition:transform 0.1s;}
+.fp-card:hover{background:#fff5f5;border-color:var(--red);transform:translate(-1px,-1px);box-shadow:4px 4px 0 #222;}
+.fp-card img{width:60px;height:60px;image-rendering:pixelated;display:block;margin:0 auto 4px;}
+.fp-card-name{font-size:8px;font-weight:700;font-family:'Press Start 2P',monospace;line-height:1.7;color:#222;}
+.fp-card-num{font-size:7px;font-family:'Press Start 2P',monospace;color:var(--muted);margin-top:2px;}
+.fp-empty{padding:30px;text-align:center;font-size:9px;font-family:'Press Start 2P',monospace;color:var(--muted);line-height:2.5;grid-column:1/-1;}
+</style>
+</head>
+<body style="">
+<div class="app">
+<header>
+  <div class="logo">
+    <div class="logo-tiles" id="logo-tiles"><div class="lt red">P</div><div class="lt red">O</div><div class="lt red">K</div><div class="lt red">E</div><div class="lt wht">W</div><div class="lt wht">O</div><div class="lt wht">R</div><div class="lt wht">D</div><div class="lt wht">L</div><div class="lt wht">E</div></div>
+    <span class="logo-ball">🔴</span>
+  </div>
+  <div class="nav">
+    <button class="nav-btn on" id="nav-game" onclick="showPage(&#39;game&#39;)">게임</button>
+    <button class="nav-btn" id="nav-dex" onclick="showPage(&#39;dex&#39;)">도감</button>
+    <button class="nav-btn">로그인</button>
+  </div>
+</header>
+<div id="game-page" class=""><main>
+  <div class="hero">
+    <div class="hero-t">오늘의 포켓몬을 맞춰보세요!</div>
+    <div class="hero-s">시도 횟수 : <strong id="tcnt">0</strong>번</div>
+  </div>
+  <div id="rbanner" class="result-banner">
+    <div class="res-poke"><img id="rimg" src="./PokeWordle - 포켓몬 추리 게임_files/426.png" alt=""><div><div class="res-t" id="rtitle">★ 둥실라이드 정답!</div><div class="res-s" id="rsub">3번 만에 클리어!  이로치 확률: 1%</div></div></div>
+    <button class="next-btn" onclick="resetGame()">▶ 새 게임 시작</button>
+  </div>
+  <!-- 필터 모달 -->
+  <div class="fp-modal-bg" id="fp-modal-bg">
+    <div class="fp-modal">
+      <div class="fp-modal-head">
+        <div class="fp-modal-head-left">
+          <div class="fp-modal-title">힌트 &nbsp; 필터 &nbsp; 도감</div>
+          <div class="fp-modal-sub"><span class="warn">▲</span> 필터 도감 열람 시 이로치 확률 <span class="warn">1%</span> 고정</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="fp-modal-count" id="fp-count">후보 1마리</span>
+          <button class="fp-close-btn" onclick="toggleFilter()">닫기</button>
+        </div>
+      </div>
+      <div class="fp-tags-bar" id="fp-conds"><span class="ctag ok">세대 = 4세대</span><span class="ctag ok">타입1 = 고스트</span><span class="ctag no">타입2 ≠ 없음,드래곤</span><span class="ctag ok">진화 = 2단계</span><span class="ctag rng">글자수 5~5자</span></div>
+      <div class="fp-grid" id="fp-grid">
+      <div class="fp-card" onclick="pickFromFilter(&#39;둥실라이드&#39;)">
+        <img src="./PokeWordle - 포켓몬 추리 게임_files/426.png" alt="둥실라이드" onerror="this.style.opacity=&#39;0.3&#39;">
+        <div class="fp-card-name">둥실라이드</div>
+        <div class="fp-card-num">#426</div>
+      </div></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="inp" placeholder="포켓몬 이름 입력..." autocomplete="off">
+    <div class="ac" id="ac" style="display: none;"><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/30.png" alt="니디나" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;☠️&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#030</span><span class="ac-name">니디나</span><div class="ac-types"><span class="mini-tbadge" style="background:#722872">☠️ 독</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/33.png" alt="니디노" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;☠️&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#033</span><span class="ac-name">니디노</span><div class="ac-types"><span class="mini-tbadge" style="background:#722872">☠️ 독</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/50.png" alt="디그다" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🌍&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#050</span><span class="ac-name">디그다</span><div class="ac-types"><span class="mini-tbadge" style="background:#C09040">🌍 땅</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/58.png" alt="가디" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🔥&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#058</span><span class="ac-name">가디</span><div class="ac-types"><span class="mini-tbadge" style="background:#E8622A">🔥 불꽃</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/59.png" alt="윈디" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🔥&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#059</span><span class="ac-name">윈디</span><div class="ac-types"><span class="mini-tbadge" style="background:#E8622A">🔥 불꽃</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/165.png" alt="레디바" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🐛&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#165</span><span class="ac-name">레디바</span><div class="ac-types"><span class="mini-tbadge" style="background:#6A8A08">🐛 벌레</span><span class="mini-tbadge" style="background:#6060CC">🌪️ 비행</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/166.png" alt="레디안" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🐛&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#166</span><span class="ac-name">레디안</span><div class="ac-types"><span class="mini-tbadge" style="background:#6A8A08">🐛 벌레</span><span class="mini-tbadge" style="background:#6060CC">🌪️ 비행</span></div></div></div><div class="ac-item"><div class="ac-img"><img src="./PokeWordle - 포켓몬 추리 게임_files/282.png" alt="가디안" onerror="this.parentNode.innerHTML=&#39;&lt;span style=\&#39;font-size:26px\&#39;&gt;🔮&lt;/span&gt;&#39;"></div><div class="ac-info"><span class="ac-num">#282</span><span class="ac-name">가디안</span><div class="ac-types"><span class="mini-tbadge" style="background:#C83060">🔮 에스퍼</span><span class="mini-tbadge" style="background:#C85898">🌸 페어리</span></div></div></div></div>
+  </div>
+  <div class="tools">
+    <button class="tool-btn" id="filter-btn" onclick="toggleFilter()">▸ 필터 열람</button>
+    <span class="badge"><span class="dot"></span>이로치 확률 : <span id="spct" style="color:var(--partial)">5%</span></span>
+  </div>
+  <div class="tbl-wrap" id="tw" style="display: none;">
+    <table><thead><tr><th>포켓몬</th><th>세대</th><th>타입 1</th><th>타입 2</th><th>진화</th><th>글자</th></tr></thead><tbody id="tbody"></tbody></table>
+  </div>
+  <div class="how">
+    <div class="how-c"><div class="how-i">🔍</div><div class="how-t">포켓몬 추리</div><div class="how-d">매일 새 포켓몬이 숨겨집니다.<br>이름 입력으로 추리해보세요!</div></div>
+    <div class="how-c"><div class="how-i">🗂️</div><div class="how-t">필터 열람</div><div class="how-d">추측 결과를 바탕으로<br>가능한 포켓몬만 걸러줘요.</div></div>
+    <div class="how-c"><div class="how-i">✨</div><div class="how-t">이로치 챌린지</div><div class="how-d">필터 미사용 클리어 시<br>이로치 확률 5%!</div></div>
+  </div>
+  <div class="leg">
+    <div class="leg-t">색상 안내</div>
+    <div class="leg-r">
+      <span class="ld" style="background:var(--correct)"></span>정확히 일치
+      <span class="ld" style="background:var(--partial)"></span>부분 일치
+      <span class="ld" style="background:var(--wrong)"></span>불일치 〈↑↓ 방향 힌트〉
+    </div>
+  </div>
+  <div class="shiny-card">
+    <div class="shiny-t">★ 이로치 챌린지 시스템</div>
+    <div class="shiny-r"><span class="shiny-p">5%</span> · 필터 미사용 클리어<br><span class="shiny-p">1%</span> · 필터 1회 이상 사용</div>
+  </div>
+</main></div>
+
+<!-- 도감 페이지 -->
+<div id="dex-page" class="">
+<main>
+  <div class="dex-header">
+    <div class="dex-breadcrumb">포켓몬 &nbsp;도감</div>
+    <div class="dex-total" id="dex-total">0/414</div>
+  </div>
+  <div class="dex-filters">
+    <button class="dex-filter-btn on" onclick="setDexFilter(&#39;all&#39;,this)">전체</button>
+    <button class="dex-filter-btn" onclick="setDexFilter(&#39;unlocked&#39;,this)">수집완료</button>
+    <button class="dex-filter-btn" onclick="setDexFilter(&#39;locked&#39;,this)">미수집</button>
+  </div>
+  <div class="dex-grid" id="dex-grid"><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/1.png" alt="???">
+        <div class="dex-card-num">#001</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/2.png" alt="???">
+        <div class="dex-card-num">#002</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/3.png" alt="???">
+        <div class="dex-card-num">#003</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/4.png" alt="???">
+        <div class="dex-card-num">#004</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/5.png" alt="???">
+        <div class="dex-card-num">#005</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/6.png" alt="???">
+        <div class="dex-card-num">#006</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/7.png" alt="???">
+        <div class="dex-card-num">#007</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/8.png" alt="???">
+        <div class="dex-card-num">#008</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/9.png" alt="???">
+        <div class="dex-card-num">#009</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/10.png" alt="???">
+        <div class="dex-card-num">#010</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/11.png" alt="???">
+        <div class="dex-card-num">#011</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/12.png" alt="???">
+        <div class="dex-card-num">#012</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/13.png" alt="???">
+        <div class="dex-card-num">#013</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/14.png" alt="???">
+        <div class="dex-card-num">#014</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/15.png" alt="???">
+        <div class="dex-card-num">#015</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/16.png" alt="???">
+        <div class="dex-card-num">#016</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/17.png" alt="???">
+        <div class="dex-card-num">#017</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/18.png" alt="???">
+        <div class="dex-card-num">#018</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/19.png" alt="???">
+        <div class="dex-card-num">#019</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/20.png" alt="???">
+        <div class="dex-card-num">#020</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/21.png" alt="???">
+        <div class="dex-card-num">#021</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/22.png" alt="???">
+        <div class="dex-card-num">#022</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/23.png" alt="???">
+        <div class="dex-card-num">#023</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/24.png" alt="???">
+        <div class="dex-card-num">#024</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/25.png" alt="???">
+        <div class="dex-card-num">#025</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/26.png" alt="???">
+        <div class="dex-card-num">#026</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/27.png" alt="???">
+        <div class="dex-card-num">#027</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/28.png" alt="???">
+        <div class="dex-card-num">#028</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/29.png" alt="???">
+        <div class="dex-card-num">#029</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/30.png" alt="???">
+        <div class="dex-card-num">#030</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/31.png" alt="???">
+        <div class="dex-card-num">#031</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/32.png" alt="???">
+        <div class="dex-card-num">#032</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/33.png" alt="???">
+        <div class="dex-card-num">#033</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/34.png" alt="???">
+        <div class="dex-card-num">#034</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/35.png" alt="???">
+        <div class="dex-card-num">#035</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/36.png" alt="???">
+        <div class="dex-card-num">#036</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/37.png" alt="???">
+        <div class="dex-card-num">#037</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/38.png" alt="???">
+        <div class="dex-card-num">#038</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/39.png" alt="???">
+        <div class="dex-card-num">#039</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/40.png" alt="???">
+        <div class="dex-card-num">#040</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/41.png" alt="???">
+        <div class="dex-card-num">#041</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/42.png" alt="???">
+        <div class="dex-card-num">#042</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/43.png" alt="???">
+        <div class="dex-card-num">#043</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/44.png" alt="???">
+        <div class="dex-card-num">#044</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/45.png" alt="???">
+        <div class="dex-card-num">#045</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/50.png" alt="???">
+        <div class="dex-card-num">#050</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/51.png" alt="???">
+        <div class="dex-card-num">#051</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/52.png" alt="???">
+        <div class="dex-card-num">#052</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/53.png" alt="???">
+        <div class="dex-card-num">#053</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/54.png" alt="???">
+        <div class="dex-card-num">#054</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/55.png" alt="???">
+        <div class="dex-card-num">#055</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/56.png" alt="???">
+        <div class="dex-card-num">#056</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/57.png" alt="???">
+        <div class="dex-card-num">#057</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/58.png" alt="???">
+        <div class="dex-card-num">#058</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/59.png" alt="???">
+        <div class="dex-card-num">#059</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/60.png" alt="???">
+        <div class="dex-card-num">#060</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/61.png" alt="???">
+        <div class="dex-card-num">#061</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/62.png" alt="???">
+        <div class="dex-card-num">#062</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/63.png" alt="???">
+        <div class="dex-card-num">#063</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/64.png" alt="???">
+        <div class="dex-card-num">#064</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/65.png" alt="???">
+        <div class="dex-card-num">#065</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/66.png" alt="???">
+        <div class="dex-card-num">#066</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/67.png" alt="???">
+        <div class="dex-card-num">#067</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/68.png" alt="???">
+        <div class="dex-card-num">#068</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/74.png" alt="???">
+        <div class="dex-card-num">#074</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/75.png" alt="???">
+        <div class="dex-card-num">#075</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/76.png" alt="???">
+        <div class="dex-card-num">#076</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/79.png" alt="???">
+        <div class="dex-card-num">#079</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/80.png" alt="???">
+        <div class="dex-card-num">#080</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/92.png" alt="???">
+        <div class="dex-card-num">#092</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/93.png" alt="???">
+        <div class="dex-card-num">#093</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/94.png" alt="???">
+        <div class="dex-card-num">#094</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/111.png" alt="???">
+        <div class="dex-card-num">#111</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/128.png" alt="???">
+        <div class="dex-card-num">#128</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/129.png" alt="???">
+        <div class="dex-card-num">#129</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/130.png" alt="???">
+        <div class="dex-card-num">#130</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/131.png" alt="???">
+        <div class="dex-card-num">#131</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/132.png" alt="???">
+        <div class="dex-card-num">#132</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/133.png" alt="???">
+        <div class="dex-card-num">#133</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/134.png" alt="???">
+        <div class="dex-card-num">#134</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/135.png" alt="???">
+        <div class="dex-card-num">#135</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/143.png" alt="???">
+        <div class="dex-card-num">#143</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/144.png" alt="???">
+        <div class="dex-card-num">#144</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/145.png" alt="???">
+        <div class="dex-card-num">#145</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/146.png" alt="???">
+        <div class="dex-card-num">#146</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/147.png" alt="???">
+        <div class="dex-card-num">#147</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/148.png" alt="???">
+        <div class="dex-card-num">#148</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/149.png" alt="???">
+        <div class="dex-card-num">#149</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/150.png" alt="???">
+        <div class="dex-card-num">#150</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/151.png" alt="???">
+        <div class="dex-card-num">#151</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/152.png" alt="???">
+        <div class="dex-card-num">#152</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/153.png" alt="???">
+        <div class="dex-card-num">#153</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/154.png" alt="???">
+        <div class="dex-card-num">#154</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/155.png" alt="???">
+        <div class="dex-card-num">#155</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/156.png" alt="???">
+        <div class="dex-card-num">#156</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/157.png" alt="???">
+        <div class="dex-card-num">#157</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/158.png" alt="???">
+        <div class="dex-card-num">#158</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/159.png" alt="???">
+        <div class="dex-card-num">#159</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/160.png" alt="???">
+        <div class="dex-card-num">#160</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/165.png" alt="???">
+        <div class="dex-card-num">#165</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/166.png" alt="???">
+        <div class="dex-card-num">#166</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/167.png" alt="???">
+        <div class="dex-card-num">#167</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/168.png" alt="???">
+        <div class="dex-card-num">#168</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/172.png" alt="???">
+        <div class="dex-card-num">#172</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/173.png" alt="???">
+        <div class="dex-card-num">#173</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/174.png" alt="???">
+        <div class="dex-card-num">#174</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/175.png" alt="???">
+        <div class="dex-card-num">#175</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/176.png" alt="???">
+        <div class="dex-card-num">#176</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/179.png" alt="???">
+        <div class="dex-card-num">#179</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/180.png" alt="???">
+        <div class="dex-card-num">#180</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/181.png" alt="???">
+        <div class="dex-card-num">#181</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/183.png" alt="???">
+        <div class="dex-card-num">#183</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/184.png" alt="???">
+        <div class="dex-card-num">#184</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/196.png" alt="???">
+        <div class="dex-card-num">#196</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/197.png" alt="???">
+        <div class="dex-card-num">#197</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/209.png" alt="???">
+        <div class="dex-card-num">#209</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/210.png" alt="???">
+        <div class="dex-card-num">#210</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/212.png" alt="???">
+        <div class="dex-card-num">#212</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/214.png" alt="???">
+        <div class="dex-card-num">#214</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/228.png" alt="???">
+        <div class="dex-card-num">#228</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/229.png" alt="???">
+        <div class="dex-card-num">#229</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/231.png" alt="???">
+        <div class="dex-card-num">#231</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/232.png" alt="???">
+        <div class="dex-card-num">#232</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/242.png" alt="???">
+        <div class="dex-card-num">#242</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/243.png" alt="???">
+        <div class="dex-card-num">#243</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/244.png" alt="???">
+        <div class="dex-card-num">#244</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/245.png" alt="???">
+        <div class="dex-card-num">#245</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/246.png" alt="???">
+        <div class="dex-card-num">#246</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/247.png" alt="???">
+        <div class="dex-card-num">#247</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/248.png" alt="???">
+        <div class="dex-card-num">#248</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/249.png" alt="???">
+        <div class="dex-card-num">#249</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/250.png" alt="???">
+        <div class="dex-card-num">#250</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/251.png" alt="???">
+        <div class="dex-card-num">#251</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/252.png" alt="???">
+        <div class="dex-card-num">#252</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/253.png" alt="???">
+        <div class="dex-card-num">#253</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/254.png" alt="???">
+        <div class="dex-card-num">#254</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/255.png" alt="???">
+        <div class="dex-card-num">#255</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/256.png" alt="???">
+        <div class="dex-card-num">#256</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/257.png" alt="???">
+        <div class="dex-card-num">#257</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/258.png" alt="???">
+        <div class="dex-card-num">#258</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/259.png" alt="???">
+        <div class="dex-card-num">#259</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/260.png" alt="???">
+        <div class="dex-card-num">#260</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/280.png" alt="???">
+        <div class="dex-card-num">#280</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/281.png" alt="???">
+        <div class="dex-card-num">#281</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/282.png" alt="???">
+        <div class="dex-card-num">#282</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/302.png" alt="???">
+        <div class="dex-card-num">#302</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/333.png" alt="???">
+        <div class="dex-card-num">#333</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/334.png" alt="???">
+        <div class="dex-card-num">#334</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/349.png" alt="???">
+        <div class="dex-card-num">#349</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/350.png" alt="???">
+        <div class="dex-card-num">#350</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/359.png" alt="???">
+        <div class="dex-card-num">#359</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/371.png" alt="???">
+        <div class="dex-card-num">#371</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/372.png" alt="???">
+        <div class="dex-card-num">#372</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/373.png" alt="???">
+        <div class="dex-card-num">#373</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/374.png" alt="???">
+        <div class="dex-card-num">#374</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/375.png" alt="???">
+        <div class="dex-card-num">#375</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/376.png" alt="???">
+        <div class="dex-card-num">#376</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/377.png" alt="???">
+        <div class="dex-card-num">#377</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/378.png" alt="???">
+        <div class="dex-card-num">#378</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/379.png" alt="???">
+        <div class="dex-card-num">#379</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/380.png" alt="???">
+        <div class="dex-card-num">#380</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/381.png" alt="???">
+        <div class="dex-card-num">#381</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/382.png" alt="???">
+        <div class="dex-card-num">#382</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/383.png" alt="???">
+        <div class="dex-card-num">#383</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/384.png" alt="???">
+        <div class="dex-card-num">#384</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/385.png" alt="???">
+        <div class="dex-card-num">#385</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/386.png" alt="???">
+        <div class="dex-card-num">#386</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/387.png" alt="???">
+        <div class="dex-card-num">#387</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/388.png" alt="???">
+        <div class="dex-card-num">#388</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/389.png" alt="???">
+        <div class="dex-card-num">#389</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/390.png" alt="???">
+        <div class="dex-card-num">#390</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/391.png" alt="???">
+        <div class="dex-card-num">#391</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/392.png" alt="???">
+        <div class="dex-card-num">#392</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/393.png" alt="???">
+        <div class="dex-card-num">#393</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/394.png" alt="???">
+        <div class="dex-card-num">#394</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/395.png" alt="???">
+        <div class="dex-card-num">#395</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/396.png" alt="???">
+        <div class="dex-card-num">#396</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/397.png" alt="???">
+        <div class="dex-card-num">#397</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/398.png" alt="???">
+        <div class="dex-card-num">#398</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/399.png" alt="???">
+        <div class="dex-card-num">#399</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/400.png" alt="???">
+        <div class="dex-card-num">#400</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/401.png" alt="???">
+        <div class="dex-card-num">#401</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/402.png" alt="???">
+        <div class="dex-card-num">#402</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/403.png" alt="???">
+        <div class="dex-card-num">#403</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/404.png" alt="???">
+        <div class="dex-card-num">#404</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/405.png" alt="???">
+        <div class="dex-card-num">#405</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/406.png" alt="???">
+        <div class="dex-card-num">#406</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/407.png" alt="???">
+        <div class="dex-card-num">#407</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/408.png" alt="???">
+        <div class="dex-card-num">#408</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/409.png" alt="???">
+        <div class="dex-card-num">#409</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/410.png" alt="???">
+        <div class="dex-card-num">#410</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/411.png" alt="???">
+        <div class="dex-card-num">#411</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/418.png" alt="???">
+        <div class="dex-card-num">#418</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/419.png" alt="???">
+        <div class="dex-card-num">#419</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/420.png" alt="???">
+        <div class="dex-card-num">#420</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/421.png" alt="???">
+        <div class="dex-card-num">#421</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/425.png" alt="???">
+        <div class="dex-card-num">#425</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/426.png" alt="???">
+        <div class="dex-card-num">#426</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/427.png" alt="???">
+        <div class="dex-card-num">#427</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/428.png" alt="???">
+        <div class="dex-card-num">#428</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/431.png" alt="???">
+        <div class="dex-card-num">#431</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/432.png" alt="???">
+        <div class="dex-card-num">#432</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/433.png" alt="???">
+        <div class="dex-card-num">#433</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/434.png" alt="???">
+        <div class="dex-card-num">#434</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/435.png" alt="???">
+        <div class="dex-card-num">#435</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/436.png" alt="???">
+        <div class="dex-card-num">#436</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/437.png" alt="???">
+        <div class="dex-card-num">#437</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/441.png" alt="???">
+        <div class="dex-card-num">#441</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/442.png" alt="???">
+        <div class="dex-card-num">#442</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/443.png" alt="???">
+        <div class="dex-card-num">#443</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/444.png" alt="???">
+        <div class="dex-card-num">#444</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/445.png" alt="???">
+        <div class="dex-card-num">#445</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/446.png" alt="???">
+        <div class="dex-card-num">#446</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/447.png" alt="???">
+        <div class="dex-card-num">#447</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/448.png" alt="???">
+        <div class="dex-card-num">#448</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/449.png" alt="???">
+        <div class="dex-card-num">#449</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/450.png" alt="???">
+        <div class="dex-card-num">#450</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/451.png" alt="???">
+        <div class="dex-card-num">#451</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/452.png" alt="???">
+        <div class="dex-card-num">#452</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/453.png" alt="???">
+        <div class="dex-card-num">#453</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/454.png" alt="???">
+        <div class="dex-card-num">#454</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/456.png" alt="???">
+        <div class="dex-card-num">#456</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/457.png" alt="???">
+        <div class="dex-card-num">#457</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/459.png" alt="???">
+        <div class="dex-card-num">#459</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/460.png" alt="???">
+        <div class="dex-card-num">#460</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/461.png" alt="???">
+        <div class="dex-card-num">#461</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/462.png" alt="???">
+        <div class="dex-card-num">#462</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/463.png" alt="???">
+        <div class="dex-card-num">#463</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/464.png" alt="???">
+        <div class="dex-card-num">#464</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/465.png" alt="???">
+        <div class="dex-card-num">#465</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/466.png" alt="???">
+        <div class="dex-card-num">#466</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/467.png" alt="???">
+        <div class="dex-card-num">#467</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/468.png" alt="???">
+        <div class="dex-card-num">#468</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/469.png" alt="???">
+        <div class="dex-card-num">#469</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/470.png" alt="???">
+        <div class="dex-card-num">#470</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/471.png" alt="???">
+        <div class="dex-card-num">#471</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/472.png" alt="???">
+        <div class="dex-card-num">#472</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/473.png" alt="???">
+        <div class="dex-card-num">#473</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/474.png" alt="???">
+        <div class="dex-card-num">#474</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/475.png" alt="???">
+        <div class="dex-card-num">#475</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/476.png" alt="???">
+        <div class="dex-card-num">#476</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/477.png" alt="???">
+        <div class="dex-card-num">#477</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/478.png" alt="???">
+        <div class="dex-card-num">#478</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/479.png" alt="???">
+        <div class="dex-card-num">#479</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/480.png" alt="???">
+        <div class="dex-card-num">#480</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/481.png" alt="???">
+        <div class="dex-card-num">#481</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/482.png" alt="???">
+        <div class="dex-card-num">#482</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/483.png" alt="???">
+        <div class="dex-card-num">#483</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/484.png" alt="???">
+        <div class="dex-card-num">#484</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/485.png" alt="???">
+        <div class="dex-card-num">#485</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/486.png" alt="???">
+        <div class="dex-card-num">#486</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/487.png" alt="???">
+        <div class="dex-card-num">#487</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/488.png" alt="???">
+        <div class="dex-card-num">#488</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/489.png" alt="???">
+        <div class="dex-card-num">#489</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/490.png" alt="???">
+        <div class="dex-card-num">#490</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/491.png" alt="???">
+        <div class="dex-card-num">#491</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/492.png" alt="???">
+        <div class="dex-card-num">#492</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/493.png" alt="???">
+        <div class="dex-card-num">#493</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/494.png" alt="???">
+        <div class="dex-card-num">#494</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/495.png" alt="???">
+        <div class="dex-card-num">#495</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/496.png" alt="???">
+        <div class="dex-card-num">#496</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/497.png" alt="???">
+        <div class="dex-card-num">#497</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/498.png" alt="???">
+        <div class="dex-card-num">#498</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/499.png" alt="???">
+        <div class="dex-card-num">#499</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/500.png" alt="???">
+        <div class="dex-card-num">#500</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/501.png" alt="???">
+        <div class="dex-card-num">#501</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/502.png" alt="???">
+        <div class="dex-card-num">#502</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/503.png" alt="???">
+        <div class="dex-card-num">#503</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/504.png" alt="???">
+        <div class="dex-card-num">#504</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/505.png" alt="???">
+        <div class="dex-card-num">#505</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/506.png" alt="???">
+        <div class="dex-card-num">#506</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/507.png" alt="???">
+        <div class="dex-card-num">#507</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/508.png" alt="???">
+        <div class="dex-card-num">#508</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/509.png" alt="???">
+        <div class="dex-card-num">#509</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/510.png" alt="???">
+        <div class="dex-card-num">#510</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/511.png" alt="???">
+        <div class="dex-card-num">#511</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/512.png" alt="???">
+        <div class="dex-card-num">#512</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/513.png" alt="???">
+        <div class="dex-card-num">#513</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/514.png" alt="???">
+        <div class="dex-card-num">#514</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/515.png" alt="???">
+        <div class="dex-card-num">#515</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/516.png" alt="???">
+        <div class="dex-card-num">#516</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/517.png" alt="???">
+        <div class="dex-card-num">#517</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/518.png" alt="???">
+        <div class="dex-card-num">#518</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/519.png" alt="???">
+        <div class="dex-card-num">#519</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/520.png" alt="???">
+        <div class="dex-card-num">#520</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/521.png" alt="???">
+        <div class="dex-card-num">#521</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/522.png" alt="???">
+        <div class="dex-card-num">#522</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/523.png" alt="???">
+        <div class="dex-card-num">#523</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/524.png" alt="???">
+        <div class="dex-card-num">#524</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/525.png" alt="???">
+        <div class="dex-card-num">#525</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/526.png" alt="???">
+        <div class="dex-card-num">#526</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/527.png" alt="???">
+        <div class="dex-card-num">#527</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/528.png" alt="???">
+        <div class="dex-card-num">#528</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/529.png" alt="???">
+        <div class="dex-card-num">#529</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/530.png" alt="???">
+        <div class="dex-card-num">#530</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/531.png" alt="???">
+        <div class="dex-card-num">#531</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/532.png" alt="???">
+        <div class="dex-card-num">#532</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/533.png" alt="???">
+        <div class="dex-card-num">#533</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/534.png" alt="???">
+        <div class="dex-card-num">#534</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/535.png" alt="???">
+        <div class="dex-card-num">#535</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/536.png" alt="???">
+        <div class="dex-card-num">#536</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/537.png" alt="???">
+        <div class="dex-card-num">#537</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/538.png" alt="???">
+        <div class="dex-card-num">#538</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/539.png" alt="???">
+        <div class="dex-card-num">#539</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/540.png" alt="???">
+        <div class="dex-card-num">#540</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/541.png" alt="???">
+        <div class="dex-card-num">#541</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/542.png" alt="???">
+        <div class="dex-card-num">#542</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/543.png" alt="???">
+        <div class="dex-card-num">#543</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/544.png" alt="???">
+        <div class="dex-card-num">#544</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/545.png" alt="???">
+        <div class="dex-card-num">#545</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/546.png" alt="???">
+        <div class="dex-card-num">#546</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/547.png" alt="???">
+        <div class="dex-card-num">#547</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/548.png" alt="???">
+        <div class="dex-card-num">#548</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/549.png" alt="???">
+        <div class="dex-card-num">#549</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/550.png" alt="???">
+        <div class="dex-card-num">#550</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/551.png" alt="???">
+        <div class="dex-card-num">#551</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/552.png" alt="???">
+        <div class="dex-card-num">#552</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/553.png" alt="???">
+        <div class="dex-card-num">#553</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/554.png" alt="???">
+        <div class="dex-card-num">#554</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/555.png" alt="???">
+        <div class="dex-card-num">#555</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/556.png" alt="???">
+        <div class="dex-card-num">#556</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/557.png" alt="???">
+        <div class="dex-card-num">#557</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/558.png" alt="???">
+        <div class="dex-card-num">#558</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/559.png" alt="???">
+        <div class="dex-card-num">#559</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/560.png" alt="???">
+        <div class="dex-card-num">#560</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/561.png" alt="???">
+        <div class="dex-card-num">#561</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/562.png" alt="???">
+        <div class="dex-card-num">#562</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/563.png" alt="???">
+        <div class="dex-card-num">#563</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/564.png" alt="???">
+        <div class="dex-card-num">#564</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/565.png" alt="???">
+        <div class="dex-card-num">#565</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/566.png" alt="???">
+        <div class="dex-card-num">#566</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/567.png" alt="???">
+        <div class="dex-card-num">#567</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/568.png" alt="???">
+        <div class="dex-card-num">#568</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/569.png" alt="???">
+        <div class="dex-card-num">#569</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/570.png" alt="???">
+        <div class="dex-card-num">#570</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/571.png" alt="???">
+        <div class="dex-card-num">#571</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/572.png" alt="???">
+        <div class="dex-card-num">#572</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/573.png" alt="???">
+        <div class="dex-card-num">#573</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/574.png" alt="???">
+        <div class="dex-card-num">#574</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/575.png" alt="???">
+        <div class="dex-card-num">#575</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/576.png" alt="???">
+        <div class="dex-card-num">#576</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/577.png" alt="???">
+        <div class="dex-card-num">#577</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/578.png" alt="???">
+        <div class="dex-card-num">#578</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/579.png" alt="???">
+        <div class="dex-card-num">#579</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/580.png" alt="???">
+        <div class="dex-card-num">#580</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/581.png" alt="???">
+        <div class="dex-card-num">#581</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/582.png" alt="???">
+        <div class="dex-card-num">#582</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/583.png" alt="???">
+        <div class="dex-card-num">#583</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/584.png" alt="???">
+        <div class="dex-card-num">#584</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/585.png" alt="???">
+        <div class="dex-card-num">#585</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/586.png" alt="???">
+        <div class="dex-card-num">#586</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/587.png" alt="???">
+        <div class="dex-card-num">#587</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/588.png" alt="???">
+        <div class="dex-card-num">#588</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/589.png" alt="???">
+        <div class="dex-card-num">#589</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/590.png" alt="???">
+        <div class="dex-card-num">#590</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/591.png" alt="???">
+        <div class="dex-card-num">#591</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/592.png" alt="???">
+        <div class="dex-card-num">#592</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/593.png" alt="???">
+        <div class="dex-card-num">#593</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/594.png" alt="???">
+        <div class="dex-card-num">#594</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/595.png" alt="???">
+        <div class="dex-card-num">#595</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/596.png" alt="???">
+        <div class="dex-card-num">#596</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/597.png" alt="???">
+        <div class="dex-card-num">#597</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/598.png" alt="???">
+        <div class="dex-card-num">#598</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/599.png" alt="???">
+        <div class="dex-card-num">#599</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/600.png" alt="???">
+        <div class="dex-card-num">#600</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/601.png" alt="???">
+        <div class="dex-card-num">#601</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/602.png" alt="???">
+        <div class="dex-card-num">#602</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/603.png" alt="???">
+        <div class="dex-card-num">#603</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/604.png" alt="???">
+        <div class="dex-card-num">#604</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/605.png" alt="???">
+        <div class="dex-card-num">#605</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/606.png" alt="???">
+        <div class="dex-card-num">#606</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/607.png" alt="???">
+        <div class="dex-card-num">#607</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/608.png" alt="???">
+        <div class="dex-card-num">#608</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/609.png" alt="???">
+        <div class="dex-card-num">#609</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/610.png" alt="???">
+        <div class="dex-card-num">#610</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/611.png" alt="???">
+        <div class="dex-card-num">#611</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/612.png" alt="???">
+        <div class="dex-card-num">#612</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/613.png" alt="???">
+        <div class="dex-card-num">#613</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/614.png" alt="???">
+        <div class="dex-card-num">#614</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/615.png" alt="???">
+        <div class="dex-card-num">#615</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/616.png" alt="???">
+        <div class="dex-card-num">#616</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/617.png" alt="???">
+        <div class="dex-card-num">#617</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/618.png" alt="???">
+        <div class="dex-card-num">#618</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/619.png" alt="???">
+        <div class="dex-card-num">#619</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/620.png" alt="???">
+        <div class="dex-card-num">#620</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/621.png" alt="???">
+        <div class="dex-card-num">#621</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/622.png" alt="???">
+        <div class="dex-card-num">#622</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/623.png" alt="???">
+        <div class="dex-card-num">#623</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/624.png" alt="???">
+        <div class="dex-card-num">#624</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/625.png" alt="???">
+        <div class="dex-card-num">#625</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/626.png" alt="???">
+        <div class="dex-card-num">#626</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/627.png" alt="???">
+        <div class="dex-card-num">#627</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/628.png" alt="???">
+        <div class="dex-card-num">#628</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/629.png" alt="???">
+        <div class="dex-card-num">#629</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/630.png" alt="???">
+        <div class="dex-card-num">#630</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/631.png" alt="???">
+        <div class="dex-card-num">#631</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/632.png" alt="???">
+        <div class="dex-card-num">#632</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/633.png" alt="???">
+        <div class="dex-card-num">#633</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/634.png" alt="???">
+        <div class="dex-card-num">#634</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/635.png" alt="???">
+        <div class="dex-card-num">#635</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/636.png" alt="???">
+        <div class="dex-card-num">#636</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/637.png" alt="???">
+        <div class="dex-card-num">#637</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/638.png" alt="???">
+        <div class="dex-card-num">#638</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/639.png" alt="???">
+        <div class="dex-card-num">#639</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/640.png" alt="???">
+        <div class="dex-card-num">#640</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/641.png" alt="???">
+        <div class="dex-card-num">#641</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/642.png" alt="???">
+        <div class="dex-card-num">#642</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/643.png" alt="???">
+        <div class="dex-card-num">#643</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/644.png" alt="???">
+        <div class="dex-card-num">#644</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/645.png" alt="???">
+        <div class="dex-card-num">#645</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/646.png" alt="???">
+        <div class="dex-card-num">#646</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/647.png" alt="???">
+        <div class="dex-card-num">#647</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/648.png" alt="???">
+        <div class="dex-card-num">#648</div>
+        <div class="dex-card-name hidden">???</div>
+      </div><div class="dex-card">
+        <img class="silhouette" src="./PokeWordle - 포켓몬 추리 게임_files/649.png" alt="???">
+        <div class="dex-card-num">#649</div>
+        <div class="dex-card-name hidden">???</div>
+      </div></div>
+</main>
+</div>
+
+<!-- 도감 모달 -->
+<div class="dex-modal-bg" id="dex-modal-bg" onclick="closeDexModal(event)">
+  <div class="dex-modal" id="dex-modal">
+    <button class="dex-modal-close" onclick="closeDexModal()">✕</button>
+    <div class="dex-modal-num" id="dm-num"></div>
+    <img id="dm-img" src="file:///C:/Users/%EC%A0%95%EC%97%B0%EC%9A%B0/Downloads/index_7.html" alt="">
+    <div class="dex-modal-name" id="dm-name"></div>
+    <div class="dex-modal-row" id="dm-types"></div>
+    <div class="dex-modal-row" id="dm-info"></div>
+    <div id="dm-shiny" class="dex-modal-shiny" style="display:none">✨ 이로치 포획!</div>
+    <div class="dex-modal-cleared" id="dm-cleared"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo">POKE<span>WORDLE</span></div><div class="footer-tagline">Daily Pokemon<br>Puzzle Game</div></div>
+    <div class="footer-col"><h4>Product</h4><a>게임</a><a>도감</a><a>게임 방법</a></div>
+    <div class="footer-col"><h4>Company</h4><a>소개</a></div>
+    <div class="footer-col"><h4>Legal</h4><a>개인정보처리방침</a><a>이용약관</a></div>
+  </div>
+  <div class="footer-bottom">© 2026 PokeWordle · Made for Pokemon fans</div>
+</footer>
+</div>
+<script>
+'POKEWORDLE'.split('').forEach((c,i)=>{const d=document.createElement('div');d.className='lt '+(i<4?'red':'wht');d.textContent=c;document.getElementById('logo-tiles').appendChild(d);});
+
+const TCOL={'노말':'#9A9A7A','불꽃':'#E8622A','물':'#4A78E0','전기':'#C8A000','풀':'#4A9228','얼음':'#4AACAC','격투':'#921818','독':'#722872','땅':'#C09040','비행':'#6060CC','에스퍼':'#C83060','벌레':'#6A8A08','바위':'#8A7820','고스트':'#4A3870','드래곤':'#4418D8','악':'#4A3428','강철':'#7A7A92','페어리':'#C85898','없음':'#999'};
+const TICON={'노말':'⬜','불꽃':'🔥','물':'💧','전기':'⚡','풀':'🌿','얼음':'❄️','격투':'🥊','독':'☠️','땅':'🌍','비행':'🌪️','에스퍼':'🔮','벌레':'🐛','바위':'🪨','고스트':'👻','드래곤':'🐲','악':'🌑','강철':'⚙️','페어리':'🌸','없음':'—'};
+
+const DB=[
+  {id:1,ko:'이상해씨',gen:1,t1:'풀',t2:'독',evo:1,len:4},{id:2,ko:'이상해풀',gen:1,t1:'풀',t2:'독',evo:2,len:4},{id:3,ko:'이상해꽃',gen:1,t1:'풀',t2:'독',evo:3,len:4},
+  {id:4,ko:'파이리',gen:1,t1:'불꽃',t2:'없음',evo:1,len:3},{id:5,ko:'리자드',gen:1,t1:'불꽃',t2:'없음',evo:2,len:3},{id:6,ko:'리자몽',gen:1,t1:'불꽃',t2:'비행',evo:3,len:3},
+  {id:7,ko:'꼬부기',gen:1,t1:'물',t2:'없음',evo:1,len:3},{id:8,ko:'어니부기',gen:1,t1:'물',t2:'없음',evo:2,len:4},{id:9,ko:'거북왕',gen:1,t1:'물',t2:'없음',evo:3,len:3},
+  {id:10,ko:'캐터피',gen:1,t1:'벌레',t2:'없음',evo:1,len:3},{id:11,ko:'단데기',gen:1,t1:'벌레',t2:'없음',evo:2,len:3},{id:12,ko:'버터플',gen:1,t1:'벌레',t2:'비행',evo:3,len:3},
+  {id:13,ko:'뿔충이',gen:1,t1:'벌레',t2:'독',evo:1,len:3},{id:14,ko:'딱충이',gen:1,t1:'벌레',t2:'독',evo:2,len:3},{id:15,ko:'독침붕',gen:1,t1:'벌레',t2:'독',evo:3,len:3},
+  {id:16,ko:'구구',gen:1,t1:'노말',t2:'비행',evo:1,len:2},{id:17,ko:'피죤',gen:1,t1:'노말',t2:'비행',evo:2,len:2},{id:18,ko:'피죤투',gen:1,t1:'노말',t2:'비행',evo:3,len:3},
+  {id:19,ko:'꼬렛',gen:1,t1:'노말',t2:'없음',evo:1,len:2},{id:20,ko:'레트라',gen:1,t1:'노말',t2:'없음',evo:2,len:3},
+  {id:21,ko:'깨비참',gen:1,t1:'노말',t2:'비행',evo:1,len:3},{id:22,ko:'깨비드릴조',gen:1,t1:'노말',t2:'비행',evo:2,len:5},
+  {id:23,ko:'아보',gen:1,t1:'독',t2:'없음',evo:1,len:2},{id:24,ko:'아보크',gen:1,t1:'독',t2:'없음',evo:2,len:3},
+  {id:25,ko:'피카츄',gen:1,t1:'전기',t2:'없음',evo:2,len:3},{id:26,ko:'라이츄',gen:1,t1:'전기',t2:'없음',evo:3,len:3},
+  {id:27,ko:'모래두지',gen:1,t1:'땅',t2:'없음',evo:1,len:4},{id:28,ko:'고지',gen:1,t1:'땅',t2:'없음',evo:2,len:2},
+  {id:29,ko:'니드런♀',gen:1,t1:'독',t2:'없음',evo:1,len:4},{id:30,ko:'니디나',gen:1,t1:'독',t2:'없음',evo:2,len:3},{id:31,ko:'니드퀸',gen:1,t1:'독',t2:'땅',evo:3,len:3},
+  {id:32,ko:'니드런♂',gen:1,t1:'독',t2:'없음',evo:1,len:4},{id:33,ko:'니디노',gen:1,t1:'독',t2:'없음',evo:2,len:3},{id:34,ko:'니드킹',gen:1,t1:'독',t2:'땅',evo:3,len:3},
+  {id:35,ko:'삐삐',gen:1,t1:'페어리',t2:'없음',evo:1,len:2},{id:36,ko:'픽시',gen:1,t1:'페어리',t2:'없음',evo:2,len:2},
+  {id:37,ko:'식스테일',gen:1,t1:'불꽃',t2:'없음',evo:1,len:4},{id:38,ko:'나인테일',gen:1,t1:'불꽃',t2:'없음',evo:2,len:4},
+  {id:39,ko:'푸린',gen:1,t1:'노말',t2:'페어리',evo:1,len:2},{id:40,ko:'푸크린',gen:1,t1:'노말',t2:'페어리',evo:2,len:3},
+  {id:41,ko:'주뱃',gen:1,t1:'독',t2:'비행',evo:1,len:2},{id:42,ko:'골뱃',gen:1,t1:'독',t2:'비행',evo:2,len:2},
+  {id:43,ko:'뚜벅쵸',gen:1,t1:'풀',t2:'독',evo:1,len:3},{id:44,ko:'냄새꼬',gen:1,t1:'풀',t2:'독',evo:2,len:3},{id:45,ko:'라플레시아',gen:1,t1:'풀',t2:'독',evo:3,len:5},
+  {id:50,ko:'디그다',gen:1,t1:'땅',t2:'없음',evo:1,len:3},{id:51,ko:'닥트리오',gen:1,t1:'땅',t2:'없음',evo:2,len:4},
+  {id:52,ko:'나옹',gen:1,t1:'노말',t2:'없음',evo:1,len:2},{id:53,ko:'페르시온',gen:1,t1:'노말',t2:'없음',evo:2,len:4},
+  {id:54,ko:'고라파덕',gen:1,t1:'물',t2:'없음',evo:1,len:4},{id:55,ko:'골덕',gen:1,t1:'물',t2:'없음',evo:2,len:2},
+  {id:56,ko:'망키',gen:1,t1:'격투',t2:'없음',evo:1,len:2},{id:57,ko:'성원숭',gen:1,t1:'격투',t2:'없음',evo:2,len:3},
+  {id:58,ko:'가디',gen:1,t1:'불꽃',t2:'없음',evo:1,len:2},{id:59,ko:'윈디',gen:1,t1:'불꽃',t2:'없음',evo:2,len:2},
+  {id:60,ko:'발챙이',gen:1,t1:'물',t2:'없음',evo:1,len:3},{id:61,ko:'수륙챙이',gen:1,t1:'물',t2:'없음',evo:2,len:4},{id:62,ko:'강챙이',gen:1,t1:'물',t2:'격투',evo:3,len:3},
+  {id:63,ko:'케이시',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:3},{id:64,ko:'윤겔라',gen:1,t1:'에스퍼',t2:'없음',evo:2,len:3},{id:65,ko:'후딘',gen:1,t1:'에스퍼',t2:'없음',evo:3,len:2},
+  {id:66,ko:'알통몬',gen:1,t1:'격투',t2:'없음',evo:1,len:3},{id:67,ko:'근육몬',gen:1,t1:'격투',t2:'없음',evo:2,len:3},{id:68,ko:'괴력몬',gen:1,t1:'격투',t2:'없음',evo:3,len:3},
+  {id:74,ko:'꼬마돌',gen:1,t1:'바위',t2:'땅',evo:1,len:3},{id:75,ko:'데구리',gen:1,t1:'바위',t2:'땅',evo:2,len:3},{id:76,ko:'딱구리',gen:1,t1:'바위',t2:'땅',evo:3,len:3},
+  {id:79,ko:'야돈',gen:1,t1:'물',t2:'에스퍼',evo:1,len:2},{id:80,ko:'야도란',gen:1,t1:'물',t2:'에스퍼',evo:2,len:3},
+  {id:92,ko:'고오스',gen:1,t1:'고스트',t2:'독',evo:1,len:3},{id:93,ko:'고우스트',gen:1,t1:'고스트',t2:'독',evo:2,len:4},{id:94,ko:'팬텀',gen:1,t1:'고스트',t2:'독',evo:3,len:2},
+  {id:111,ko:'럭키',gen:1,t1:'노말',t2:'없음',evo:1,len:2},
+  {id:128,ko:'잉어킹',gen:1,t1:'물',t2:'없음',evo:1,len:3},{id:129,ko:'갸라도스',gen:1,t1:'물',t2:'비행',evo:2,len:4},
+  {id:130,ko:'라프라스',gen:1,t1:'물',t2:'얼음',evo:1,len:4},{id:131,ko:'메타몽',gen:1,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:132,ko:'이브이',gen:1,t1:'노말',t2:'없음',evo:1,len:3},{id:133,ko:'샤미드',gen:1,t1:'물',t2:'없음',evo:2,len:3},{id:134,ko:'쥬피썬더',gen:1,t1:'전기',t2:'없음',evo:2,len:5},{id:135,ko:'부스터',gen:1,t1:'불꽃',t2:'없음',evo:2,len:3},
+  {id:143,ko:'잠만보',gen:1,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:144,ko:'프리져',gen:1,t1:'얼음',t2:'비행',evo:1,len:3},{id:145,ko:'썬더',gen:1,t1:'전기',t2:'비행',evo:1,len:2},{id:146,ko:'파이어',gen:1,t1:'불꽃',t2:'비행',evo:1,len:3},
+  {id:147,ko:'미뇽',gen:1,t1:'드래곤',t2:'없음',evo:1,len:2},{id:148,ko:'신뇽',gen:1,t1:'드래곤',t2:'없음',evo:2,len:2},{id:149,ko:'망나뇽',gen:1,t1:'드래곤',t2:'비행',evo:3,len:3},
+  {id:150,ko:'뮤츠',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:2},{id:151,ko:'뮤',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:1},
+  {id:152,ko:'치코리타',gen:2,t1:'풀',t2:'없음',evo:1,len:4},{id:153,ko:'베이리프',gen:2,t1:'풀',t2:'없음',evo:2,len:4},{id:154,ko:'메가니움',gen:2,t1:'풀',t2:'없음',evo:3,len:4},
+  {id:155,ko:'브케인',gen:2,t1:'불꽃',t2:'없음',evo:1,len:3},{id:156,ko:'마그케인',gen:2,t1:'불꽃',t2:'없음',evo:2,len:4},{id:157,ko:'블레이범',gen:2,t1:'불꽃',t2:'없음',evo:3,len:4},
+  {id:158,ko:'리아코',gen:2,t1:'물',t2:'없음',evo:1,len:3},{id:159,ko:'엘리게이',gen:2,t1:'물',t2:'없음',evo:2,len:4},{id:160,ko:'장크로다일',gen:2,t1:'물',t2:'없음',evo:3,len:5},
+  {id:165,ko:'레디바',gen:2,t1:'벌레',t2:'비행',evo:1,len:3},{id:166,ko:'레디안',gen:2,t1:'벌레',t2:'비행',evo:2,len:3},
+  {id:167,ko:'페이검',gen:2,t1:'벌레',t2:'독',evo:1,len:3},{id:168,ko:'아리아도스',gen:2,t1:'벌레',t2:'독',evo:2,len:5},
+  {id:172,ko:'피츄',gen:2,t1:'전기',t2:'없음',evo:1,len:2},{id:173,ko:'삐',gen:2,t1:'페어리',t2:'없음',evo:1,len:1},{id:174,ko:'푸푸린',gen:2,t1:'노말',t2:'페어리',evo:1,len:3},
+  {id:175,ko:'토게피',gen:2,t1:'페어리',t2:'없음',evo:1,len:3},{id:176,ko:'토게틱',gen:2,t1:'페어리',t2:'비행',evo:2,len:3},
+  {id:179,ko:'메리프',gen:2,t1:'전기',t2:'없음',evo:1,len:3},{id:180,ko:'보송송',gen:2,t1:'전기',t2:'없음',evo:2,len:3},{id:181,ko:'전룡',gen:2,t1:'전기',t2:'없음',evo:3,len:2},
+  {id:183,ko:'마릴',gen:2,t1:'물',t2:'페어리',evo:1,len:2},{id:184,ko:'마릴리',gen:2,t1:'물',t2:'페어리',evo:2,len:3},
+  {id:196,ko:'에브이',gen:2,t1:'에스퍼',t2:'없음',evo:2,len:3},{id:197,ko:'블래키',gen:2,t1:'악',t2:'없음',evo:2,len:3},
+  {id:209,ko:'블루',gen:2,t1:'페어리',t2:'없음',evo:1,len:2},{id:210,ko:'그랑블루',gen:2,t1:'페어리',t2:'없음',evo:2,len:4},
+  {id:212,ko:'핫삼',gen:2,t1:'벌레',t2:'강철',evo:2,len:2},{id:214,ko:'헤라크로스',gen:2,t1:'벌레',t2:'격투',evo:1,len:5},
+  {id:228,ko:'델빌',gen:2,t1:'악',t2:'불꽃',evo:1,len:2},{id:229,ko:'헬가',gen:2,t1:'악',t2:'불꽃',evo:2,len:2},
+  {id:231,ko:'코코리',gen:2,t1:'땅',t2:'없음',evo:1,len:3},{id:232,ko:'코리갑',gen:2,t1:'땅',t2:'없음',evo:2,len:3},
+  {id:242,ko:'해피너스',gen:2,t1:'노말',t2:'없음',evo:2,len:4},
+  {id:243,ko:'라이코',gen:2,t1:'전기',t2:'없음',evo:1,len:3},{id:244,ko:'앤테이',gen:2,t1:'불꽃',t2:'없음',evo:1,len:3},{id:245,ko:'스이쿤',gen:2,t1:'물',t2:'없음',evo:1,len:3},
+  {id:246,ko:'애버라스',gen:2,t1:'바위',t2:'땅',evo:1,len:4},{id:247,ko:'데기라스',gen:2,t1:'바위',t2:'땅',evo:2,len:4},{id:248,ko:'마기라스',gen:2,t1:'바위',t2:'악',evo:3,len:4},
+  {id:249,ko:'루기아',gen:2,t1:'에스퍼',t2:'비행',evo:1,len:3},{id:250,ko:'칠색조',gen:2,t1:'불꽃',t2:'비행',evo:1,len:3},{id:251,ko:'세레비',gen:2,t1:'에스퍼',t2:'풀',evo:1,len:3},
+  {id:252,ko:'나무지기',gen:3,t1:'풀',t2:'없음',evo:1,len:4},{id:253,ko:'나무돌이',gen:3,t1:'풀',t2:'없음',evo:2,len:4},{id:254,ko:'나무킹',gen:3,t1:'풀',t2:'없음',evo:3,len:3},
+  {id:255,ko:'아차모',gen:3,t1:'불꽃',t2:'없음',evo:1,len:3},{id:256,ko:'영치코',gen:3,t1:'불꽃',t2:'격투',evo:2,len:3},{id:257,ko:'번치코',gen:3,t1:'불꽃',t2:'격투',evo:3,len:3},
+  {id:258,ko:'물짱이',gen:3,t1:'물',t2:'없음',evo:1,len:3},{id:259,ko:'늪짱이',gen:3,t1:'물',t2:'땅',evo:2,len:3},{id:260,ko:'대짱이',gen:3,t1:'물',t2:'땅',evo:3,len:3},
+  {id:280,ko:'랄토스',gen:3,t1:'에스퍼',t2:'페어리',evo:1,len:3},{id:281,ko:'킬리아',gen:3,t1:'에스퍼',t2:'페어리',evo:2,len:3},{id:282,ko:'가디안',gen:3,t1:'에스퍼',t2:'페어리',evo:3,len:3},
+  {id:302,ko:'깜까미',gen:3,t1:'악',t2:'고스트',evo:1,len:3},
+  {id:333,ko:'파비코',gen:3,t1:'노말',t2:'비행',evo:1,len:3},{id:334,ko:'파비코리',gen:3,t1:'드래곤',t2:'비행',evo:2,len:4},
+  {id:349,ko:'빈티나',gen:3,t1:'물',t2:'없음',evo:1,len:3},{id:350,ko:'밀로틱',gen:3,t1:'물',t2:'없음',evo:2,len:3},
+  {id:359,ko:'앱솔',gen:3,t1:'악',t2:'없음',evo:1,len:2},
+  {id:371,ko:'아공이',gen:3,t1:'드래곤',t2:'없음',evo:1,len:3},{id:372,ko:'쉘곤',gen:3,t1:'드래곤',t2:'없음',evo:2,len:2},{id:373,ko:'보만다',gen:3,t1:'드래곤',t2:'비행',evo:3,len:3},
+  {id:374,ko:'메탕',gen:3,t1:'강철',t2:'에스퍼',evo:1,len:2},{id:375,ko:'메탕구',gen:3,t1:'강철',t2:'에스퍼',evo:2,len:3},{id:376,ko:'메타그로스',gen:3,t1:'강철',t2:'에스퍼',evo:3,len:5},
+  {id:377,ko:'레지락',gen:3,t1:'바위',t2:'없음',evo:1,len:3},{id:378,ko:'레지아이스',gen:3,t1:'얼음',t2:'없음',evo:1,len:5},{id:379,ko:'레지스틸',gen:3,t1:'강철',t2:'없음',evo:1,len:4},
+  {id:380,ko:'라티아스',gen:3,t1:'드래곤',t2:'에스퍼',evo:1,len:4},{id:381,ko:'라티오스',gen:3,t1:'드래곤',t2:'에스퍼',evo:1,len:4},
+  {id:382,ko:'가이오가',gen:3,t1:'물',t2:'없음',evo:1,len:4},{id:383,ko:'그란돈',gen:3,t1:'땅',t2:'없음',evo:1,len:3},{id:384,ko:'레쿠쟈',gen:3,t1:'드래곤',t2:'비행',evo:1,len:3},
+  {id:385,ko:'지라치',gen:3,t1:'강철',t2:'에스퍼',evo:1,len:3},{id:386,ko:'테오키스',gen:3,t1:'에스퍼',t2:'없음',evo:1,len:4},
+  {id:387,ko:'모부기',gen:4,t1:'풀',t2:'없음',evo:1,len:3},{id:388,ko:'수풀부기',gen:4,t1:'풀',t2:'없음',evo:2,len:4},{id:389,ko:'토대부기',gen:4,t1:'풀',t2:'땅',evo:3,len:4},
+  {id:390,ko:'불꽃숭이',gen:4,t1:'불꽃',t2:'없음',evo:1,len:4},{id:391,ko:'파이숭이',gen:4,t1:'불꽃',t2:'격투',evo:2,len:4},{id:392,ko:'초염몽',gen:4,t1:'불꽃',t2:'격투',evo:3,len:3},
+  {id:393,ko:'팽도리',gen:4,t1:'물',t2:'없음',evo:1,len:3},{id:394,ko:'팽태자',gen:4,t1:'물',t2:'없음',evo:2,len:3},{id:395,ko:'엠페르트',gen:4,t1:'물',t2:'강철',evo:3,len:4},
+  {id:396,ko:'찌르꼬',gen:4,t1:'노말',t2:'비행',evo:1,len:3},{id:397,ko:'찌르버드',gen:4,t1:'노말',t2:'비행',evo:2,len:4},{id:398,ko:'찌르호크',gen:4,t1:'노말',t2:'비행',evo:3,len:4},
+  {id:399,ko:'비버니',gen:4,t1:'노말',t2:'없음',evo:1,len:3},{id:400,ko:'비버통',gen:4,t1:'노말',t2:'물',evo:2,len:3},
+  {id:401,ko:'귀뚤뚜기',gen:4,t1:'벌레',t2:'없음',evo:1,len:4},{id:402,ko:'귀뚤톡크',gen:4,t1:'벌레',t2:'없음',evo:2,len:4},
+  {id:403,ko:'꼬링크',gen:4,t1:'전기',t2:'없음',evo:1,len:3},{id:404,ko:'럭시오',gen:4,t1:'전기',t2:'없음',evo:2,len:3},{id:405,ko:'렌트라',gen:4,t1:'전기',t2:'없음',evo:3,len:3},
+  {id:406,ko:'꼬몽울',gen:4,t1:'풀',t2:'독',evo:1,len:3},{id:407,ko:'로즈레이드',gen:4,t1:'풀',t2:'독',evo:3,len:5},
+  {id:408,ko:'두개도스',gen:4,t1:'바위',t2:'없음',evo:1,len:4},{id:409,ko:'램펄드',gen:4,t1:'바위',t2:'없음',evo:2,len:3},
+  {id:410,ko:'방패톱스',gen:4,t1:'바위',t2:'강철',evo:1,len:4},{id:411,ko:'바리톱스',gen:4,t1:'바위',t2:'강철',evo:2,len:4},
+  {id:418,ko:'브이젤',gen:4,t1:'물',t2:'없음',evo:1,len:3},{id:419,ko:'플로젤',gen:4,t1:'물',t2:'없음',evo:2,len:3},
+  {id:420,ko:'체리버',gen:4,t1:'풀',t2:'없음',evo:1,len:3},{id:421,ko:'체리꼬',gen:4,t1:'풀',t2:'없음',evo:2,len:3},
+  {id:425,ko:'흔들풍손',gen:4,t1:'고스트',t2:'비행',evo:1,len:4},{id:426,ko:'둥실라이드',gen:4,t1:'고스트',t2:'비행',evo:2,len:5},
+  {id:427,ko:'이어롤',gen:4,t1:'노말',t2:'없음',evo:1,len:3},{id:428,ko:'이어롭',gen:4,t1:'노말',t2:'없음',evo:2,len:3},
+  {id:431,ko:'나옹마',gen:4,t1:'노말',t2:'없음',evo:1,len:3},{id:432,ko:'몬냥이',gen:4,t1:'노말',t2:'없음',evo:2,len:3},
+  {id:433,ko:'랑딸랑',gen:4,t1:'에스퍼',t2:'없음',evo:1,len:3},
+  {id:434,ko:'스컹뿡',gen:4,t1:'독',t2:'악',evo:1,len:3},{id:435,ko:'스컹탱크',gen:4,t1:'독',t2:'악',evo:2,len:4},
+  {id:436,ko:'동미러',gen:4,t1:'강철',t2:'에스퍼',evo:1,len:3},{id:437,ko:'동탁군',gen:4,t1:'강철',t2:'에스퍼',evo:2,len:3},
+  {id:441,ko:'페라페',gen:4,t1:'노말',t2:'비행',evo:1,len:3},{id:442,ko:'화강돌',gen:4,t1:'고스트',t2:'악',evo:1,len:3},
+  {id:443,ko:'딥상어동',gen:4,t1:'드래곤',t2:'땅',evo:1,len:4},{id:444,ko:'한바이트',gen:4,t1:'드래곤',t2:'땅',evo:2,len:4},{id:445,ko:'한카리아스',gen:4,t1:'드래곤',t2:'땅',evo:3,len:5},
+  {id:446,ko:'먹고자',gen:4,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:447,ko:'리오루',gen:4,t1:'격투',t2:'없음',evo:1,len:3},{id:448,ko:'루카리오',gen:4,t1:'격투',t2:'강철',evo:2,len:4},
+  {id:449,ko:'히포포타스',gen:4,t1:'땅',t2:'없음',evo:1,len:5},{id:450,ko:'하마돈',gen:4,t1:'땅',t2:'없음',evo:2,len:3},
+  {id:451,ko:'스콜피',gen:4,t1:'독',t2:'벌레',evo:1,len:3},{id:452,ko:'드래피온',gen:4,t1:'독',t2:'악',evo:2,len:4},
+  {id:453,ko:'삐딱구리',gen:4,t1:'독',t2:'격투',evo:1,len:4},{id:454,ko:'독개굴',gen:4,t1:'독',t2:'격투',evo:2,len:3},
+  {id:456,ko:'형광어',gen:4,t1:'물',t2:'없음',evo:1,len:3},{id:457,ko:'네오라이트',gen:4,t1:'물',t2:'없음',evo:2,len:5},
+  {id:459,ko:'눈쓰개',gen:4,t1:'풀',t2:'얼음',evo:1,len:3},{id:460,ko:'눈설왕',gen:4,t1:'풀',t2:'얼음',evo:2,len:3},
+  {id:461,ko:'포푸니라',gen:4,t1:'악',t2:'얼음',evo:2,len:4},
+  {id:462,ko:'자포코일',gen:4,t1:'전기',t2:'강철',evo:3,len:4},{id:463,ko:'내룸벨트',gen:4,t1:'노말',t2:'없음',evo:2,len:4},{id:464,ko:'거대코뿌리',gen:4,t1:'땅',t2:'바위',evo:3,len:5},{id:465,ko:'덩쿠림보',gen:4,t1:'풀',t2:'없음',evo:2,len:4},
+  {id:466,ko:'에레키블',gen:4,t1:'전기',t2:'없음',evo:3,len:4},{id:467,ko:'마그마번',gen:4,t1:'불꽃',t2:'없음',evo:3,len:4},
+  {id:468,ko:'토게키스',gen:4,t1:'페어리',t2:'비행',evo:3,len:4},{id:469,ko:'메가자리',gen:4,t1:'벌레',t2:'비행',evo:2,len:4},
+  {id:470,ko:'리피아',gen:4,t1:'풀',t2:'없음',evo:2,len:3},{id:471,ko:'글레이시아',gen:4,t1:'얼음',t2:'없음',evo:2,len:5},
+  {id:472,ko:'글라이온',gen:4,t1:'땅',t2:'비행',evo:2,len:4},{id:473,ko:'맘모꾸리',gen:4,t1:'얼음',t2:'땅',evo:3,len:4},
+  {id:474,ko:'폴리곤Z',gen:4,t1:'노말',t2:'없음',evo:3,len:4},{id:475,ko:'엘레이드',gen:4,t1:'에스퍼',t2:'격투',evo:3,len:4},
+  {id:476,ko:'대코파스',gen:4,t1:'바위',t2:'강철',evo:2,len:4},{id:477,ko:'야느와르몽',gen:4,t1:'고스트',t2:'없음',evo:3,len:5},
+  {id:478,ko:'눈여아',gen:4,t1:'얼음',t2:'고스트',evo:2,len:3},{id:479,ko:'로토무',gen:4,t1:'전기',t2:'고스트',evo:1,len:3},
+  {id:480,ko:'유크시',gen:4,t1:'에스퍼',t2:'없음',evo:1,len:3},{id:481,ko:'엠라이트',gen:4,t1:'에스퍼',t2:'없음',evo:1,len:4},{id:482,ko:'아그놈',gen:4,t1:'에스퍼',t2:'없음',evo:1,len:3},
+  {id:483,ko:'디아루가',gen:4,t1:'강철',t2:'드래곤',evo:1,len:4},{id:484,ko:'펄기아',gen:4,t1:'물',t2:'드래곤',evo:1,len:3},
+  {id:485,ko:'히드런',gen:4,t1:'불꽃',t2:'강철',evo:1,len:3},{id:486,ko:'레지기가스',gen:4,t1:'노말',t2:'없음',evo:1,len:5},
+  {id:487,ko:'기라티나',gen:4,t1:'고스트',t2:'드래곤',evo:1,len:4},{id:488,ko:'크레세리아',gen:4,t1:'에스퍼',t2:'없음',evo:1,len:5},
+  {id:489,ko:'피오네',gen:4,t1:'물',t2:'없음',evo:1,len:3},{id:490,ko:'마나피',gen:4,t1:'물',t2:'없음',evo:1,len:3},
+  {id:491,ko:'다크라이',gen:4,t1:'악',t2:'없음',evo:1,len:4},{id:492,ko:'쉐이미',gen:4,t1:'풀',t2:'없음',evo:1,len:3},{id:493,ko:'아르세우스',gen:4,t1:'노말',t2:'없음',evo:1,len:5},
+  // ── 5세대 ──
+  {id:494,ko:'비크티니',gen:5,t1:'에스퍼',t2:'불꽃',evo:1,len:3},
+  {id:495,ko:'주리비얀',gen:5,t1:'풀',t2:'없음',evo:1,len:4},
+  {id:496,ko:'샤비',gen:5,t1:'풀',t2:'없음',evo:2,len:2},
+  {id:497,ko:'샤로다',gen:5,t1:'풀',t2:'없음',evo:3,len:3},
+  {id:498,ko:'뚜꾸리',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3},
+  {id:499,ko:'챠오꿀',gen:5,t1:'불꽃',t2:'격투',evo:2,len:3},
+  {id:500,ko:'염무왕',gen:5,t1:'불꽃',t2:'격투',evo:3,len:3},
+  {id:501,ko:'수댕이',gen:5,t1:'물',t2:'없음',evo:1,len:3},
+  {id:502,ko:'쌍검자비',gen:5,t1:'물',t2:'없음',evo:2,len:4},
+  {id:503,ko:'대검귀',gen:5,t1:'물',t2:'없음',evo:3,len:3},
+  {id:504,ko:'보르쥐',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:505,ko:'보르그',gen:5,t1:'노말',t2:'없음',evo:2,len:3},
+  {id:506,ko:'요테리',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:507,ko:'하데리어',gen:5,t1:'노말',t2:'없음',evo:2,len:4},
+  {id:508,ko:'바란드',gen:5,t1:'노말',t2:'없음',evo:3,len:3},
+  {id:509,ko:'쌔비냥',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:510,ko:'레파르다스',gen:5,t1:'노말',t2:'없음',evo:2,len:5},
+  {id:511,ko:'야나프',gen:5,t1:'풀',t2:'없음',evo:1,len:3},
+  {id:512,ko:'야나키',gen:5,t1:'풀',t2:'없음',evo:2,len:3},
+  {id:513,ko:'바오프',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3},
+  {id:514,ko:'바오키',gen:5,t1:'불꽃',t2:'없음',evo:2,len:3},
+  {id:515,ko:'앗차프',gen:5,t1:'물',t2:'없음',evo:1,len:3},
+  {id:516,ko:'앗차키',gen:5,t1:'물',t2:'없음',evo:2,len:3},
+  {id:517,ko:'몽나',gen:5,t1:'에스퍼',t2:'없음',evo:1,len:2},
+  {id:518,ko:'몽얌나',gen:5,t1:'에스퍼',t2:'없음',evo:2,len:3},
+  {id:519,ko:'콩둘기',gen:5,t1:'노말',t2:'비행',evo:1,len:3},
+  {id:520,ko:'유토브',gen:5,t1:'노말',t2:'비행',evo:2,len:3},
+  {id:521,ko:'켄호로우',gen:5,t1:'노말',t2:'비행',evo:3,len:4},
+  {id:522,ko:'줄뮤마',gen:5,t1:'전기',t2:'없음',evo:1,len:3},
+  {id:523,ko:'제브라이카',gen:5,t1:'전기',t2:'없음',evo:2,len:5},
+  {id:524,ko:'단굴',gen:5,t1:'바위',t2:'없음',evo:1,len:2},
+  {id:525,ko:'암트르',gen:5,t1:'바위',t2:'없음',evo:2,len:3},
+  {id:526,ko:'기가이어스',gen:5,t1:'바위',t2:'없음',evo:3,len:5},
+  {id:527,ko:'또르박쥐',gen:5,t1:'독',t2:'비행',evo:1,len:4},
+  {id:528,ko:'맘박쥐',gen:5,t1:'독',t2:'비행',evo:2,len:3},
+  {id:529,ko:'두더류',gen:5,t1:'땅',t2:'없음',evo:1,len:3},
+  {id:530,ko:'몰드류',gen:5,t1:'땅',t2:'강철',evo:2,len:3},
+  {id:531,ko:'다부니',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:532,ko:'으랏차',gen:5,t1:'격투',t2:'없음',evo:1,len:3},
+  {id:533,ko:'토쇠골',gen:5,t1:'격투',t2:'없음',evo:2,len:3},
+  {id:534,ko:'노보청',gen:5,t1:'격투',t2:'없음',evo:3,len:3},
+  {id:535,ko:'동챙이',gen:5,t1:'물',t2:'없음',evo:1,len:3},
+  {id:536,ko:'두까비',gen:5,t1:'물',t2:'땅',evo:2,len:3},
+  {id:537,ko:'두빅굴',gen:5,t1:'물',t2:'땅',evo:3,len:3},
+  {id:538,ko:'던지미',gen:5,t1:'격투',t2:'없음',evo:1,len:3},
+  {id:539,ko:'타격귀',gen:5,t1:'격투',t2:'없음',evo:2,len:3},
+  {id:540,ko:'두르보',gen:5,t1:'벌레',t2:'없음',evo:1,len:3},
+  {id:541,ko:'두르쿤',gen:5,t1:'벌레',t2:'없음',evo:2,len:3},
+  {id:542,ko:'모아머',gen:5,t1:'벌레',t2:'풀',evo:3,len:3},
+  {id:543,ko:'마디네',gen:5,t1:'벌레',t2:'독',evo:1,len:3},
+  {id:544,ko:'휠구',gen:5,t1:'벌레',t2:'독',evo:2,len:2},
+  {id:545,ko:'펜드라',gen:5,t1:'벌레',t2:'독',evo:3,len:3},
+  {id:546,ko:'소미안',gen:5,t1:'풀',t2:'없음',evo:1,len:3},
+  {id:547,ko:'엘풍',gen:5,t1:'풀',t2:'비행',evo:2,len:2},
+  {id:548,ko:'치릴리',gen:5,t1:'풀',t2:'없음',evo:1,len:3},
+  {id:549,ko:'드레디어',gen:5,t1:'풀',t2:'없음',evo:2,len:4},
+  {id:550,ko:'배쓰나이',gen:5,t1:'물',t2:'없음',evo:1,len:4},
+  {id:551,ko:'깜눈크',gen:5,t1:'땅',t2:'악',evo:1,len:3},
+  {id:552,ko:'악비르',gen:5,t1:'물',t2:'땅',evo:2,len:3},
+  {id:553,ko:'악비아르',gen:5,t1:'물',t2:'땅',evo:3,len:4},
+  {id:554,ko:'달막화',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3},
+  {id:555,ko:'불비달마',gen:5,t1:'불꽃',t2:'없음',evo:2,len:4},
+  {id:556,ko:'마라카치',gen:5,t1:'풀',t2:'없음',evo:1,len:4},
+  {id:557,ko:'돌살이',gen:5,t1:'바위',t2:'벌레',evo:1,len:3},
+  {id:558,ko:'암팰리스',gen:5,t1:'바위',t2:'벌레',evo:2,len:4},
+  {id:559,ko:'곤율랭',gen:5,t1:'악',t2:'격투',evo:1,len:3},
+  {id:560,ko:'곤율거니',gen:5,t1:'악',t2:'격투',evo:2,len:4},
+  {id:561,ko:'심보러',gen:5,t1:'에스퍼',t2:'비행',evo:1,len:3},
+  {id:562,ko:'데스마스',gen:5,t1:'고스트',t2:'없음',evo:1,len:4},
+  {id:563,ko:'데스니칸',gen:5,t1:'고스트',t2:'없음',evo:2,len:4},
+  {id:564,ko:'프로토가',gen:5,t1:'물',t2:'바위',evo:1,len:4},
+  {id:565,ko:'늑골라',gen:5,t1:'물',t2:'바위',evo:2,len:3},
+  {id:566,ko:'아르켄',gen:5,t1:'바위',t2:'비행',evo:1,len:3},
+  {id:567,ko:'아케오스',gen:5,t1:'바위',t2:'비행',evo:2,len:4},
+  {id:568,ko:'깨봉이',gen:5,t1:'독',t2:'없음',evo:1,len:3},
+  {id:569,ko:'더스트나',gen:5,t1:'독',t2:'없음',evo:2,len:4},
+  {id:570,ko:'조로아',gen:5,t1:'악',t2:'없음',evo:1,len:3},
+  {id:571,ko:'조로아크',gen:5,t1:'악',t2:'없음',evo:2,len:4},
+  {id:572,ko:'치라미',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:573,ko:'치라치노',gen:5,t1:'노말',t2:'없음',evo:2,len:4},
+  {id:574,ko:'고디탱',gen:5,t1:'에스퍼',t2:'없음',evo:1,len:3},
+  {id:575,ko:'고디보미',gen:5,t1:'에스퍼',t2:'없음',evo:2,len:4},
+  {id:576,ko:'고디모아젤',gen:5,t1:'에스퍼',t2:'없음',evo:3,len:5},
+  {id:577,ko:'유니란',gen:5,t1:'에스퍼',t2:'없음',evo:1,len:3},
+  {id:578,ko:'듀란',gen:5,t1:'에스퍼',t2:'없음',evo:2,len:2},
+  {id:579,ko:'란쿨루스',gen:5,t1:'에스퍼',t2:'없음',evo:3,len:4},
+  {id:580,ko:'꼬지보리',gen:5,t1:'물',t2:'비행',evo:1,len:4},
+  {id:581,ko:'스완나',gen:5,t1:'물',t2:'비행',evo:2,len:3},
+  {id:582,ko:'바닐프티',gen:5,t1:'얼음',t2:'없음',evo:1,len:4},
+  {id:583,ko:'바닐리치',gen:5,t1:'얼음',t2:'없음',evo:2,len:4},
+  {id:584,ko:'배바닐라',gen:5,t1:'얼음',t2:'없음',evo:3,len:4},
+  {id:585,ko:'사철록',gen:5,t1:'노말',t2:'풀',evo:1,len:3},
+  {id:586,ko:'바라철록',gen:5,t1:'노말',t2:'풀',evo:2,len:4},
+  {id:587,ko:'에몽가',gen:5,t1:'전기',t2:'비행',evo:1,len:3},
+  {id:588,ko:'딱정곤',gen:5,t1:'벌레',t2:'없음',evo:1,len:3},
+  {id:589,ko:'슈바르고',gen:5,t1:'벌레',t2:'강철',evo:2,len:4},
+  {id:590,ko:'깜놀버슬',gen:5,t1:'풀',t2:'없음',evo:1,len:4},
+  {id:591,ko:'뽀록나',gen:5,t1:'풀',t2:'독',evo:2,len:3},
+  {id:592,ko:'탱그릴',gen:5,t1:'물',t2:'고스트',evo:1,len:3},
+  {id:593,ko:'탱탱겔',gen:5,t1:'물',t2:'고스트',evo:2,len:3},
+  {id:594,ko:'맘복치',gen:5,t1:'물',t2:'없음',evo:1,len:3},
+  {id:595,ko:'파쪼옥',gen:5,t1:'벌레',t2:'전기',evo:1,len:3},
+  {id:596,ko:'전툴라',gen:5,t1:'벌레',t2:'전기',evo:2,len:3},
+  {id:597,ko:'철시드',gen:5,t1:'풀',t2:'강철',evo:1,len:3},
+  {id:598,ko:'너트령',gen:5,t1:'풀',t2:'강철',evo:2,len:3},
+  {id:599,ko:'기어르',gen:5,t1:'강철',t2:'없음',evo:1,len:3},
+  {id:600,ko:'기기어르',gen:5,t1:'강철',t2:'없음',evo:2,len:4},
+  {id:601,ko:'기기기어르',gen:5,t1:'강철',t2:'없음',evo:3,len:5},
+  {id:602,ko:'저리어',gen:5,t1:'전기',t2:'없음',evo:1,len:3},
+  {id:603,ko:'저리릴',gen:5,t1:'전기',t2:'없음',evo:2,len:3},
+  {id:604,ko:'저리더프',gen:5,t1:'전기',t2:'없음',evo:3,len:4},
+  {id:605,ko:'리그레',gen:5,t1:'에스퍼',t2:'없음',evo:1,len:3},
+  {id:606,ko:'벰크',gen:5,t1:'에스퍼',t2:'없음',evo:2,len:2},
+  {id:607,ko:'불켜미',gen:5,t1:'고스트',t2:'불꽃',evo:1,len:3},
+  {id:608,ko:'램프라',gen:5,t1:'고스트',t2:'불꽃',evo:2,len:3},
+  {id:609,ko:'샹델라',gen:5,t1:'고스트',t2:'불꽃',evo:3,len:3},
+  {id:610,ko:'터검니',gen:5,t1:'드래곤',t2:'없음',evo:1,len:3},
+  {id:611,ko:'액슨도',gen:5,t1:'드래곤',t2:'없음',evo:2,len:3},
+  {id:612,ko:'액스라이즈',gen:5,t1:'드래곤',t2:'없음',evo:3,len:5},
+  {id:613,ko:'코고미',gen:5,t1:'얼음',t2:'없음',evo:1,len:3},
+  {id:614,ko:'툰베어',gen:5,t1:'얼음',t2:'없음',evo:2,len:3},
+  {id:615,ko:'프리지오',gen:5,t1:'얼음',t2:'없음',evo:1,len:4},
+  {id:616,ko:'쪼마리',gen:5,t1:'벌레',t2:'없음',evo:1,len:3},
+  {id:617,ko:'어지리더',gen:5,t1:'벌레',t2:'없음',evo:2,len:4},
+  {id:618,ko:'메더',gen:5,t1:'땅',t2:'없음',evo:1,len:2},
+  {id:619,ko:'비조푸',gen:5,t1:'격투',t2:'없음',evo:1,len:3},
+  {id:620,ko:'비조도',gen:5,t1:'격투',t2:'없음',evo:2,len:3},
+  {id:621,ko:'크리만',gen:5,t1:'드래곤',t2:'없음',evo:1,len:3},
+  {id:622,ko:'골비람',gen:5,t1:'땅',t2:'고스트',evo:1,len:3},
+  {id:623,ko:'골루그',gen:5,t1:'땅',t2:'고스트',evo:2,len:3},
+  {id:624,ko:'자망칼',gen:5,t1:'악',t2:'강철',evo:1,len:3},
+  {id:625,ko:'절각참',gen:5,t1:'악',t2:'강철',evo:2,len:3},
+  {id:626,ko:'버프론',gen:5,t1:'노말',t2:'없음',evo:1,len:3},
+  {id:627,ko:'수리둥보',gen:5,t1:'노말',t2:'비행',evo:1,len:4},
+  {id:628,ko:'워글',gen:5,t1:'노말',t2:'비행',evo:2,len:2},
+  {id:629,ko:'벌차이',gen:5,t1:'악',t2:'비행',evo:1,len:3},
+  {id:630,ko:'버랜지나',gen:5,t1:'악',t2:'비행',evo:2,len:4},
+  {id:631,ko:'앤티골',gen:5,t1:'불꽃',t2:'강철',evo:1,len:3},
+  {id:632,ko:'아이앤트',gen:5,t1:'불꽃',t2:'강철',evo:2,len:4},
+  {id:633,ko:'모노두',gen:5,t1:'드래곤',t2:'없음',evo:1,len:3},
+  {id:634,ko:'디헤드',gen:5,t1:'드래곤',t2:'악',evo:2,len:3},
+  {id:635,ko:'삼삼드래',gen:5,t1:'드래곤',t2:'악',evo:3,len:4},
+  {id:636,ko:'활화르바',gen:5,t1:'벌레',t2:'불꽃',evo:1,len:4},
+  {id:637,ko:'불카모스',gen:5,t1:'벌레',t2:'불꽃',evo:2,len:4},
+  {id:638,ko:'코바르온',gen:5,t1:'강철',t2:'격투',evo:1,len:4},
+  {id:639,ko:'테라키온',gen:5,t1:'바위',t2:'격투',evo:1,len:4},
+  {id:640,ko:'비리디온',gen:5,t1:'풀',t2:'격투',evo:1,len:4},
+  {id:641,ko:'토네로스',gen:5,t1:'비행',t2:'없음',evo:1,len:4},
+  {id:642,ko:'볼트로스',gen:5,t1:'전기',t2:'비행',evo:1,len:4},
+  {id:643,ko:'레시라무',gen:5,t1:'드래곤',t2:'불꽃',evo:1,len:4},
+  {id:644,ko:'제크로무',gen:5,t1:'드래곤',t2:'전기',evo:1,len:4},
+  {id:645,ko:'랜드로스',gen:5,t1:'땅',t2:'비행',evo:1,len:4},
+  {id:646,ko:'큐레무',gen:5,t1:'드래곤',t2:'얼음',evo:1,len:3},
+  {id:647,ko:'케르디오',gen:5,t1:'물',t2:'격투',evo:1,len:4},
+  {id:648,ko:'메로엣타',gen:5,t1:'노말',t2:'에스퍼',evo:1,len:4},
+  {id:649,ko:'게노세크트',gen:5,t1:'벌레',t2:'강철',evo:1,len:5},
+];
+
+function spr(id){return`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;}
+function tbadge(t){return`<span class="tbadge" style="background:${TCOL[t]||'#888'}"><span class="ticon">${TICON[t]||''}</span>${t}</span>`;}
+function minitbadge(t){return`<span class="mini-tbadge" style="background:${TCOL[t]||'#888'}">${TICON[t]||''} ${t}</span>`;}
+
+let answer=null,guesses=[],gameOver=false,usedFilter=false,filterOpen=false,acSel=-1;
+
+// ── 도감 시스템 ──
+let dexFilter = 'all';
+// unlocked: { id: { shiny: bool, date: string, tries: number } }
+function getDex(){ try{ return JSON.parse(localStorage.getItem('pokewordle_dex')||'{}'); }catch(e){ return {}; } }
+function saveDex(d){ localStorage.setItem('pokewordle_dex', JSON.stringify(d)); }
+
+function unlockDex(pokemon, isShiny){
+  const dex = getDex();
+  if(!dex[pokemon.id]){
+    dex[pokemon.id] = {
+      shiny: isShiny,
+      date: new Date().toISOString().slice(0,10),
+      tries: guesses.length
+    };
+    saveDex(dex);
+  } else if(isShiny && !dex[pokemon.id].shiny){
+    dex[pokemon.id].shiny = true;
+    saveDex(dex);
+  }
+}
+
+function showPage(page){
+  const gamePage = document.getElementById('game-page');
+  const dexPage  = document.getElementById('dex-page');
+  const navGame  = document.getElementById('nav-game');
+  const navDex   = document.getElementById('nav-dex');
+  if(page === 'dex'){
+    gamePage.classList.add('hide');
+    dexPage.classList.add('show');
+    navGame.classList.remove('on');
+    navDex.classList.add('on');
+    renderDex();
+  } else {
+    dexPage.classList.remove('show');
+    gamePage.classList.remove('hide');
+    navDex.classList.remove('on');
+    navGame.classList.add('on');
+  }
+}
+
+function setDexFilter(f, btn){
+  dexFilter = f;
+  document.querySelectorAll('.dex-filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderDex();
+}
+
+function renderDex(){
+  const dex = getDex();
+  const unlocked = Object.keys(dex).map(Number);
+  const total = DB.length;
+  const count = unlocked.length;
+
+  document.getElementById('dex-total').textContent = count + '/' + total;
+
+  let list = DB;
+  if(dexFilter === 'unlocked') list = DB.filter(p => dex[p.id]);
+  if(dexFilter === 'locked')   list = DB.filter(p => !dex[p.id]);
+
+  const grid = document.getElementById('dex-grid');
+  grid.innerHTML = list.map(p => {
+    const u = dex[p.id];
+    if(u){
+      return `<div class="dex-card unlocked" onclick="openDexModal(${p.id})">
+        ${u.shiny ? '<div class="shiny-star">✨</div>' : ''}
+        <img src="${spr(p.id)}" alt="${p.ko}" onerror="this.style.opacity='0.3'">
+        <div class="dex-card-num">#${String(p.id).padStart(3,'0')}</div>
+        <div class="dex-card-name">${p.ko}</div>
+      </div>`;
+    } else {
+      return `<div class="dex-card">
+        <img class="silhouette" src="${spr(p.id)}" alt="???">
+        <div class="dex-card-num">#${String(p.id).padStart(3,'0')}</div>
+        <div class="dex-card-name hidden">???</div>
+      </div>`;
+    }
+  }).join('');
+}
+
+function openDexModal(id){
+  const p = DB.find(x => x.id === id);
+  const dex = getDex();
+  const u = dex[id];
+  if(!u) return;
+
+  document.getElementById('dm-num').textContent = '#' + String(p.id).padStart(3,'0');
+  document.getElementById('dm-img').src = spr(p.id);
+  document.getElementById('dm-name').textContent = p.ko;
+  document.getElementById('dm-types').innerHTML =
+    tbadge(p.t1) + (p.t2 !== '없음' ? tbadge(p.t2) : '');
+  document.getElementById('dm-info').innerHTML =
+    `<span style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted)">${p.gen}세대 · 진화 ${p.evo}단계 · ${p.len}글자</span>`;
+
+  const shinyEl = document.getElementById('dm-shiny');
+  shinyEl.style.display = u.shiny ? 'block' : 'none';
+
+  document.getElementById('dm-cleared').textContent =
+    '해금일: ' + u.date + '  /  ' + u.tries + '번 만에 클리어';
+
+  document.getElementById('dex-modal-bg').classList.add('show');
+}
+
+function closeDexModal(e){
+  if(!e || e.target === document.getElementById('dex-modal-bg') || e.currentTarget.classList.contains('dex-modal-close')){
+    document.getElementById('dex-modal-bg').classList.remove('show');
+  }
+}
+
+function pickAnswer(){const t=new Date();answer=DB[(t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate())%DB.length];}
+function resetGame(){
+  document.getElementById('rbanner').className='result-banner';
+  document.getElementById('tbody').innerHTML='';document.getElementById('tw').style.display='none';
+  document.getElementById('tcnt').textContent='0';document.getElementById('spct').textContent='5%';
+  document.getElementById('fp').className='filter-panel';document.getElementById('filter-btn').className='tool-btn';
+  guesses=[];gameOver=false;usedFilter=false;filterOpen=false;acSel=-1;pickAnswer();
+}
+function computeFilter(){
+  // 가능한 최대 진화단계/글자수를 DB에서 동적으로 계산
+  const maxEvo = Math.max(...DB.map(p=>p.evo));
+  const maxLen = Math.max(...DB.map(p=>p.len));
+  const minEvoGlobal = Math.min(...DB.map(p=>p.evo));
+  const minLenGlobal = Math.min(...DB.map(p=>p.len));
+  const allGens = [...new Set(DB.map(p=>p.gen))];
+
+  let genOk=null, t1Ok=null, t2Ok=null, evoOk=null, lenOk=null;
+  const genNot=new Set(), t1Not=new Set(), t2Not=new Set();
+  let evoMin=minEvoGlobal, evoMax=maxEvo, lenMin=minLenGlobal, lenMax=maxLen;
+
+  guesses.forEach(g=>{
+    // 세대
+    if(g.gen===answer.gen) genOk=g.gen;
+    else genNot.add(g.gen);
+
+    // 타입1: 정확 일치 or 제외
+    if(g.t1===answer.t1) t1Ok=g.t1;
+    else if(g.t1!==answer.t2) t1Not.add(g.t1); // 정답의 t2와 같으면 제외 안 함(부분일치)
+
+    // 타입2: 정확 일치 or 제외
+    if(g.t2===answer.t2) t2Ok=g.t2;
+    else if(g.t2!==answer.t1) t2Not.add(g.t2);
+
+    // 진화단계: 방향 힌트 활용
+    if(g.evo===answer.evo) evoOk=g.evo;
+    else if(g.evo<answer.evo) evoMin=Math.max(evoMin, g.evo+1);
+    else evoMax=Math.min(evoMax, g.evo-1);
+
+    // 글자수: 방향 힌트 활용
+    if(g.len===answer.len) lenOk=g.len;
+    else if(g.len<answer.len) lenMin=Math.max(lenMin, g.len+1);
+    else lenMax=Math.min(lenMax, g.len-1);
+  });
+
+  // 조건 태그 생성
+  const conds=[];
+  if(genOk) conds.push({cls:'ok', text:`세대 = ${genOk}세대`});
+  else if(genNot.size) conds.push({cls:'no', text:`세대 ≠ ${[...genNot].join(',')}세대`});
+
+  if(t1Ok) conds.push({cls:'ok', text:`타입1 = ${t1Ok}`});
+  else if(t1Not.size) conds.push({cls:'no', text:`타입1 ≠ ${[...t1Not].join(',')}`});
+
+  if(t2Ok) conds.push({cls:'ok', text:`타입2 = ${t2Ok}`});
+  else if(t2Not.size) conds.push({cls:'no', text:`타입2 ≠ ${[...t2Not].join(',')}`});
+
+  if(evoOk) conds.push({cls:'ok', text:`진화 = ${evoOk}단계`});
+  else if(evoMin>minEvoGlobal||evoMax<maxEvo) conds.push({cls:'rng', text:`진화 ${evoMin}~${evoMax}단계`});
+
+  if(lenOk) conds.push({cls:'ok', text:`글자수 = ${lenOk}자`});
+  else if(lenMin>minLenGlobal||lenMax<maxLen) conds.push({cls:'rng', text:`글자수 ${lenMin}~${lenMax}자`});
+
+  // 필터링
+  const filtered=DB.filter(p=>{
+    if(guesses.find(g=>g.id===p.id)) return false; // 이미 시도한 것만 제외
+
+    // 세대
+    if(genOk && p.gen!==genOk) return false;
+    if(!genOk && genNot.has(p.gen)) return false;
+
+    // 타입1: 확정이면 정확 일치, 미확정이면 제외 목록에 없어야
+    if(t1Ok && p.t1!==t1Ok) return false;
+    if(!t1Ok && t1Not.has(p.t1)) return false;
+
+    // 타입2: 확정이면 정확 일치, 미확정이면 제외 목록에 없어야
+    if(t2Ok && p.t2!==t2Ok) return false;
+    if(!t2Ok && t2Not.has(p.t2)) return false;
+
+    // 진화단계
+    if(evoOk){ if(p.evo!==evoOk) return false; }
+    else { if(p.evo<evoMin || p.evo>evoMax) return false; }
+
+    // 글자수
+    if(lenOk){ if(p.len!==lenOk) return false; }
+    else { if(p.len<lenMin || p.len>lenMax) return false; }
+
+    return true;
+  });
+
+  return{conds, filtered};
+}
+function renderFilter(){
+  const{conds,filtered}=computeFilter();
+  const condEl=document.getElementById('fp-conds');
+  const gridEl=document.getElementById('fp-grid');
+
+  // 카운트
+  document.getElementById('fp-count').textContent=`후보 ${filtered.length}마리`;
+
+  // 조건 태그
+  if(conds.length===0){
+    condEl.className='fp-tags-bar empty-tags';
+    condEl.textContent='아직 추측이 없어요. 포켓몬을 입력해보세요!';
+  } else {
+    condEl.className='fp-tags-bar';
+    condEl.innerHTML=conds.map(c=>`<span class="ctag ${c.cls}">${c.text}</span>`).join('');
+  }
+
+  // 포켓몬 카드 그리드
+  if(filtered.length===0){
+    gridEl.innerHTML=`<div class="fp-empty">조건에 맞는 포켓몬이 없어요!</div>`;
+  } else {
+    gridEl.innerHTML=filtered.map(p=>`
+      <div class="fp-card" onclick="pickFromFilter('${p.ko}')">
+        <img src="${spr(p.id)}" alt="${p.ko}" onerror="this.style.opacity='0.3'">
+        <div class="fp-card-name">${p.ko}</div>
+        <div class="fp-card-num">#${String(p.id).padStart(3,'0')}</div>
+      </div>`).join('');
+  }
+}
+
+function pickFromFilter(koName){
+  // 카드 클릭 시 모달 닫고 바로 추측
+  filterOpen=false;
+  document.getElementById('fp-modal-bg').classList.remove('show');
+  document.getElementById('filter-btn').classList.remove('active-btn');
+  document.body.style.overflow='';
+  submitGuess(koName);
+}
+function toggleFilter(){
+  usedFilter=true;
+  document.getElementById('spct').textContent='1%';
+  filterOpen=!filterOpen;
+  const bg=document.getElementById('fp-modal-bg');
+  const btn=document.getElementById('filter-btn');
+  if(filterOpen){
+    bg.classList.add('show');
+    btn.classList.add('active-btn');
+    renderFilter();
+    document.body.style.overflow='hidden';
+  } else {
+    bg.classList.remove('show');
+    btn.classList.remove('active-btn');
+    document.body.style.overflow='';
+  }
+}
+function arrow(v,a){return v===a?'':v<a?' ↑':' ↓';}
+function submitGuess(p){
+  if(gameOver||!p)return;
+  const g=DB.find(x=>x.ko===p||x.ko.includes(p));
+  if(!g){alert('포켓몬을 찾을 수 없습니다.');return;}
+  if(guesses.find(x=>x.id===g.id)){alert('이미 시도했습니다.');return;}
+  guesses.push(g);
+  document.getElementById('tcnt').textContent=guesses.length;
+  document.getElementById('tw').style.display='block';
+  const isOk=g.id===answer.id;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td class="${isOk?'cc':'cw'}"><div class="pk"><img src="${spr(g.id)}" onerror="this.style.display='none'" alt=""><span>${g.ko}</span></div></td>
+    <td class="${g.gen===answer.gen?'cc':'cw'}">${g.gen}세대${arrow(g.gen,answer.gen)}</td>
+    <td class="${g.t1===answer.t1?'cc':g.t1===answer.t2?'cp':'cw'}">${tbadge(g.t1)}</td>
+    <td class="${g.t2===answer.t2?'cc':g.t2===answer.t1?'cp':'cw'}">${tbadge(g.t2)}</td>
+    <td class="${g.evo===answer.evo?'cc':'cw'}">${g.evo}단계${arrow(g.evo,answer.evo)}</td>
+    <td class="${g.len===answer.len?'cc':'cw'}">${g.len}글자${arrow(g.len,answer.len)}</td>`;
+  document.getElementById('tbody').insertBefore(tr,document.getElementById('tbody').firstChild);
+  if(filterOpen){ renderFilter(); }
+  if(isOk){gameOver=true;showResult(true);}else if(guesses.length>=10){gameOver=true;showResult(false);}
+}
+function showResult(win){
+  const b=document.getElementById('rbanner');
+  document.getElementById('rimg').src=spr(answer.id);
+  document.getElementById('rtitle').textContent=win?`★ ${answer.ko} 정답!`:`정답: ${answer.ko}`;
+  const isShiny = !usedFilter;
+  const shinyPct = isShiny ? '5%' : '1%';
+  document.getElementById('rsub').textContent=win?`${guesses.length}번 만에 클리어!  이로치 확률: ${shinyPct}`:'다음에 다시 도전해보세요!';
+  b.className='result-banner show'+(win?'':' fail');
+  b.scrollIntoView({behavior:'smooth',block:'start'});
+  // 정답/실패 모두 도감 해금 (정답은 이로치 여부 반영, 실패는 노멀로 해금)
+  const shinyUnlock = win && isShiny && Math.random() < 0.05;
+  unlockDex(answer, shinyUnlock);
+}
+const inp=document.getElementById('inp'),ac=document.getElementById('ac');
+inp.addEventListener('input',function(){
+  const v=this.value.trim();ac.innerHTML='';acSel=-1;
+  if(!v){ac.style.display='none';return;}
+  const m=DB.filter(p=>p.ko.includes(v)).slice(0,8);
+  if(!m.length){ac.style.display='none';return;}
+  m.forEach(p=>{
+    const d=document.createElement('div');d.className='ac-item';
+    d.innerHTML=`<div class="ac-img"><img src="${spr(p.id)}" alt="${p.ko}" onerror="this.parentNode.innerHTML='<span style=\\'font-size:26px\\'>${TICON[p.t1]||'?'}</span>'"></div><div class="ac-info"><span class="ac-num">#${String(p.id).padStart(3,'0')}</span><span class="ac-name">${p.ko}</span><div class="ac-types">${minitbadge(p.t1)}${p.t2!=='없음'?minitbadge(p.t2):''}</div></div>`;
+    d.addEventListener('click',()=>{submitGuess(p.ko);inp.value='';ac.style.display='none';acSel=-1;});
+    ac.appendChild(d);
+  });
+  ac.style.display='block';
+});
+inp.addEventListener('keydown',function(e){
+  const items=ac.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){acSel=Math.min(acSel+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('sel',i===acSel));e.preventDefault();}
+  else if(e.key==='ArrowUp'){acSel=Math.max(acSel-1,0);items.forEach((el,i)=>el.classList.toggle('sel',i===acSel));e.preventDefault();}
+  else if(e.key==='Enter'){if(acSel>=0&&items[acSel])items[acSel].click();else if(this.value.trim()){submitGuess(this.value.trim());inp.value='';ac.style.display='none';}}
+  else if(e.key==='Escape')ac.style.display='none';
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))ac.style.display='none';});
+pickAnswer();
+</script>
+
+
+</body></html>
