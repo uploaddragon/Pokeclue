@@ -76,7 +76,7 @@ export function useEndlessNormal() {
       if (prev.guesses.find(x => x.id === g.id)) { alert('이미 시도했습니다.'); return prev; }
       const next = [...prev.guesses, g];
       if (g.id === prev.answer.id) {
-        const isShiny = Math.random() < 0.05;
+        const isShiny = Math.random() < 0.01;
         return { ...prev, guesses: next, gameOver: true, result: { win: true, isShiny } };
       }
       return { ...prev, guesses: next };
@@ -145,7 +145,7 @@ export function useEndlessChallenge(unlockDex) {
       const outOfTries = next.length >= CHALLENGE_MAX_TRIES && !isCorrect;
 
       if (isCorrect) {
-        const isShiny = Math.random() < 0.05;
+        const isShiny = Math.random() < 0.01;
         unlockDex(prev.answer, isShiny, next.length);
         return { ...prev, guesses: next, gameOver: true, result: { win: true, isShiny } };
       }

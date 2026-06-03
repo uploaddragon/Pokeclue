@@ -811,6 +811,10 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-timer-bar{height:4px;background:var(--yellow);transition:width 1s linear;}
 .battle-timer-bar.urgent{background:var(--wrong);}
 
+/* AFK warning */
+.battle-afk-warning{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:700;text-align:center;padding:10px 16px;margin-bottom:8px;background:#fff3e0;color:#e65100;border:2px solid #e65100;border-radius:6px;animation:afk-pulse 1s ease-in-out infinite;}
+@keyframes afk-pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+
 /* Turn banner */
 .battle-turn-banner{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:700;text-align:center;padding:11px 16px;margin-bottom:12px;border:2px solid #222;}
 .battle-turn-banner.my-turn{background:#e8f5e9;color:#2e7d32;border-color:#2e7d32;}

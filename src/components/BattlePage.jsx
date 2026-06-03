@@ -3,9 +3,16 @@ import { useBattle } from '../hooks/useBattle.js';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { displayName } from '../utils/game.js';
-import { spr } from '../utils/sprite.js';
+import { spr, sprShiny } from '../utils/sprite.js';
 
 const TURN_SEC = 30;
+
+function seededShiny(roomCode, round) {
+  const str = `${roomCode}-${round}`;
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+  return (Math.abs(h) % 100) === 0; // 1%
+}
 
 export function BattlePage({ user, lang }) {
   const isEn = lang === 'en';
@@ -216,6 +223,13 @@ export function BattlePage({ user, lang }) {
           </div>
         </div>
 
+        {/* 자리비움 경고 */}
+        {b.mySkips >= 2 && (
+          <div className="battle-afk-warning">
+            ⚠️ {isEn ? '3 turns without input = defeat. One more skip and you lose!' : '3턴동안 아무것도 입력하지 않으면 패배 처리됩니다.'}
+          </div>
+        )}
+
         {/* 턴 배너 */}
         <div className={`battle-turn-banner${b.isMyTurn ? ' my-turn' : ' op-turn'}`}>
           {b.isMyTurn
@@ -244,10 +258,11 @@ export function BattlePage({ user, lang }) {
     const round = b.room?.round || 1;
     const opTries = b.room ? (b.mySlot === 'p1' ? b.room.p2_tries : b.room.p1_tries) : 0;
     const mySolved = b.room ? (b.mySlot === 'p1' ? b.room.p1_solved : b.room.p2_solved) : false;
-    const opDisconnected = b.iWon && !mySolved; // 내가 풀지 않았는데 이겼으면 상대 연결 끊김
+    const opDisconnected = b.iWon && !mySolved;
+    const isShiny = seededShiny(b.roomCode, round);
     return (
       <main>
-        <div className={`battle-result-banner${b.iWon ? ' win' : ' lose'}`}>
+        <div className={`battle-result-banner${b.iWon ? ' win' : ' lose'}${isShiny ? ' shiny' : ''}`}>
           <div className="battle-result-top">
             <div className="battle-result-emoji">{b.iWon ? '🏆' : '💀'}</div>
             <div className="battle-result-verdict">{b.iWon ? (isEn ? 'Victory!' : '승리!') : (isEn ? 'Defeat...' : '패배...')}</div>
@@ -258,7 +273,7 @@ export function BattlePage({ user, lang }) {
           </div>
 
           <div className="battle-result-answer">
-            {b.answer && <img className="battle-result-sprite" src={spr(b.answer.id)} alt={answerName} />}
+            {b.answer && <img className={`battle-result-sprite${isShiny ? ' shiny-sprite' : ''}`} src={isShiny ? sprShiny(b.answer.id) : spr(b.answer.id)} alt={answerName} />}
             <div className="battle-result-answer-label">{isEn ? 'Answer' : '정답'}</div>
             <div className="battle-result-answer-name">{answerName}</div>
           </div>
