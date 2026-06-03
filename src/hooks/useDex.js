@@ -15,7 +15,7 @@ function saveLocal(dex) {
 export function useDex(user) {
   const [dex, setDex] = useState(loadLocal);
 
-  // 로그인 시 Supabase에서 도감 불러와서 병합
+  // 로그인 시 + 탭 복귀 시 Supabase에서 도감 불러와서 병합
   useEffect(() => {
     if (!user) return;
 
@@ -69,6 +69,13 @@ export function useDex(user) {
     }
 
     fetchAndMerge();
+
+    // 다른 기기에서 변경 후 이 탭/창으로 돌아오면 자동 재동기화
+    function onVisible() {
+      if (document.visibilityState === 'visible') fetchAndMerge();
+    }
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
   }, [user?.id]);
 
   async function unlockDex(pokemon, isShiny, tries) {
