@@ -204,12 +204,13 @@ export function useBattle(user) {
     const myTriesKey = mySlot === 'p1' ? 'p1_tries' : 'p2_tries';
     const mySolvedKey = mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
     const mySkipsKey = mySlot === 'p1' ? 'p1_skips' : 'p2_skips';
+    const hasSkipsCols = room != null && mySkipsKey in room;
 
     const update = {
       shared_guesses: newGuesses,
       current_turn: nextTurn,
       [myTriesKey]: (room?.[myTriesKey] || 0) + 1,
-      [mySkipsKey]: 0, // 추측 시 스킵 카운트 초기화
+      ...(hasSkipsCols ? { [mySkipsKey]: 0 } : {}),
     };
 
     if (isOk) {
@@ -229,10 +230,10 @@ export function useBattle(user) {
     const mySkipsKey = mySlot === 'p1' ? 'p1_skips' : 'p2_skips';
     const opSlot = mySlot === 'p1' ? 'p2' : 'p1';
     const nextTurn = opSlot;
+    const hasSkipsCols = room != null && mySkipsKey in room;
     const newSkips = (room?.[mySkipsKey] || 0) + 1;
 
-    if (newSkips >= 3) {
-      // 3번 연속 무응답 → 패배
+    if (hasSkipsCols && newSkips >= 3) {
       await bc.from('battle_rooms').update({
         current_turn: nextTurn,
         [mySkipsKey]: newSkips,
@@ -242,7 +243,7 @@ export function useBattle(user) {
     } else {
       await bc.from('battle_rooms').update({
         current_turn: nextTurn,
-        [mySkipsKey]: newSkips,
+        ...(hasSkipsCols ? { [mySkipsKey]: newSkips } : {}),
       }).eq('id', roomCode);
     }
   }, [roomCode, mySlot, room]);
