@@ -37,6 +37,8 @@ export function BattlePage({ user, lang }) {
 
   function handleSubmit(id) {
     if (!b.isMyTurn) return;
+    const alreadyGuessed = (b.room?.shared_guesses || []).includes(String(id));
+    if (alreadyGuessed) return;
     clearInterval(timerRef.current);
     setTimer(TURN_SEC);
     b.submitGuess(id);
