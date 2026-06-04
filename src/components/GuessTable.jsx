@@ -94,7 +94,7 @@ function GuessRow({ g, answer, lang, isWin }) {
 
       {/* 폼 */}
       <div className={`cell ${fmSt}`}>
-        <span className="cell-val">{formLabel(g.form)}</span>
+        <span className="cell-val">{formLabel(g.form, lang)}</span>
       </div>
     </div>
   );

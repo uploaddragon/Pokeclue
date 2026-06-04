@@ -167,7 +167,8 @@ export const FORM_LABEL = {
   aqua:     '워터종',
 };
 
-export function formLabel(form) {
+export function formLabel(form, lang = 'ko') {
+  if (lang === 'en') return FORM_LABEL_EN[form ?? 'base'] ?? form ?? 'Base';
   return FORM_LABEL[form ?? 'base'] ?? form ?? '기본';
 }
 
