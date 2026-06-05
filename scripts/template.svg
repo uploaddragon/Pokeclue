@@ -115,17 +115,15 @@
         font-size: 34px;
       }
 
-      .st22, .st16 {
+      .st22 {
         font-family: NotoSansKR-Black-KSCpc-EUC-H, 'Noto Sans KR';
         font-weight: 900;
       }
 
       .st16 {
+        font-family: 'Black Han Sans', NotoSansKR-Black-KSCpc-EUC-H, 'Noto Sans KR';
+        font-weight: 400;
         font-size: 128px;
-        paint-order: stroke fill;
-        stroke: #1a1a1a;
-        stroke-width: 4px;
-        stroke-linejoin: round;
       }
 
       .st9 {

@@ -125,9 +125,10 @@ async function svgToPng(svgContent) {
   // Galmuri: base64 embed (작은 파일, ~200KB)
   const fontsDir = path.join(__dirname, 'fonts');
   const toB64 = (f) => `data:font/truetype;base64,${fs.readFileSync(f).toString('base64')}`;
-  const g11  = toB64(path.join(fontsDir, 'Galmuri11.ttf'));
-  const g11b = toB64(path.join(fontsDir, 'Galmuri11-Bold.ttf'));
-  const g11c = toB64(path.join(fontsDir, 'Galmuri11-Condensed.ttf'));
+  const g11    = toB64(path.join(fontsDir, 'Galmuri11.ttf'));
+  const g11b   = toB64(path.join(fontsDir, 'Galmuri11-Bold.ttf'));
+  const g11c   = toB64(path.join(fontsDir, 'Galmuri11-Condensed.ttf'));
+  const bhs    = `data:font/woff2;base64,${fs.readFileSync(path.join(fontsDir, 'BlackHanSans-KR.woff2')).toString('base64')}`;
 
   // Noto Sans KR: 파일 경로로 참조 (base64 X — 15MB+ TTC 파일 크래시 방지)
   function findNoto(weight) {
@@ -158,6 +159,7 @@ async function svgToPng(svgContent) {
   @font-face { font-family: 'Galmuri11'; src: url('${g11b}'); font-weight: 700; }
   @font-face { font-family: 'Galmuri11-Bold'; src: url('${g11b}'); }
   @font-face { font-family: 'Galmuri11-Condensed'; src: url('${g11c}'); }
+  @font-face { font-family: 'Black Han Sans'; src: url('${bhs}') format('woff2'); font-weight: 400; }
   ${notoFace('NotoSansKR-Regular-KSCpc-EUC-H', 400)}
   ${notoFace('NotoSansKR-Bold-KSCpc-EUC-H', 700)}
   ${notoFace('NotoSansKR-Black-KSCpc-EUC-H', 900)}
