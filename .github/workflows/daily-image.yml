@@ -1,0 +1,39 @@
+name: Daily PokeClue Image
+
+on:
+  schedule:
+    # 매일 KST 00:05 (UTC 15:05)
+    - cron: '5 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Generate image & send email
+        working-directory: scripts
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          SEND_TO: ${{ secrets.SEND_TO }}
+        run: node generate-daily.js
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-image
+          path: scripts/output/*.png
+          retention-days: 7
