@@ -6,6 +6,7 @@
     "generate": "node generate-daily.js"
   },
   "dependencies": {
+    "@fontsource/noto-sans-kr": "^5.2.9",
     "@napi-rs/canvas": "^0.1.53",
     "galmuri": "^2.40.3",
     "nodemailer": "^6.9.13",

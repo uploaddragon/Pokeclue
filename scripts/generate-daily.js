@@ -122,15 +122,46 @@ async function svgToPng(svgContent) {
   // 1080×1350 뷰포트 (SVG viewBox와 동일)
   await page.setViewport({ width: 1080, height: 1350, deviceScaleFactor: 1 });
 
-  // 폰트 파일 → base64 (GitHub Actions 환경에서도 확실히 로드)
+  // 폰트 파일 → base64
   const fontsDir = path.join(__dirname, 'fonts');
-  const toDataUrl = (file) => {
-    const buf = fs.readFileSync(path.join(fontsDir, file));
-    return `data:font/truetype;base64,${buf.toString('base64')}`;
+  const toDataUrl = (file, mime = 'font/truetype') => {
+    const buf = fs.readFileSync(file);
+    return `data:${mime};base64,${buf.toString('base64')}`;
   };
-  const g11     = toDataUrl('Galmuri11.ttf');
-  const g11b    = toDataUrl('Galmuri11-Bold.ttf');
-  const g11c    = toDataUrl('Galmuri11-Condensed.ttf');
+  const g11  = toDataUrl(path.join(fontsDir, 'Galmuri11.ttf'));
+  const g11b = toDataUrl(path.join(fontsDir, 'Galmuri11-Bold.ttf'));
+  const g11c = toDataUrl(path.join(fontsDir, 'Galmuri11-Condensed.ttf'));
+
+  // Noto Sans KR: 시스템(Ubuntu apt) → fontsource woff2 subsets 순서로 시도
+  const notoSrcPaths = {
+    400: [
+      '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
+      '/usr/share/fonts/truetype/noto/NotoSansCJKkr-Regular.otf',
+      path.join(__dirname, 'node_modules/@fontsource/noto-sans-kr/files/noto-sans-kr-119-400-normal.woff2'),
+    ],
+    700: [
+      '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc',
+      '/usr/share/fonts/truetype/noto/NotoSansCJKkr-Bold.otf',
+      path.join(__dirname, 'node_modules/@fontsource/noto-sans-kr/files/noto-sans-kr-119-700-normal.woff2'),
+    ],
+    900: [
+      '/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc',
+      '/usr/share/fonts/truetype/noto/NotoSansCJKkr-Black.otf',
+      path.join(__dirname, 'node_modules/@fontsource/noto-sans-kr/files/noto-sans-kr-119-900-normal.woff2'),
+    ],
+  };
+  function findFont(candidates) {
+    for (const p of candidates) if (fs.existsSync(p)) return p;
+    return candidates[candidates.length - 1]; // fallback to last
+  }
+  function fontMime(p) {
+    if (p.endsWith('.woff2')) return 'font/woff2';
+    if (p.endsWith('.otf'))   return 'font/otf';
+    return 'font/truetype';
+  }
+  const noto400 = toDataUrl(findFont(notoSrcPaths[400]), fontMime(findFont(notoSrcPaths[400])));
+  const noto700 = toDataUrl(findFont(notoSrcPaths[700]), fontMime(findFont(notoSrcPaths[700])));
+  const noto900 = toDataUrl(findFont(notoSrcPaths[900]), fontMime(findFont(notoSrcPaths[900])));
 
   const html = `<!DOCTYPE html>
 <html><head>
@@ -140,6 +171,12 @@ async function svgToPng(svgContent) {
   @font-face { font-family: 'Galmuri11'; src: url('${g11b}'); font-weight: 700; }
   @font-face { font-family: 'Galmuri11-Bold'; src: url('${g11b}'); }
   @font-face { font-family: 'Galmuri11-Condensed'; src: url('${g11c}'); }
+  @font-face { font-family: 'NotoSansKR-Regular-KSCpc-EUC-H'; src: url('${noto400}'); font-weight: 400; }
+  @font-face { font-family: 'Noto Sans KR'; src: url('${noto400}'); font-weight: 400; }
+  @font-face { font-family: 'NotoSansKR-Bold-KSCpc-EUC-H'; src: url('${noto700}'); font-weight: 700; }
+  @font-face { font-family: 'Noto Sans KR'; src: url('${noto700}'); font-weight: 700; }
+  @font-face { font-family: 'NotoSansKR-Black-KSCpc-EUC-H'; src: url('${noto900}'); font-weight: 900; }
+  @font-face { font-family: 'Noto Sans KR'; src: url('${noto900}'); font-weight: 900; }
   @font-face {
     font-family: 'NotoSansKR-Regular-KSCpc-EUC-H';
     src: local('Noto Sans KR'), local('NotoSansKR-Regular');
