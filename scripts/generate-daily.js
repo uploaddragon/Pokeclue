@@ -14,12 +14,16 @@ import https from 'https';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── DB 로드 ──────────────────────────────
-const { default: DB } = await import('../frontend/src/data/pokemon.js');
+// main 브랜치: src/data/pokemon.js / master 브랜치: frontend/src/data/pokemon.js
+const _p1 = path.join(__dirname, '../src/data/pokemon.js');
+const _p2 = path.join(__dirname, '../frontend/src/data/pokemon.js');
+const _dbPath = fs.existsSync(_p1) ? _p1 : _p2;
+const { default: DB } = await import(pathToFileURL(_dbPath).href);
 
 // ── pickAnswer 로직 ───────────────────────
 function dateHash(str) {
