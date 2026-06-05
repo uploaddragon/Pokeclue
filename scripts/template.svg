@@ -55,8 +55,14 @@
         isolation: isolate;
       }
 
-      .st18, .st19, .st13, .st15 {
+      .st19, .st15 {
         font-family: NotoSansKR-Regular-KSCpc-EUC-H, 'Noto Sans KR';
+      }
+
+      /* PokeClue 헤더 → Galmuri */
+      .st13, .st18 {
+        font-family: Galmuri11, 'Galmuri11';
+        font-weight: 700;
       }
 
       .st18, .st20, .st13 {
@@ -111,11 +117,15 @@
 
       .st22, .st16 {
         font-family: NotoSansKR-Black-KSCpc-EUC-H, 'Noto Sans KR';
-        font-weight: 800;
+        font-weight: 900;
       }
 
       .st16 {
         font-size: 128px;
+        paint-order: stroke fill;
+        stroke: #1a1a1a;
+        stroke-width: 4px;
+        stroke-linejoin: round;
       }
 
       .st9 {
