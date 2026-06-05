@@ -217,7 +217,9 @@ async function sendEmail(imageBuffer, dateStr, pokemonName) {
 
 // ── 메인 ──────────────────────────────────
 async function main() {
-  const yesterday = new Date();
+  // KST 기준으로 어제 날짜 계산 (서버는 UTC — +9시간 보정)
+  const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const yesterday = new Date(nowKST);
   yesterday.setDate(yesterday.getDate() - 1);
   const dateStr = getDateStr(yesterday);
 
