@@ -157,8 +157,7 @@
     <circle class="st3" cx="98" cy="98" r="8.5"/>
     <circle class="st6" cx="98" cy="98" r="3.2"/>
     <g class="st21">
-      <text class="st13" transform="translate(142 108)"><tspan x="0" y="0">Poke</tspan></text>
-      <text class="st18" transform="translate(201.72 108)"><tspan x="0" y="0">Clue</tspan></text>
+      <text class="st13" transform="translate(142 108)"><tspan x="0" y="0">Poke</tspan><tspan fill="#cc2b1d">Clue</tspan></text>
     </g>
   </g>
   <g>
@@ -176,23 +175,23 @@
   <circle class="st0" cx="540" cy="745" r="300"/>
   <g>
     <rect class="st14" x="72" y="1112" width="220.5" height="118" rx="14" ry="14"/>
-    <text class="st19" transform="translate(170.29 1152)"><tspan x="0" y="0">세대</tspan></text>
-    <text class="st22" transform="translate(140.62 1200)"><tspan x="0" y="0">{{GEN}}</tspan></text>
+    <text class="st19" text-anchor="middle" transform="translate(182.25 1152)"><tspan x="0" y="0">세대</tspan></text>
+    <text class="st22" text-anchor="middle" transform="translate(182.25 1200)"><tspan x="0" y="0">{{GEN}}</tspan></text>
   </g>
   <g>
     <rect class="st14" x="310.5" y="1112" width="220.5" height="118" rx="14" ry="14"/>
-    <text class="st19" transform="translate(403.73 1152)"><tspan x="0" y="0">타입 1</tspan></text>
-    <text class="st22" transform="translate(389.47 1200)"><tspan x="0" y="0">{{TYPE1}}</tspan></text>
+    <text class="st19" text-anchor="middle" transform="translate(420.75 1152)"><tspan x="0" y="0">타입 1</tspan></text>
+    <text class="st22" text-anchor="middle" transform="translate(420.75 1200)"><tspan x="0" y="0">{{TYPE1}}</tspan></text>
   </g>
   <g>
     <rect class="st14" x="549" y="1112" width="220.5" height="118" rx="14" ry="14"/>
-    <text class="st19" transform="translate(642.23 1152)"><tspan x="0" y="0">타입 2</tspan></text>
-    <text class="st22" transform="translate(627.97 1200)"><tspan x="0" y="0">{{TYPE2}}</tspan></text>
+    <text class="st19" text-anchor="middle" transform="translate(659.25 1152)"><tspan x="0" y="0">타입 2</tspan></text>
+    <text class="st22" text-anchor="middle" transform="translate(659.25 1200)"><tspan x="0" y="0">{{TYPE2}}</tspan></text>
   </g>
   <g>
     <rect class="st14" x="787.5" y="1112" width="220.5" height="118" rx="14" ry="14"/>
-    <text class="st19" transform="translate(885.79 1152)"><tspan x="0" y="0">진화</tspan></text>
-    <text class="st22" transform="translate(856.12 1200)"><tspan x="0" y="0">{{EVO}}</tspan></text>
+    <text class="st19" text-anchor="middle" transform="translate(897.75 1152)"><tspan x="0" y="0">진화</tspan></text>
+    <text class="st22" text-anchor="middle" transform="translate(897.75 1200)"><tspan x="0" y="0">{{EVO}}</tspan></text>
   </g>
   <line class="st2" x1="72" y1="1264" x2="1008" y2="1264"/>
   <g class="st21">
