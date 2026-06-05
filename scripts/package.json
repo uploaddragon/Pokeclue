@@ -1,0 +1,13 @@
+{
+  "name": "pokewordle-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate-daily.js"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.53",
+    "nodemailer": "^6.9.13",
+    "puppeteer": "^25.1.0"
+  }
+}
