@@ -122,13 +122,24 @@ async function svgToPng(svgContent) {
   // 1080×1350 뷰포트 (SVG viewBox와 동일)
   await page.setViewport({ width: 1080, height: 1350, deviceScaleFactor: 1 });
 
+  // 폰트 파일 → base64 (GitHub Actions 환경에서도 확실히 로드)
+  const fontsDir = path.join(__dirname, 'fonts');
+  const toDataUrl = (file) => {
+    const buf = fs.readFileSync(path.join(fontsDir, file));
+    return `data:font/truetype;base64,${buf.toString('base64')}`;
+  };
+  const g11     = toDataUrl('Galmuri11.ttf');
+  const g11b    = toDataUrl('Galmuri11-Bold.ttf');
+  const g11c    = toDataUrl('Galmuri11-Condensed.ttf');
+
   const html = `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+  @font-face { font-family: 'Galmuri11'; src: url('${g11}'); font-weight: 400; }
+  @font-face { font-family: 'Galmuri11'; src: url('${g11b}'); font-weight: 700; }
+  @font-face { font-family: 'Galmuri11-Bold'; src: url('${g11b}'); }
+  @font-face { font-family: 'Galmuri11-Condensed'; src: url('${g11c}'); }
   @font-face {
     font-family: 'NotoSansKR-Regular-KSCpc-EUC-H';
     src: local('Noto Sans KR'), local('NotoSansKR-Regular');
@@ -144,13 +155,17 @@ async function svgToPng(svgContent) {
     src: local('Noto Sans KR'), local('NotoSansKR-Black');
     font-weight: 900;
   }
+  /* 픽셀 아트 스프라이트 선명하게 */
+  image, img { image-rendering: pixelated; image-rendering: crisp-edges; }
   * { margin: 0; padding: 0; }
   body { width: 1080px; height: 1350px; overflow: hidden; background: #e8e3d8; }
   svg { width: 1080px; height: 1350px; display: block; }
 </style>
 </head><body>${svgContent}</body></html>`;
 
-  await page.setContent(html, { waitUntil: 'networkidle0' });
+  await page.setContent(html, { waitUntil: 'domcontentloaded' });
+  // 폰트 로드 완료 대기
+  await page.evaluate(() => document.fonts.ready);
   const screenshot = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 1080, height: 1350 } });
   await browser.close();
   return screenshot;
