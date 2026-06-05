@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" data-name="레이어_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1350">
+  <!-- Generator: Adobe Illustrator 30.3.0, SVG Export Plug-In . SVG Version: 2.1.3 Build 182)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#_무제_그라디언트);
+      }
+
+      .st1 {
+        fill: #2d7a3a;
+      }
+
+      .st1, .st2, .st3, .st4, .st5, .st6, .st7, .st8, .st9 {
+        stroke: #1a1a1a;
+      }
+
+      .st1, .st4 {
+        stroke-width: 4px;
+      }
+
+      .st2 {
+        stroke-opacity: .18;
+      }
+
+      .st2, .st3, .st7, .st8 {
+        stroke-width: 3px;
+      }
+
+      .st2, .st5, .st8, .st9 {
+        fill: none;
+      }
+
+      .st10 {
+        opacity: .06;
+      }
+
+      .st11 {
+        font-family: NotoSansKR-Bold-KSCpc-EUC-H, 'Noto Sans KR';
+      }
+
+      .st11, .st12, .st13, .st14, .st15, .st16 {
+        fill: #1a1a1a;
+      }
+
+      .st11, .st12, .st17 {
+        font-weight: 700;
+      }
+
+      .st11, .st17 {
+        font-size: 22px;
+      }
+
+      .st18, .st12, .st19, .st20, .st21, .st13, .st17, .st15, .st22, .st16 {
+        isolation: isolate;
+      }
+
+      .st18, .st19, .st13, .st15 {
+        font-family: NotoSansKR-Regular-KSCpc-EUC-H, 'Noto Sans KR';
+      }
+
+      .st18, .st20, .st13 {
+        font-size: 26px;
+      }
+
+      .st18, .st17, .st7 {
+        fill: #cc2b1d;
+      }
+
+      .st3, .st20, .st6 {
+        fill: #fff;
+      }
+
+      .st4, .st23 {
+        fill: #e8e3d8;
+      }
+
+      .st12 {
+        font-size: 24px;
+      }
+
+      .st12, .st17 {
+        font-family: Galmuri11-Bold, Galmuri11;
+      }
+
+      .st19 {
+        fill: #b9b4a8;
+        font-size: 13px;
+      }
+
+      .st20 {
+        font-family: Galmuri11-Condensed, Galmuri11;
+      }
+
+      .st5 {
+        stroke-width: 22px;
+      }
+
+      .st6 {
+        stroke-width: 2px;
+      }
+
+      .st15 {
+        font-size: 18px;
+      }
+
+      .st22 {
+        fill: #5dd67a;
+        font-size: 34px;
+      }
+
+      .st22, .st16 {
+        font-family: NotoSansKR-Black-KSCpc-EUC-H, 'Noto Sans KR';
+        font-weight: 800;
+      }
+
+      .st16 {
+        font-size: 128px;
+      }
+
+      .st9 {
+        stroke-width: 18px;
+      }
+    </style>
+    <radialGradient id="_무제_그라디언트" data-name="무제 그라디언트" cx=".5" cy="1349.5" fx=".5" fy="1349.5" r=".5" gradientTransform="translate(240 810445) scale(600 -600)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset=".7" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect class="st23" width="1080" height="1350"/>
+  <g class="st10">
+    <circle class="st9" cx="970" cy="110" r="250"/>
+    <line class="st9" x1="720" y1="110" x2="1220" y2="110"/>
+    <circle class="st9" cx="970" cy="110" r="70"/>
+  </g>
+  <g class="st10">
+    <circle class="st5" cx="120" cy="1250" r="310"/>
+    <line class="st5" x1="-190" y1="1250" x2="430" y2="1250"/>
+    <circle class="st5" cx="120" cy="1250" r="88"/>
+  </g>
+  <g>
+    <circle class="st3" cx="98" cy="98" r="26"/>
+    <path class="st7" d="M72,98c0-14.36,11.64-26,26-26s26,11.64,26,26h-52Z"/>
+    <line class="st8" x1="72" y1="98" x2="124" y2="98"/>
+    <circle class="st3" cx="98" cy="98" r="8.5"/>
+    <circle class="st6" cx="98" cy="98" r="3.2"/>
+    <g class="st21">
+      <text class="st13" transform="translate(142 108)"><tspan x="0" y="0">Poke</tspan></text>
+      <text class="st18" transform="translate(201.72 108)"><tspan x="0" y="0">Clue</tspan></text>
+    </g>
+  </g>
+  <g>
+    <rect class="st14" x="867" y="73" width="141" height="58"/>
+    <rect class="st4" x="862" y="68" width="141" height="58"/>
+    <text class="st12" transform="translate(900.5 107.42)"><tspan x="0" y="0">{{DATE}}</tspan></text>
+  </g>
+  <text class="st17" transform="translate(72 214)"><tspan x="0" y="0">Yesterday&apos;s answer</tspan></text>
+  <text class="st16" transform="translate(68 352)"><tspan x="0" y="0">{{POKEMON_NAME}}</tspan></text>
+  <g>
+    <rect class="st14" x="816.24" y="149.5" width="191" height="66"/>
+    <rect class="st1" x="811.24" y="144.5" width="191" height="66"/>
+    <text class="st20" transform="translate(866.24 190.17)"><tspan x="0" y="0">정답 공개!</tspan></text>
+  </g>
+  <circle class="st0" cx="540" cy="745" r="300"/>
+  <g>
+    <rect class="st14" x="72" y="1112" width="220.5" height="118" rx="14" ry="14"/>
+    <text class="st19" transform="translate(170.29 1152)"><tspan x="0" y="0">세대</tspan></text>
+    <text class="st22" transform="translate(140.62 1200)"><tspan x="0" y="0">{{GEN}}</tspan></text>
+  </g>
+  <g>
+    <rect class="st14" x="310.5" y="1112" width="220.5" height="118" rx="14" ry="14"/>
+    <text class="st19" transform="translate(403.73 1152)"><tspan x="0" y="0">타입 1</tspan></text>
+    <text class="st22" transform="translate(389.47 1200)"><tspan x="0" y="0">{{TYPE1}}</tspan></text>
+  </g>
+  <g>
+    <rect class="st14" x="549" y="1112" width="220.5" height="118" rx="14" ry="14"/>
+    <text class="st19" transform="translate(642.23 1152)"><tspan x="0" y="0">타입 2</tspan></text>
+    <text class="st22" transform="translate(627.97 1200)"><tspan x="0" y="0">{{TYPE2}}</tspan></text>
+  </g>
+  <g>
+    <rect class="st14" x="787.5" y="1112" width="220.5" height="118" rx="14" ry="14"/>
+    <text class="st19" transform="translate(885.79 1152)"><tspan x="0" y="0">진화</tspan></text>
+    <text class="st22" transform="translate(856.12 1200)"><tspan x="0" y="0">{{EVO}}</tspan></text>
+  </g>
+  <line class="st2" x1="72" y1="1264" x2="1008" y2="1264"/>
+  <g class="st21">
+    <text class="st11" transform="translate(72 1302)"><tspan x="0" y="0">매일 새로운 포켓몬 도전</tspan></text>
+  </g>
+  <text class="st15" transform="translate(931.2 1300)"><tspan x="0" y="0">pokeclue</tspan></text>
+  <image width="96" height="96" transform="translate(260.81 424.54) scale(5.82)" xlink:href="data:image/png;base64,{{SPRITE_BASE64}}"/>
+  <g class="st10">
+    <path class="st9" d="M2521,259"/>
+    <path class="st9" d="M2271,9"/>
+    <path class="st9" d="M2521,259"/>
+  </g>
+  <g class="st10">
+    <path class="st5" d="M1421,1709c-171.21,0-310-138.79-310-310"/>
+    <path class="st5" d="M1111,1399"/>
+  </g>
+</svg>
