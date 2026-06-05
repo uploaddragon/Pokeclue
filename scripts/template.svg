@@ -60,9 +60,13 @@
       }
 
       /* PokeClue 헤더 → Galmuri */
-      .st13, .st18 {
-        font-family: Galmuri11, 'Galmuri11';
-        font-weight: 700;
+      .st13 {
+        font-family: 'Galmuri11', Galmuri11;
+        font-weight: 400;
+      }
+      .st18 {
+        font-family: 'Galmuri11', Galmuri11;
+        font-weight: 400;
       }
 
       .st18, .st20, .st13 {
