@@ -125,7 +125,25 @@ async function svgToPng(svgContent) {
   const html = `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+  @font-face {
+    font-family: 'NotoSansKR-Regular-KSCpc-EUC-H';
+    src: local('Noto Sans KR'), local('NotoSansKR-Regular');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'NotoSansKR-Bold-KSCpc-EUC-H';
+    src: local('Noto Sans KR'), local('NotoSansKR-Bold');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'NotoSansKR-Black-KSCpc-EUC-H';
+    src: local('Noto Sans KR'), local('NotoSansKR-Black');
+    font-weight: 900;
+  }
   * { margin: 0; padding: 0; }
   body { width: 1080px; height: 1350px; overflow: hidden; background: #e8e3d8; }
   svg { width: 1080px; height: 1350px; display: block; }
