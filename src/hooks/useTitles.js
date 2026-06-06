@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
 
@@ -10,69 +10,27 @@ function getKST() {
 }
 
 export function useTitles(user) {
-  const [earnedIds, setEarnedIds] = useState([]);
-  const earnedIdsRef = useRef([]);
+  // 획득 칭호 목록은 user_metadata에서 직접 읽기 (별도 테이블 불필요)
+  const earnedIds = user?.user_metadata?.earned_titles ?? [];
 
-  useEffect(() => {
-    earnedIdsRef.current = earnedIds;
-  }, [earnedIds]);
-
-  // 로그인 시 획득 칭호 목록 조회 + 태초마을 자동 지급
-  useEffect(() => {
-    if (!user) { setEarnedIds([]); return; }
-
-    async function loadAndInit() {
-      // 세션이 실제로 유효한지 먼저 확인 (클라이언트 초기화 타이밍 이슈 방지)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const { data, error } = await supabase
-        .from('user_titles')
-        .select('title_id')
-        .eq('user_id', user.id);
-
-      if (error) { console.error('useTitles: fetch error', error); return; }
-
-      const ids = data?.map(r => r.title_id) ?? [];
-      setEarnedIds(ids);
-      earnedIdsRef.current = ids;
-
-      // [태초마을] — 계정 연동 시 최초 1회 지급
-      if (!ids.includes('pallet')) {
-        const { error: insertErr } = await supabase
-          .from('user_titles')
-          .insert({ user_id: user.id, title_id: 'pallet' });
-        if (!insertErr) {
-          setEarnedIds(prev => [...prev, 'pallet']);
-          earnedIdsRef.current = [...earnedIdsRef.current, 'pallet'];
-        } else {
-          console.error('useTitles: pallet insert error', insertErr);
-        }
-      }
-    }
-
-    loadAndInit();
-  }, [user?.id]);
-
-  /** 단일 칭호 수여 시도. 새로 획득 → true, 이미 보유/실패 → false */
+  /** 단일 칭호 수여. user_metadata.earned_titles 배열에 추가 */
   const awardTitle = useCallback(async (titleId) => {
     if (!user) return false;
-    if (earnedIdsRef.current.includes(titleId)) return false;
-    const { error } = await supabase
-      .from('user_titles')
-      .insert({ user_id: user.id, title_id: titleId });
-    if (!error) {
-      setEarnedIds(prev => [...prev, titleId]);
-      earnedIdsRef.current = [...earnedIdsRef.current, titleId];
-      return true;
-    }
-    // 23505 = unique_violation (중복) → 조용히 무시
-    if (error.code !== '23505') console.error('title award error', titleId, error);
-    return false;
+    const current = user.user_metadata?.earned_titles ?? [];
+    if (current.includes(titleId)) return false;
+
+    const next = [...current, titleId];
+    const { data, error } = await supabase.auth.updateUser({
+      data: { earned_titles: next },
+    });
+    if (error) { console.error('awardTitle error', titleId, error); return false; }
+
+    // 로컬 user 객체는 useAuth의 onAuthStateChange가 자동 갱신하므로 별도 처리 불필요
+    return true;
   }, [user]);
 
   /**
-   * 게임 클리어 직후 호출해 해당하는 칭호를 모두 수여.
+   * 게임 클리어 직후 호출. 해당 조건의 칭호를 모두 수여.
    * @returns {string[]} 이번에 새로 획득한 title_id 배열
    */
   const checkAndAwardTitles = useCallback(async ({ tries, usedFilter }) => {
@@ -87,39 +45,29 @@ export function useTitles(user) {
     const { hour, minute } = getKST();
 
     // ── 시간 조건 ──────────────────────────────
-    // [신속] 00:00~00:10
-    if (hour === 0 && minute <= 10) await tryAward('quick');
-
-    // [일찍기상] 06:00~07:59
-    if (hour >= 6 && hour <= 7) await tryAward('earlybird');
-
-    // [슬로스타트] 23:50~23:59
-    if (hour === 23 && minute >= 50) await tryAward('slowstart');
-
-    // [불면] 04:00~05:59
-    if (hour >= 4 && hour <= 5) await tryAward('insomnia');
+    if (hour === 0 && minute <= 10)          await tryAward('quick');      // 신속
+    if (hour >= 6 && hour <= 7)              await tryAward('earlybird'); // 일찍기상
+    if (hour === 23 && minute >= 50)         await tryAward('slowstart'); // 슬로스타트
+    if (hour >= 4 && hour <= 5)              await tryAward('insomnia');  // 불면
 
     // ── 시도 횟수 조건 ──────────────────────────
-    // [일격필살!] 필터 없이 1번 만에
-    if (tries === 1 && !usedFilter) await tryAward('onehit');
-
-    // [막말내뱉기] 30회 이상
-    if (tries >= 30) await tryAward('reckless');
+    if (tries === 1 && !usedFilter)          await tryAward('onehit');    // 일격필살!
+    if (tries >= 30)                         await tryAward('reckless');  // 막말내뱉기
 
     // ── 누적 클리어 수 조건 (DB 조회) ───────────
     try {
       const { data: records, error } = await supabase
         .from('daily_results')
-        .select('date')
+        .select('date', { count: 'exact' })
         .eq('user_id', user.id)
         .eq('solved', true)
-        .limit(400); // 최대 400개면 챔피언(365) 충분히 커버
+        .limit(400);
 
       if (!error && records) {
         const total = records.length;
-        if (total >= 10)  await tryAward('shortpants');
-        if (total >= 100) await tryAward('elitetrainer');
-        if (total >= 365) await tryAward('champion');
+        if (total >= 10)  await tryAward('shortpants');    // 반바지 꼬마
+        if (total >= 100) await tryAward('elitetrainer');  // 엘리트 트레이너
+        if (total >= 365) await tryAward('champion');      // 챔피언
       }
     } catch (e) {
       console.error('useTitles: count check failed', e);
@@ -135,7 +83,6 @@ export function useTitles(user) {
       data: { equipped_title: titleId ?? null },
     });
     if (!error) {
-      // 오늘 daily_results 행도 동기화
       await supabase
         .from('daily_results')
         .update({ equipped_title: titleId ?? null })
@@ -145,5 +92,11 @@ export function useTitles(user) {
     return error ?? null;
   }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, equipTitle };
+  // 태초마을: App.jsx에서 user가 처음 로드될 때 한 번 수여
+  const awardPalletIfNeeded = useCallback(async () => {
+    if (!user) return;
+    await awardTitle('pallet');
+  }, [user, awardTitle]);
+
+  return { earnedIds, checkAndAwardTitles, equipTitle, awardPalletIfNeeded };
 }
