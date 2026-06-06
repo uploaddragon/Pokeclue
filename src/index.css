@@ -962,6 +962,13 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .title-card-equip-btn:hover{background:var(--tbg);}
 .title-card-equip-btn.on{background:var(--tc);color:white;border-color:var(--tc);}
 
+/* 타입 티어 행 */
+.type-tiers-list{display:flex;flex-direction:column;gap:16px;}
+.type-tier-row{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:2px 2px 0 var(--ink);}
+.type-tier-label{font-family:'Galmuri11',monospace;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;}
+.type-tier-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+@media(max-width:640px){.type-tier-cards{grid-template-columns:1fr;}}
+
 .titles-login-notice{
   text-align:center;padding:20px;
   background:#F7F5F0;border:2px dashed var(--line);

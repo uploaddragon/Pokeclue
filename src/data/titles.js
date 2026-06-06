@@ -1,6 +1,159 @@
 // ── 칭호 정의 ──────────────────────────────────────
-export const TITLES = [
-  // ── 데일리 시간 조건 ──
+
+// 타입별 3티어 구조
+// threshold: 해당 티어 달성에 필요한 도감 등록 수
+export const TYPE_TIERS = [
+  {
+    type: '노말',
+    tiers: [
+      { id: 'type_normal_1', ko: '비즈니스맨',    emoji: '💼', threshold: 10,  rarity: 'common' },
+      { id: 'type_normal_2', ko: '꼭두',          emoji: '💼', threshold: 59,  rarity: 'rare'   },
+      { id: 'type_normal_3', ko: '순백플레이트',  emoji: '💼', threshold: 118, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '불꽃',
+    tiers: [
+      { id: 'type_fire_1', ko: '불놀이꾼',       emoji: '🔥', threshold: 10, rarity: 'common' },
+      { id: 'type_fire_2', ko: '민지',           emoji: '🔥', threshold: 40, rarity: 'rare'   },
+      { id: 'type_fire_3', ko: '불구슬플레이트', emoji: '🔥', threshold: 80, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '물',
+    tiers: [
+      { id: 'type_water_1', ko: '비키니 아가씨',   emoji: '💧', threshold: 10,  rarity: 'common' },
+      { id: 'type_water_2', ko: '이슬',            emoji: '💧', threshold: 69,  rarity: 'rare'   },
+      { id: 'type_water_3', ko: '물방울플레이트',  emoji: '💧', threshold: 138, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '풀',
+    tiers: [
+      { id: 'type_grass_1', ko: '아로마 아가씨',  emoji: '🌿', threshold: 10,  rarity: 'common' },
+      { id: 'type_grass_2', ko: '민화',           emoji: '🌿', threshold: 57,  rarity: 'rare'   },
+      { id: 'type_grass_3', ko: '초록플레이트',   emoji: '🌿', threshold: 114, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '전기',
+    tiers: [
+      { id: 'type_electric_1', ko: '전기 작업원',  emoji: '⚡', threshold: 10, rarity: 'common' },
+      { id: 'type_electric_2', ko: '모야모',       emoji: '⚡', threshold: 34, rarity: 'rare'   },
+      { id: 'type_electric_3', ko: '우뢰플레이트', emoji: '⚡', threshold: 69, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '얼음',
+    tiers: [
+      { id: 'type_ice_1', ko: '스키선수',        emoji: '❄️', threshold: 10, rarity: 'common' },
+      { id: 'type_ice_2', ko: '멜론',            emoji: '❄️', threshold: 25, rarity: 'rare'   },
+      { id: 'type_ice_3', ko: '고드름플레이트',  emoji: '❄️', threshold: 50, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '격투',
+    tiers: [
+      { id: 'type_fighting_1', ko: '태권왕',      emoji: '🥊', threshold: 10, rarity: 'common' },
+      { id: 'type_fighting_2', ko: '코르니',      emoji: '🥊', threshold: 37, rarity: 'rare'   },
+      { id: 'type_fighting_3', ko: '주먹플레이트', emoji: '🥊', threshold: 74, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '독',
+    tiers: [
+      { id: 'type_poison_1', ko: '닌자놀이',    emoji: '☠️', threshold: 10, rarity: 'common' },
+      { id: 'type_poison_2', ko: '보미카',      emoji: '☠️', threshold: 39, rarity: 'rare'   },
+      { id: 'type_poison_3', ko: '맹독플레이트', emoji: '☠️', threshold: 78, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '땅',
+    tiers: [
+      { id: 'type_ground_1', ko: '등산가',      emoji: '⛰️', threshold: 10, rarity: 'common' },
+      { id: 'type_ground_2', ko: '비주기',      emoji: '⛰️', threshold: 35, rarity: 'rare'   },
+      { id: 'type_ground_3', ko: '대지플레이트', emoji: '⛰️', threshold: 70, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '비행',
+    tiers: [
+      { id: 'type_flying_1', ko: '새 조련사',       emoji: '🦅', threshold: 10,  rarity: 'common' },
+      { id: 'type_flying_2', ko: '풍란',            emoji: '🦅', threshold: 52,  rarity: 'rare'   },
+      { id: 'type_flying_3', ko: '푸른하늘플레이트', emoji: '🦅', threshold: 105, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '에스퍼',
+    tiers: [
+      { id: 'type_psychic_1', ko: '초능력자',      emoji: '🔮', threshold: 10,  rarity: 'common' },
+      { id: 'type_psychic_2', ko: '초련',          emoji: '🔮', threshold: 53,  rarity: 'rare'   },
+      { id: 'type_psychic_3', ko: '이상한플레이트', emoji: '🔮', threshold: 106, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '벌레',
+    tiers: [
+      { id: 'type_bug_1', ko: '곤충채집소년',     emoji: '🐛', threshold: 10, rarity: 'common' },
+      { id: 'type_bug_2', ko: '단풍',            emoji: '🐛', threshold: 40, rarity: 'rare'   },
+      { id: 'type_bug_3', ko: '비단벌레플레이트', emoji: '🐛', threshold: 79, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '바위',
+    tiers: [
+      { id: 'type_rock_1', ko: '스톤숍',      emoji: '🪨', threshold: 10, rarity: 'common' },
+      { id: 'type_rock_2', ko: '원규',        emoji: '🪨', threshold: 34, rarity: 'rare'   },
+      { id: 'type_rock_3', ko: '암석플레이트', emoji: '🪨', threshold: 69, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '고스트',
+    tiers: [
+      { id: 'type_ghost_1', ko: '오컬트마니아',  emoji: '👻', threshold: 10, rarity: 'common' },
+      { id: 'type_ghost_2', ko: '무쿠',         emoji: '👻', threshold: 31, rarity: 'rare'   },
+      { id: 'type_ghost_3', ko: '원령플레이트',  emoji: '👻', threshold: 62, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '드래곤',
+    tiers: [
+      { id: 'type_dragon_1', ko: '드래곤 조련사', emoji: '🐉', threshold: 10, rarity: 'rare'   },
+      { id: 'type_dragon_2', ko: '이향',         emoji: '🐉', threshold: 36, rarity: 'epic'   },
+      { id: 'type_dragon_3', ko: '용의플레이트',  emoji: '🐉', threshold: 72, rarity: 'legendary' },
+    ],
+  },
+  {
+    type: '악',
+    tiers: [
+      { id: 'type_dark_1', ko: '조무래기',    emoji: '🌑', threshold: 10, rarity: 'common' },
+      { id: 'type_dark_2', ko: '마리',        emoji: '🌑', threshold: 35, rarity: 'rare'   },
+      { id: 'type_dark_3', ko: '공포플레이트', emoji: '🌑', threshold: 70, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '강철',
+    tiers: [
+      { id: 'type_steel_1', ko: '작업원',      emoji: '⚙️', threshold: 10, rarity: 'common' },
+      { id: 'type_steel_2', ko: '규리',        emoji: '⚙️', threshold: 34, rarity: 'rare'   },
+      { id: 'type_steel_3', ko: '강철플레이트', emoji: '⚙️', threshold: 68, rarity: 'epic'   },
+    ],
+  },
+  {
+    type: '페어리',
+    tiers: [
+      { id: 'type_fairy_1', ko: '애호가클럽',   emoji: '🌸', threshold: 10, rarity: 'common' },
+      { id: 'type_fairy_2', ko: '릴리에',       emoji: '🌸', threshold: 30, rarity: 'rare'   },
+      { id: 'type_fairy_3', ko: '정령플레이트',  emoji: '🌸', threshold: 61, rarity: 'epic'   },
+    ],
+  },
+];
+
+// 모든 타입 티어를 flat하게 모은 배열
+export const TYPE_TIER_FLAT = TYPE_TIERS.flatMap(t => t.tiers.map(tier => ({ ...tier, type: t.type })));
+
+// ── 일반 칭호 ──────────────────────────────────────
+export const GENERAL_TITLES = [
   {
     id: 'quick',
     ko: '신속',
@@ -37,7 +190,6 @@ export const TITLES = [
     desc_en: 'Cleared between 4:00 AM and 5:59 AM',
     rarity: 'rare',
   },
-  // ── 데일리 시도 조건 ──
   {
     id: 'onehit',
     ko: '일격필살!',
@@ -56,7 +208,6 @@ export const TITLES = [
     desc_en: 'Cleared after 30+ attempts',
     rarity: 'common',
   },
-  // ── 계정 / 누적 클리어 ──
   {
     id: 'pallet',
     ko: '태초마을',
@@ -93,161 +244,10 @@ export const TITLES = [
     desc_en: '365+ total daily clears',
     rarity: 'legendary',
   },
-  // ── 도감 타입별 10마리 등록 ──
-  {
-    id: 'type_fire',
-    ko: '불놀이꾼',
-    en: 'Fire Breeder',
-    emoji: '🔥',
-    desc_ko: '불꽃타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Fire-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_water',
-    ko: '비키니 아가씨',
-    en: 'Swimmer',
-    emoji: '💧',
-    desc_ko: '물타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Water-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_grass',
-    ko: '아로마 아가씨',
-    en: 'Aroma Lady',
-    emoji: '🌿',
-    desc_ko: '풀타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Grass-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_electric',
-    ko: '전기 작업원',
-    en: 'Electrician',
-    emoji: '⚡',
-    desc_ko: '전기타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Electric-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_ground',
-    ko: '등산가',
-    en: 'Hiker',
-    emoji: '⛰️',
-    desc_ko: '땅타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Ground-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_rock',
-    ko: '스톤숍',
-    en: 'Rock Collector',
-    emoji: '🪨',
-    desc_ko: '바위타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Rock-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_fighting',
-    ko: '태권왕',
-    en: 'Black Belt',
-    emoji: '🥊',
-    desc_ko: '격투타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Fighting-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_psychic',
-    ko: '초능력자',
-    en: 'Psychic',
-    emoji: '🔮',
-    desc_ko: '에스퍼타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Psychic-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_dragon',
-    ko: '드래곤 조련사',
-    en: 'Dragon Tamer',
-    emoji: '🐉',
-    desc_ko: '드래곤타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Dragon-type Pokémon in your Dex',
-    rarity: 'epic',
-  },
-  {
-    id: 'type_poison',
-    ko: '닌자놀이',
-    en: 'Ninja Boy',
-    emoji: '☠️',
-    desc_ko: '독타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Poison-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_ghost',
-    ko: '오컬트마니아',
-    en: 'Hex Maniac',
-    emoji: '👻',
-    desc_ko: '고스트타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Ghost-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_bug',
-    ko: '곤충채집소년',
-    en: 'Bug Catcher',
-    emoji: '🐛',
-    desc_ko: '벌레타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Bug-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_flying',
-    ko: '새 조련사',
-    en: 'Bird Keeper',
-    emoji: '🦅',
-    desc_ko: '비행타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Flying-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_dark',
-    ko: '조무래기',
-    en: 'Roughneck',
-    emoji: '🌑',
-    desc_ko: '악타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Dark-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_normal',
-    ko: '비즈니스맨',
-    en: 'Businessman',
-    emoji: '💼',
-    desc_ko: '노말타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Normal-type Pokémon in your Dex',
-    rarity: 'common',
-  },
-  {
-    id: 'type_fairy',
-    ko: '애호가클럽',
-    en: 'Fan Club',
-    emoji: '🌸',
-    desc_ko: '페어리타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Fairy-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
-  {
-    id: 'type_steel',
-    ko: '작업원',
-    en: 'Worker',
-    emoji: '⚙️',
-    desc_ko: '강철타입 포켓몬 10마리 도감 등록',
-    desc_en: 'Register 10 Steel-type Pokémon in your Dex',
-    rarity: 'rare',
-  },
 ];
+
+// 전체 칭호 배열 (일반 + 타입 전체)
+export const TITLES = [...GENERAL_TITLES, ...TYPE_TIER_FLAT];
 
 export const TITLE_MAP = Object.fromEntries(TITLES.map(t => [t.id, t]));
 
@@ -257,25 +257,4 @@ export const RARITY = {
   rare:      { color: '#1D4ED8', bg: '#EFF6FF', border: '#93C5FD' },
   epic:      { color: '#6D28D9', bg: '#F5F3FF', border: '#C4B5FD' },
   legendary: { color: '#B45309', bg: '#FFFBEB', border: '#FCD34D' },
-};
-
-// 타입명(한국어) → title_id 매핑
-export const TYPE_TITLE_MAP = {
-  '불꽃': 'type_fire',
-  '물':   'type_water',
-  '풀':   'type_grass',
-  '전기': 'type_electric',
-  '땅':   'type_ground',
-  '바위': 'type_rock',
-  '격투': 'type_fighting',
-  '에스퍼': 'type_psychic',
-  '드래곤': 'type_dragon',
-  '독':   'type_poison',
-  '고스트': 'type_ghost',
-  '벌레': 'type_bug',
-  '비행': 'type_flying',
-  '악':   'type_dark',
-  '노말': 'type_normal',
-  '페어리': 'type_fairy',
-  '강철': 'type_steel',
 };

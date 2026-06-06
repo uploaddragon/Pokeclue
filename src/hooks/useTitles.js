@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
 import DB from '../data/pokemon.js';
-import { TYPE_TITLE_MAP } from '../data/titles.js';
+import { TYPE_TIERS } from '../data/titles.js';
 
 /** UTC → KST(+9) 변환 후 { hour, minute } 반환 */
 function getKST() {
@@ -16,36 +16,29 @@ async function batchAward(user, candidates) {
   const current = user.user_metadata?.earned_titles ?? [];
   const toAdd = candidates.filter(id => !current.includes(id));
   if (toAdd.length === 0) return [];
-  const next = [...current, ...toAdd];
-  const { error } = await supabase.auth.updateUser({ data: { earned_titles: next } });
+  const { error } = await supabase.auth.updateUser({
+    data: { earned_titles: [...current, ...toAdd] },
+  });
   if (error) { console.error('batchAward error', error); return []; }
   return toAdd;
 }
 
 export function useTitles(user) {
-  // 획득 칭호 목록은 user_metadata에서 직접 읽기
   const earnedIds = user?.user_metadata?.earned_titles ?? [];
 
-  /**
-   * 데일리 클리어 직후 호출.
-   * @returns {string[]} 새로 획득한 title_id 배열
-   */
+  /** 데일리 클리어 직후 호출 */
   const checkAndAwardTitles = useCallback(async ({ tries, usedFilter }) => {
     if (!user) return [];
     const candidates = [];
     const { hour, minute } = getKST();
 
-    // ── 시간 조건 ──
-    if (hour === 0 && minute <= 10)   candidates.push('quick');
-    if (hour >= 6 && hour <= 7)       candidates.push('earlybird');
-    if (hour === 23 && minute >= 50)  candidates.push('slowstart');
-    if (hour >= 4 && hour <= 5)       candidates.push('insomnia');
+    if (hour === 0 && minute <= 10)  candidates.push('quick');
+    if (hour >= 6 && hour <= 7)      candidates.push('earlybird');
+    if (hour === 23 && minute >= 50) candidates.push('slowstart');
+    if (hour >= 4 && hour <= 5)      candidates.push('insomnia');
+    if (tries === 1 && !usedFilter)  candidates.push('onehit');
+    if (tries >= 30)                 candidates.push('reckless');
 
-    // ── 시도 횟수 조건 ──
-    if (tries === 1 && !usedFilter)   candidates.push('onehit');
-    if (tries >= 30)                  candidates.push('reckless');
-
-    // ── 누적 클리어 수 (DB 조회) ──
     try {
       const { data: records, error } = await supabase
         .from('daily_results')
@@ -67,11 +60,7 @@ export function useTitles(user) {
     return batchAward(user, candidates);
   }, [user]);
 
-  /**
-   * 도감 변경 시 호출. 타입별 10마리 조건 체크.
-   * @param {object} dex  { [pokemonId]: { shiny, date, tries } }
-   * @returns {string[]} 새로 획득한 title_id 배열
-   */
+  /** 도감 변경 시 호출 — 타입별 3티어 체크 */
   const checkDexTitles = useCallback(async (dex) => {
     if (!user) return [];
 
@@ -86,14 +75,17 @@ export function useTitles(user) {
     });
 
     const candidates = [];
-    for (const [typeName, titleId] of Object.entries(TYPE_TITLE_MAP)) {
-      if ((typeCounts[typeName] || 0) >= 10) candidates.push(titleId);
-    }
+    TYPE_TIERS.forEach(({ type, tiers }) => {
+      const count = typeCounts[type] || 0;
+      tiers.forEach(tier => {
+        if (count >= tier.threshold) candidates.push(tier.id);
+      });
+    });
 
     return batchAward(user, candidates);
   }, [user]);
 
-  /** 칭호 장착/해제. titleId = null 이면 해제 */
+  /** 칭호 장착/해제 */
   const equipTitle = useCallback(async (titleId) => {
     if (!user) return null;
     const { error } = await supabase.auth.updateUser({
