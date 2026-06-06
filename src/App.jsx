@@ -27,13 +27,19 @@ export default function App() {
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
-  const { earnedIds, checkAndAwardTitles, equipTitle, awardPalletIfNeeded } = useTitles(user);
+  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded } = useTitles(user);
 
   // 로그인 시 태초마을 지급
   useEffect(() => {
     if (!user || loading) return;
     awardPalletIfNeeded();
   }, [user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 도감 변경 시 타입 칭호 체크
+  useEffect(() => {
+    if (!user || loading) return;
+    checkDexTitles(dex);
+  }, [dex, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 클리어 시 칭호 체크
   useEffect(() => {

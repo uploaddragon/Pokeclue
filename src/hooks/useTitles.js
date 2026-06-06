@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
+import DB from '../data/pokemon.js';
+import { TYPE_TITLE_MAP } from '../data/titles.js';
 
 /** UTC → KST(+9) 변환 후 { hour, minute } 반환 */
 function getKST() {
@@ -9,72 +11,87 @@ function getKST() {
   return { hour: kst.getUTCHours(), minute: kst.getUTCMinutes() };
 }
 
+/** 여러 칭호를 한 번의 updateUser 호출로 일괄 수여 */
+async function batchAward(user, candidates) {
+  const current = user.user_metadata?.earned_titles ?? [];
+  const toAdd = candidates.filter(id => !current.includes(id));
+  if (toAdd.length === 0) return [];
+  const next = [...current, ...toAdd];
+  const { error } = await supabase.auth.updateUser({ data: { earned_titles: next } });
+  if (error) { console.error('batchAward error', error); return []; }
+  return toAdd;
+}
+
 export function useTitles(user) {
-  // 획득 칭호 목록은 user_metadata에서 직접 읽기 (별도 테이블 불필요)
+  // 획득 칭호 목록은 user_metadata에서 직접 읽기
   const earnedIds = user?.user_metadata?.earned_titles ?? [];
 
-  /** 단일 칭호 수여. user_metadata.earned_titles 배열에 추가 */
-  const awardTitle = useCallback(async (titleId) => {
-    if (!user) return false;
-    const current = user.user_metadata?.earned_titles ?? [];
-    if (current.includes(titleId)) return false;
-
-    const next = [...current, titleId];
-    const { data, error } = await supabase.auth.updateUser({
-      data: { earned_titles: next },
-    });
-    if (error) { console.error('awardTitle error', titleId, error); return false; }
-
-    // 로컬 user 객체는 useAuth의 onAuthStateChange가 자동 갱신하므로 별도 처리 불필요
-    return true;
-  }, [user]);
-
   /**
-   * 게임 클리어 직후 호출. 해당 조건의 칭호를 모두 수여.
-   * @returns {string[]} 이번에 새로 획득한 title_id 배열
+   * 데일리 클리어 직후 호출.
+   * @returns {string[]} 새로 획득한 title_id 배열
    */
   const checkAndAwardTitles = useCallback(async ({ tries, usedFilter }) => {
     if (!user) return [];
-    const newlyEarned = [];
-
-    async function tryAward(id) {
-      const got = await awardTitle(id);
-      if (got) newlyEarned.push(id);
-    }
-
+    const candidates = [];
     const { hour, minute } = getKST();
 
-    // ── 시간 조건 ──────────────────────────────
-    if (hour === 0 && minute <= 10)          await tryAward('quick');      // 신속
-    if (hour >= 6 && hour <= 7)              await tryAward('earlybird'); // 일찍기상
-    if (hour === 23 && minute >= 50)         await tryAward('slowstart'); // 슬로스타트
-    if (hour >= 4 && hour <= 5)              await tryAward('insomnia');  // 불면
+    // ── 시간 조건 ──
+    if (hour === 0 && minute <= 10)   candidates.push('quick');
+    if (hour >= 6 && hour <= 7)       candidates.push('earlybird');
+    if (hour === 23 && minute >= 50)  candidates.push('slowstart');
+    if (hour >= 4 && hour <= 5)       candidates.push('insomnia');
 
-    // ── 시도 횟수 조건 ──────────────────────────
-    if (tries === 1 && !usedFilter)          await tryAward('onehit');    // 일격필살!
-    if (tries >= 30)                         await tryAward('reckless');  // 막말내뱉기
+    // ── 시도 횟수 조건 ──
+    if (tries === 1 && !usedFilter)   candidates.push('onehit');
+    if (tries >= 30)                  candidates.push('reckless');
 
-    // ── 누적 클리어 수 조건 (DB 조회) ───────────
+    // ── 누적 클리어 수 (DB 조회) ──
     try {
       const { data: records, error } = await supabase
         .from('daily_results')
-        .select('date', { count: 'exact' })
+        .select('date')
         .eq('user_id', user.id)
         .eq('solved', true)
         .limit(400);
 
       if (!error && records) {
         const total = records.length;
-        if (total >= 10)  await tryAward('shortpants');    // 반바지 꼬마
-        if (total >= 100) await tryAward('elitetrainer');  // 엘리트 트레이너
-        if (total >= 365) await tryAward('champion');      // 챔피언
+        if (total >= 10)  candidates.push('shortpants');
+        if (total >= 100) candidates.push('elitetrainer');
+        if (total >= 365) candidates.push('champion');
       }
     } catch (e) {
       console.error('useTitles: count check failed', e);
     }
 
-    return newlyEarned;
-  }, [user, awardTitle]);
+    return batchAward(user, candidates);
+  }, [user]);
+
+  /**
+   * 도감 변경 시 호출. 타입별 10마리 조건 체크.
+   * @param {object} dex  { [pokemonId]: { shiny, date, tries } }
+   * @returns {string[]} 새로 획득한 title_id 배열
+   */
+  const checkDexTitles = useCallback(async (dex) => {
+    if (!user) return [];
+
+    // 도감에 등록된 포켓몬의 타입별 카운트
+    const typeCounts = {};
+    Object.keys(dex).forEach(id => {
+      const p = DB.find(p => String(p.id) === String(id));
+      if (!p) return;
+      [p.t1, p.t2].filter(Boolean).forEach(t => {
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+      });
+    });
+
+    const candidates = [];
+    for (const [typeName, titleId] of Object.entries(TYPE_TITLE_MAP)) {
+      if ((typeCounts[typeName] || 0) >= 10) candidates.push(titleId);
+    }
+
+    return batchAward(user, candidates);
+  }, [user]);
 
   /** 칭호 장착/해제. titleId = null 이면 해제 */
   const equipTitle = useCallback(async (titleId) => {
@@ -92,11 +109,11 @@ export function useTitles(user) {
     return error ?? null;
   }, [user]);
 
-  // 태초마을: App.jsx에서 user가 처음 로드될 때 한 번 수여
+  /** 태초마을 — 로그인 시 한 번 지급 */
   const awardPalletIfNeeded = useCallback(async () => {
     if (!user) return;
-    await awardTitle('pallet');
-  }, [user, awardTitle]);
+    await batchAward(user, ['pallet']);
+  }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, equipTitle, awardPalletIfNeeded };
+  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded };
 }
