@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { UserMenu } from './UserMenu.jsx';
 
-export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut, onUpdateNickname }) {
+export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut, onUpdateNickname, earnedIds, onEquipTitle }) {
   const isEn = lang === 'en';
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef(null);
@@ -44,6 +44,7 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
         <div className="nav">
           <button className={`nav-btn${page === 'game' ? ' on' : ''}`} onClick={() => onNav('game')}>{isEn ? 'Game' : '게임'}</button>
           <button className={`nav-btn${page === 'dex' ? ' on' : ''}`} onClick={() => onNav('dex')}>{isEn ? 'Dex' : '도감'}</button>
+          <button className={`nav-btn${page === 'titles' ? ' on' : ''}`} onClick={() => onNav('titles')}>{isEn ? 'Titles' : '칭호'}</button>
           <div className="nav-divider" />
           <div className="lang-wrap" ref={langRef}>
             <button className={`nav-btn lang-btn${langOpen ? ' on' : ''}`} onClick={() => setLangOpen(o => !o)}>
@@ -57,12 +58,14 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
             )}
           </div>
           {authLoading ? null : user
-            ? <UserMenu user={user} onSignOut={onSignOut} onUpdateNickname={onUpdateNickname} lang={lang} />
+            ? <UserMenu user={user} onSignOut={onSignOut} onUpdateNickname={onUpdateNickname} lang={lang} earnedIds={earnedIds ?? []} onEquipTitle={onEquipTitle} />
             : <button className="nav-btn login-btn" onClick={onLoginClick}>{isEn ? 'Login' : '로그인'}</button>
           }
         </div>
       </div>
-      {page === 'game' ? (
+      {page === 'titles' ? (
+        <div className="header-yellow-bar" />
+      ) : page === 'game' ? (
         <div className="game-tabs">
           <div className="tab-inner">
             <button

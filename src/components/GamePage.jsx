@@ -47,7 +47,7 @@ export function GamePage({
   filterOpen, result,
   onSubmit, onOpenFilter, onCloseFilter, onPickFromFilter,
   onReset, onRanking,
-  lang = 'ko', user,
+  lang = 'ko', user, newTitleIds = [],
 }) {
   const isEn = lang === 'en';
   const acRef = useRef(null);
@@ -62,7 +62,7 @@ export function GamePage({
         <div className="clearwrap">
           <div className="leftcol">
             <ResultBanner answer={answer} result={result}
-              guessCount={guesses.length} lang={lang} user={user} />
+              guessCount={guesses.length} lang={lang} user={user} newTitleIds={newTitleIds} />
             <GuessTable guesses={guesses} answer={answer} lang={lang} showWinRow={true} />
           </div>
           <aside className="rightcol">

@@ -2,6 +2,22 @@ import { useEffect, useState } from 'react';
 import { spr } from '../utils/sprite.js';
 import { displayName, getTodayStr } from '../utils/game.js';
 import { supabasePublic } from '../lib/supabase.js';
+import { TITLE_MAP, RARITY } from '../data/titles.js';
+
+/* ── 칭호 뱃지 (미니 인라인) ── */
+function TitleBadge({ titleId }) {
+  const t = TITLE_MAP[titleId];
+  if (!t) return null;
+  const s = RARITY[t.rarity];
+  return (
+    <span
+      className="rank-title-badge"
+      style={{ color: s.color, background: s.bg, borderColor: s.border }}
+    >
+      {t.emoji} {t.ko}
+    </span>
+  );
+}
 
 /* ── Ranking data hook ── */
 export function useInlineRanking(win) {
@@ -13,7 +29,7 @@ export function useInlineRanking(win) {
     async function fetchRanking() {
       const { data } = await supabasePublic
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, nickname, used_filter')
+        .select('id, user_id, anon_id, tries, nickname, used_filter, equipped_title')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
@@ -71,7 +87,10 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
                  : globalIdx === 2 ? <div className="medal">🥉</div>
                  : <div className="pos">{globalIdx + 1}</div>}
                 <div className="who">
-                  {r.nickname || (isEn ? 'Trainer' : '트레이너')}
+                  <span className="who-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
+                  {r.equipped_title && TITLE_MAP[r.equipped_title] && (
+                    <TitleBadge titleId={r.equipped_title} />
+                  )}
                   {!r.used_filter && (
                     <span className="nofilter">✓ {isEn ? 'No filter' : '필터 미사용'}</span>
                   )}
@@ -124,7 +143,7 @@ export function LegendPanel({ lang = 'ko' }) {
 }
 
 /* ── Reveal Card (정답 공개) ── */
-export function ResultBanner({ answer, result, guessCount, lang = 'ko', user }) {
+export function ResultBanner({ answer, result, guessCount, lang = 'ko', user, newTitleIds = [] }) {
   if (!result) return null;
   const { win, shinyPct } = result;
   const isEn = lang === 'en';
@@ -169,6 +188,38 @@ export function ResultBanner({ answer, result, guessCount, lang = 'ko', user }) 
             <span className="vv px">{shinyPct}</span>
           </span>
         </div>
+
+        {/* 새 칭호 획득 알림 */}
+        {newTitleIds.length > 0 && (
+          <div className="new-titles-wrap">
+            <div className="new-titles-header">
+              🎖️ {isEn ? 'New title unlocked!' : '칭호 획득!'}
+            </div>
+            <div className="new-titles-list">
+              {newTitleIds.map(id => {
+                const t = TITLE_MAP[id];
+                if (!t) return null;
+                const s = RARITY[t.rarity];
+                return (
+                  <div
+                    key={id}
+                    className="new-title-item"
+                    style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}
+                  >
+                    <span className="new-title-emoji">{t.emoji}</span>
+                    <div>
+                      <div className="new-title-name">{isEn ? t.en : t.ko}</div>
+                      <div className="new-title-desc">{isEn ? t.desc_en : t.desc_ko}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="new-titles-hint">
+              {isEn ? '→ Equip from Profile settings' : '→ 프로필 설정에서 장착할 수 있어요'}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

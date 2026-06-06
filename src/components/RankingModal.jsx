@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react';
 import { supabasePublic } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
+import { TITLE_MAP, RARITY } from '../data/titles.js';
+
+function TitleBadge({ titleId }) {
+  const t = TITLE_MAP[titleId];
+  if (!t) return null;
+  const s = RARITY[t.rarity];
+  return (
+    <span className="rank-title-badge" style={{ color: s.color, background: s.bg, borderColor: s.border }}>
+      {t.emoji} {t.ko}
+    </span>
+  );
+}
 
 export function RankingModal({ onClose, user, lang }) {
   const isEn = lang === 'en';
@@ -11,7 +23,7 @@ export function RankingModal({ onClose, user, lang }) {
     async function fetchRanking() {
       const { data, error } = await supabasePublic
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, solved, used_filter, nickname')
+        .select('id, user_id, anon_id, tries, solved, used_filter, nickname, equipped_title')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
@@ -71,7 +83,12 @@ export function RankingModal({ onClose, user, lang }) {
                   <span className="ranking-pos">
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
                   </span>
-                  <span className="ranking-nickname">{r.nickname || '트레이너'}</span>
+                  <span className="ranking-nickname">
+                    {r.nickname || '트레이너'}
+                    {r.equipped_title && TITLE_MAP[r.equipped_title] && (
+                      <TitleBadge titleId={r.equipped_title} />
+                    )}
+                  </span>
                   <span className="ranking-tries-wrap">
                     <span className="ranking-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
                     {!r.used_filter && (

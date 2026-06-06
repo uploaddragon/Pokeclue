@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header.jsx';
 import { Footer } from './components/Footer.jsx';
 import { GamePage } from './components/GamePage.jsx';
@@ -8,21 +8,38 @@ import { AuthModal } from './components/AuthModal.jsx';
 import { RankingModal } from './components/RankingModal.jsx';
 import { WelcomeModal, useWelcomeModal } from './components/WelcomeModal.jsx';
 import { BattlePage } from './components/BattlePage.jsx';
+import { TitlesPage } from './components/TitlesPage.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
+import { useTitles } from './hooks/useTitles.js';
 
 export default function App() {
-  const [page, setPage] = useState('game');       // 'game' | 'dex'
+  const [page, setPage] = useState('game');       // 'game' | 'dex' | 'titles'
   const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless' | 'battle'
   const [lang, setLang] = useState('ko');
   const [authOpen, setAuthOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
+  // 이번 세션에서 새로 획득한 칭호 ID 목록
+  const [newTitleIds, setNewTitleIds] = useState([]);
   const welcome = useWelcomeModal();
 
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
+  const { earnedIds, checkAndAwardTitles, equipTitle } = useTitles(user);
+
+  // 클리어 시 칭호 체크
+  useEffect(() => {
+    if (!game.result?.win) return;
+    if (loading || !user) return;
+    checkAndAwardTitles({
+      tries: game.guesses.length,
+      usedFilter: game.usedFilter,
+    }).then(earned => {
+      if (earned.length > 0) setNewTitleIds(earned);
+    });
+  }, [game.result?.win, user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleGoogleLogin() {
     await signInWithGoogle();
@@ -39,6 +56,8 @@ export default function App() {
         onLoginClick={() => setAuthOpen(true)}
         onSignOut={signOut}
         onUpdateNickname={updateNickname}
+        earnedIds={earnedIds}
+        onEquipTitle={equipTitle}
       />
 
       {authOpen && (
@@ -74,6 +93,7 @@ export default function App() {
           onRanking={() => setRankingOpen(true)}
           lang={lang}
           user={user}
+          newTitleIds={newTitleIds}
         />
       )}
       {page === 'game' && gameTab === 'endless' && (
@@ -84,6 +104,14 @@ export default function App() {
       )}
       {page === 'dex' && (
         <DexPage dex={dex} lang={lang} />
+      )}
+      {page === 'titles' && (
+        <TitlesPage
+          user={user}
+          earnedIds={earnedIds}
+          onEquipTitle={equipTitle}
+          lang={lang}
+        />
       )}
       <Footer />
     </div>

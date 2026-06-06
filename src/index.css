@@ -884,6 +884,157 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   .tchip{font-size:10px;padding:2px 5px;}
   .cell{min-height:54px;}
 }
+/* ══════════════════════════════════════════
+   칭호 페이지 (TitlesPage)
+══════════════════════════════════════════ */
+.titles-page{max-width:860px;margin:0 auto;padding:32px 20px 60px;}
+
+.titles-page-header{text-align:center;margin-bottom:32px;}
+.titles-page-title{font-size:22px;margin-bottom:8px;}
+.titles-page-sub{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.titles-page-progress{
+  position:relative;height:12px;background:#E4E0D3;
+  border-radius:999px;border:2px solid var(--ink);
+  overflow:hidden;max-width:320px;margin:0 auto;
+}
+.titles-page-progress-bar{
+  height:100%;background:var(--correct);
+  transition:width 0.5s ease;
+}
+.titles-page-progress-text{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  font-size:10px;font-family:'Galmuri11',monospace;color:var(--ink);font-weight:700;
+}
+
+.titles-section{margin-bottom:28px;}
+.titles-section-label{
+  font-family:'Galmuri11',monospace;font-size:13px;font-weight:700;
+  color:var(--muted);margin-bottom:12px;padding-left:2px;
+}
+.titles-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;
+}
+
+/* 칭호 카드 */
+.title-card{
+  background:var(--tbg,#F0EDE6);
+  border:2.5px solid var(--tb,#C0B89A);
+  border-radius:14px;padding:16px;
+  cursor:pointer;
+  transition:transform 0.12s, box-shadow 0.12s;
+  display:flex;flex-direction:column;gap:6px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.title-card:hover{transform:translateY(-2px);box-shadow:3px 5px 0 var(--ink);}
+.title-card.equipped{
+  outline:3px solid var(--tc,var(--ink));
+  outline-offset:2px;
+}
+.title-card.locked{
+  opacity:0.55;cursor:default;filter:grayscale(0.4);
+}
+.title-card.locked:hover{transform:none;box-shadow:3px 3px 0 var(--ink);}
+.title-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.title-card-emoji{font-size:26px;line-height:1;}
+.locked-emoji{filter:grayscale(1);}
+.title-card-rarity{
+  font-size:10px;font-family:'Galmuri11',monospace;font-weight:700;
+  padding:2px 8px;border-radius:20px;
+}
+.rarity-common   {background:#E8E4DC;color:#5C5852;}
+.rarity-rare     {background:#DBEAFE;color:#1D4ED8;}
+.rarity-epic     {background:#EDE9FE;color:#6D28D9;}
+.rarity-legendary{background:#FEF3C7;color:#B45309;}
+
+.title-card-name{font-size:15px;font-weight:700;color:var(--tc,var(--ink));}
+.locked-name{color:var(--muted);}
+.title-card-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
+
+.title-card-equip-btn{
+  margin-top:6px;width:100%;
+  padding:7px 0;border-radius:8px;
+  border:2px solid var(--tb);background:white;
+  color:var(--tc);font-family:'Galmuri11',monospace;font-size:12px;
+  cursor:pointer;transition:background 0.1s;font-weight:700;
+}
+.title-card-equip-btn:hover{background:var(--tbg);}
+.title-card-equip-btn.on{background:var(--tc);color:white;border-color:var(--tc);}
+
+.titles-login-notice{
+  text-align:center;padding:20px;
+  background:#F7F5F0;border:2px dashed var(--line);
+  border-radius:12px;color:var(--muted);font-size:14px;
+  margin-top:16px;
+}
+
+/* ══════════════════════════════════════════
+   칭호 시스템
+══════════════════════════════════════════ */
+
+/* ── ProfileModal 칭호 섹션 ── */
+.profile-titles-section{margin-top:18px;border-top:2px solid var(--line);padding-top:14px;}
+.profile-titles-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.profile-titles-count{font-size:12px;color:var(--muted);font-family:'Galmuri11',monospace;}
+.profile-titles-empty{font-size:13px;color:var(--muted);text-align:center;padding:12px 0;}
+.profile-titles-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+
+/* 보유 칭호 칩 */
+.title-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:20px;
+  border:2px solid var(--tb);background:var(--tbg);color:var(--tc);
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:box-shadow 0.1s,transform 0.1s;
+  font-family:'Galmuri11',monospace;
+}
+.title-chip:hover{box-shadow:0 2px 8px rgba(0,0,0,0.15);transform:translateY(-1px);}
+.title-chip.equipped{box-shadow:0 0 0 3px var(--tc);transform:none;}
+.title-chip-emoji{font-size:15px;}
+.title-chip-name{font-size:12px;}
+.title-chip-check{margin-left:2px;font-size:11px;font-weight:700;}
+
+/* 미획득 칭호 목록 */
+.profile-titles-locked{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.title-locked-item{display:flex;align-items:center;gap:8px;padding:6px 8px;background:#F7F5F0;border-radius:8px;opacity:0.7;}
+.title-locked-emoji{font-size:14px;}
+.title-locked-name{font-size:12px;font-weight:600;color:var(--muted);min-width:46px;font-family:'Galmuri11',monospace;}
+.title-locked-desc{font-size:12px;color:var(--muted);}
+
+/* ── 랭킹의 칭호 뱃지 ── */
+.rank-title-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 7px;border-radius:12px;
+  border:1.5px solid currentBorderColor;
+  font-size:11px;font-weight:600;font-family:'Galmuri11',monospace;
+  margin-left:5px;vertical-align:middle;
+  border-color:inherit;
+}
+.who{display:flex;align-items:center;flex-wrap:wrap;gap:4px;flex:1;min-width:0;}
+.who-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── 새 칭호 획득 알림 (클리어 화면) ── */
+.new-titles-wrap{
+  margin-top:16px;padding:14px 16px;
+  background:#FFFBEB;border:2px solid #FCD34D;border-radius:12px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.new-titles-header{
+  font-family:'Galmuri11',monospace;font-size:14px;font-weight:700;
+  color:#B45309;margin-bottom:10px;
+}
+.new-titles-list{display:flex;flex-direction:column;gap:8px;}
+.new-title-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:8px;
+  border:2px solid var(--tb);background:var(--tbg);
+}
+.new-title-emoji{font-size:22px;flex-shrink:0;}
+.new-title-name{font-family:'Galmuri11',monospace;font-size:14px;font-weight:700;color:var(--tc);}
+.new-title-desc{font-size:12px;color:var(--muted);margin-top:1px;}
+.new-titles-hint{font-size:12px;color:var(--muted);margin-top:8px;text-align:right;}
+
 @media(max-width:640px){
   .header-top{padding:0 14px;}
   .nav-btn{font-size:11px;padding:6px 10px;}

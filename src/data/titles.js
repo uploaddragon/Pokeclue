@@ -1,0 +1,103 @@
+// ── 칭호 정의 ──────────────────────────────────────
+export const TITLES = [
+  {
+    id: 'quick',
+    ko: '신속',
+    en: 'Swift',
+    emoji: '⚡',
+    desc_ko: '자정 10분 이내(00:00~00:10 KST) 클리어',
+    desc_en: 'Cleared within 10 min of midnight (KST)',
+    rarity: 'rare',
+  },
+  {
+    id: 'earlybird',
+    ko: '일찍기상',
+    en: 'Early Bird',
+    emoji: '🌅',
+    desc_ko: '오전 6시~8시 사이에 클리어',
+    desc_en: 'Cleared between 6:00 AM and 8:00 AM',
+    rarity: 'common',
+  },
+  {
+    id: 'slowstart',
+    ko: '슬로스타트',
+    en: 'Slow Start',
+    emoji: '🐢',
+    desc_ko: '23:50~23:59 사이에 클리어',
+    desc_en: 'Cleared between 23:50 and 23:59',
+    rarity: 'rare',
+  },
+  {
+    id: 'insomnia',
+    ko: '불면',
+    en: 'Insomnia',
+    emoji: '🌙',
+    desc_ko: '새벽 4시~5시 59분 사이에 클리어',
+    desc_en: 'Cleared between 4:00 AM and 5:59 AM',
+    rarity: 'rare',
+  },
+  {
+    id: 'onehit',
+    ko: '일격필살!',
+    en: 'One-Hit KO!',
+    emoji: '⚔️',
+    desc_ko: '필터 없이 첫 번째 시도에 정답!',
+    desc_en: 'Cleared on the first try without any hints!',
+    rarity: 'legendary',
+  },
+  {
+    id: 'reckless',
+    ko: '막말내뱉기',
+    en: 'Reckless',
+    emoji: '💢',
+    desc_ko: '30회 이상 시도 끝에 클리어',
+    desc_en: 'Cleared after 30+ attempts',
+    rarity: 'common',
+  },
+  {
+    id: 'pallet',
+    ko: '태초마을',
+    en: 'Pallet Town',
+    emoji: '🏠',
+    desc_ko: '계정 연동 시 지급',
+    desc_en: 'Awarded upon linking your account',
+    rarity: 'common',
+  },
+  {
+    id: 'shortpants',
+    ko: '반바지 꼬마',
+    en: 'Youngster',
+    emoji: '👦',
+    desc_ko: '데일리 10회 이상 정답',
+    desc_en: '10+ total daily clears',
+    rarity: 'common',
+  },
+  {
+    id: 'elitetrainer',
+    ko: '엘리트 트레이너',
+    en: 'Elite Trainer',
+    emoji: '🎖️',
+    desc_ko: '데일리 100회 이상 정답',
+    desc_en: '100+ total daily clears',
+    rarity: 'epic',
+  },
+  {
+    id: 'champion',
+    ko: '챔피언',
+    en: 'Champion',
+    emoji: '🏆',
+    desc_ko: '데일리 365회 이상 정답',
+    desc_en: '365+ total daily clears',
+    rarity: 'legendary',
+  },
+];
+
+export const TITLE_MAP = Object.fromEntries(TITLES.map(t => [t.id, t]));
+
+// rarity별 스타일 토큰
+export const RARITY = {
+  common:    { color: '#5C5852', bg: '#F0EDE6', border: '#C0B89A' },
+  rare:      { color: '#1D4ED8', bg: '#EFF6FF', border: '#93C5FD' },
+  epic:      { color: '#6D28D9', bg: '#F5F3FF', border: '#C4B5FD' },
+  legendary: { color: '#B45309', bg: '#FFFBEB', border: '#FCD34D' },
+};

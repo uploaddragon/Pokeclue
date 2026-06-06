@@ -64,11 +64,12 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
       || user.user_metadata?.name
       || user.email?.split('@')[0]
       || '트레이너';
+    const equippedTitle = user.user_metadata?.equipped_title ?? null;
 
     const { error } = await supabase
       .from('daily_results')
       .upsert(
-        { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname },
+        { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname, equipped_title: equippedTitle },
         { onConflict: 'user_id,date' }
       );
     if (error) console.error('daily_results upsert error', error);
