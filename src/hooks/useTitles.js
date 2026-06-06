@@ -21,26 +21,37 @@ export function useTitles(user) {
   useEffect(() => {
     if (!user) { setEarnedIds([]); return; }
 
-    supabase
-      .from('user_titles')
-      .select('title_id')
-      .eq('user_id', user.id)
-      .then(async ({ data }) => {
-        const ids = data?.map(r => r.title_id) ?? [];
-        setEarnedIds(ids);
-        earnedIdsRef.current = ids;
+    async function loadAndInit() {
+      // 세션이 실제로 유효한지 먼저 확인 (클라이언트 초기화 타이밍 이슈 방지)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
 
-        // [태초마을] — 계정 연동 시 최초 1회 지급
-        if (!ids.includes('pallet')) {
-          const { error } = await supabase
-            .from('user_titles')
-            .insert({ user_id: user.id, title_id: 'pallet' });
-          if (!error) {
-            setEarnedIds(prev => [...prev, 'pallet']);
-            earnedIdsRef.current = [...earnedIdsRef.current, 'pallet'];
-          }
+      const { data, error } = await supabase
+        .from('user_titles')
+        .select('title_id')
+        .eq('user_id', user.id);
+
+      if (error) { console.error('useTitles: fetch error', error); return; }
+
+      const ids = data?.map(r => r.title_id) ?? [];
+      setEarnedIds(ids);
+      earnedIdsRef.current = ids;
+
+      // [태초마을] — 계정 연동 시 최초 1회 지급
+      if (!ids.includes('pallet')) {
+        const { error: insertErr } = await supabase
+          .from('user_titles')
+          .insert({ user_id: user.id, title_id: 'pallet' });
+        if (!insertErr) {
+          setEarnedIds(prev => [...prev, 'pallet']);
+          earnedIdsRef.current = [...earnedIdsRef.current, 'pallet'];
+        } else {
+          console.error('useTitles: pallet insert error', insertErr);
         }
-      });
+      }
+    }
+
+    loadAndInit();
   }, [user?.id]);
 
   /** 단일 칭호 수여 시도. 새로 획득 → true, 이미 보유/실패 → false */
