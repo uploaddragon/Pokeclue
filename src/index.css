@@ -254,7 +254,7 @@ main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:26px 22px 60px;}
 .ritem .medal{font-size:20px;width:30px;text-align:center;flex:0 0 auto;}
 .ritem .who{display:flex;flex-direction:column;gap:2px;font-size:14px;font-weight:600;flex:1;overflow:hidden;}
 .ritem .nofilter{font-size:11px;color:var(--correct-d);font-weight:700;}
-.ritem .tries{display:flex;align-items:center;gap:6px;flex-shrink:0;font-family:'Galmuri11',monospace;font-size:15px;}
+.ritem .tries{display:flex;align-items:center;gap:12px;flex-shrink:0;font-family:'Galmuri11',monospace;font-size:15px;}
 .ritem .tries small{font-family:'Pretendard',sans-serif;font-size:11px;color:var(--muted);}
 .ritem.me{background:#fff7e0;}
 .rank-loading{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
@@ -1006,10 +1006,10 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .rank-title-badge{
   display:inline-flex;align-items:center;gap:3px;
   padding:2px 7px;border-radius:12px;
-  border:1.5px solid currentBorderColor;
+  border:1.5px solid;
   font-size:11px;font-weight:600;font-family:'Galmuri11',monospace;
-  margin-left:5px;vertical-align:middle;
   border-color:inherit;
+  width:fit-content;align-self:flex-start;
 }
 .who{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
 .who-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
