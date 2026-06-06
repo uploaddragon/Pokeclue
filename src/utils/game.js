@@ -12,8 +12,12 @@ export function getTodayStr() {
 function dateHash(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
-    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
   }
+  // Wang hash mixing — 연속된 날짜가 연속된 인덱스로 매핑되지 않도록
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h ^= (h >>> 16);
   return Math.abs(h);
 }
 
