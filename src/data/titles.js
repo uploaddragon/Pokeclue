@@ -65,7 +65,7 @@ export const TITLES = [
   },
   {
     id: 'shortpants',
-    ko: '반바지 꼬마',
+    ko: '조무래기',
     en: 'Youngster',
     emoji: '👦',
     desc_ko: '데일리 10회 이상 정답',
