@@ -90,10 +90,10 @@ export function RankingModal({ onClose, user, lang }) {
                     )}
                   </span>
                   <span className="ranking-tries-wrap">
-                    <span className="ranking-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
                     {!r.used_filter && (
                       <span className="ranking-no-filter">{isEn ? 'no filter!' : '필터 미사용!'}</span>
                     )}
+                    <span className="ranking-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
                   </span>
                   {isMe && (
                     <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>

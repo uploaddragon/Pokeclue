@@ -91,11 +91,13 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
                   {r.equipped_title && TITLE_MAP[r.equipped_title] && (
                     <TitleBadge titleId={r.equipped_title} />
                   )}
+                </div>
+                <div className="tries">
                   {!r.used_filter && (
                     <span className="nofilter">✓ {isEn ? 'No filter' : '필터 미사용'}</span>
                   )}
+                  {r.tries}<small>{isEn ? ' tries' : '번'}</small>
                 </div>
-                <div className="tries">{r.tries}<small>{isEn ? ' tries' : '번'}</small></div>
               </div>
             );
           })
