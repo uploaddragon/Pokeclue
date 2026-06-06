@@ -123,6 +123,7 @@ export default function App() {
           earnedIds={earnedIds}
           onEquipTitle={equipTitle}
           lang={lang}
+          dex={dex}
         />
       )}
       <Footer />

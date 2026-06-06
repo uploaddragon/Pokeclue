@@ -963,11 +963,38 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .title-card-equip-btn.on{background:var(--tc);color:white;border-color:var(--tc);}
 
 /* 타입 티어 행 */
-.type-tiers-list{display:flex;flex-direction:column;gap:16px;}
+.type-tiers-list{display:flex;flex-direction:column;gap:14px;}
 .type-tier-row{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:2px 2px 0 var(--ink);}
-.type-tier-label{font-family:'Galmuri11',monospace;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;}
+
+.type-tier-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.type-tier-label{font-family:'Galmuri11',monospace;font-size:13px;font-weight:700;color:var(--ink);}
+.type-tier-progress-text{font-size:12px;color:var(--muted);white-space:nowrap;}
+.type-tier-next{color:var(--partial-d);}
+
+/* 진행도 바 */
+.type-tier-bar-wrap{
+  position:relative;height:10px;background:#E4E0D3;
+  border-radius:999px;border:1.5px solid var(--ink);
+  overflow:visible;margin-bottom:10px;
+}
+.type-tier-bar{
+  height:100%;background:var(--correct);
+  border-radius:999px;transition:width 0.4s ease;
+  min-width:0;
+}
+.type-tier-marker{
+  position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:#E4E0D3;border:2px solid var(--ink);
+  z-index:1;transition:background 0.3s;
+}
+.type-tier-marker.done{background:var(--gold);border-color:var(--ink);}
+
 .type-tier-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-@media(max-width:640px){.type-tier-cards{grid-template-columns:1fr;}}
+@media(max-width:640px){
+  .type-tier-cards{grid-template-columns:1fr;}
+  .type-tier-progress-text{font-size:11px;}
+}
 
 .titles-login-notice{
   text-align:center;padding:20px;

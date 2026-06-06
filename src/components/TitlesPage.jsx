@@ -1,8 +1,22 @@
+import { useMemo } from 'react';
 import { GENERAL_TITLES, TYPE_TIERS, RARITY } from '../data/titles.js';
+import DB from '../data/pokemon.js';
 
 const RARITY_LABEL_KO = {
   common: '일반', rare: '레어', epic: '에픽', legendary: '전설',
 };
+
+// 타입별 DB 총 수 (한 번만 계산)
+const TYPE_TOTAL = (() => {
+  const map = {};
+  const REAL = new Set(TYPE_TIERS.map(t => t.type));
+  DB.forEach(p => {
+    [p.t1, p.t2].filter(t => t && REAL.has(t)).forEach(t => {
+      map[t] = (map[t] || 0) + 1;
+    });
+  });
+  return map;
+})();
 
 function TitleCard({ title, isEquipped, onEquip, user }) {
   const s = RARITY[title.rarity];
@@ -19,7 +33,7 @@ function TitleCard({ title, isEquipped, onEquip, user }) {
         </span>
       </div>
       <div className="title-card-name px">{title.ko}</div>
-      <div className="title-card-desc">{title.desc_ko ?? `${title.type}타입 ${title.threshold}마리 도감 등록`}</div>
+      <div className="title-card-desc">{title.desc_ko ?? `${title.threshold}마리 도감 등록`}</div>
       {user && (
         <button className={`title-card-equip-btn${isEquipped ? ' on' : ''}`}>
           {isEquipped ? '✓ 장착 중' : '장착하기'}
@@ -45,8 +59,22 @@ function LockedCard({ title, descOverride }) {
   );
 }
 
-export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko' }) {
+export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', dex = {} }) {
   const equippedTitle = user?.user_metadata?.equipped_title ?? null;
+
+  // 도감에서 타입별 등록 수 계산
+  const typeCounts = useMemo(() => {
+    const map = {};
+    const REAL = new Set(TYPE_TIERS.map(t => t.type));
+    Object.keys(dex).forEach(id => {
+      const p = DB.find(p => String(p.id) === String(id));
+      if (!p) return;
+      [p.t1, p.t2].filter(t => t && REAL.has(t)).forEach(t => {
+        map[t] = (map[t] || 0) + 1;
+      });
+    });
+    return map;
+  }, [dex]);
 
   async function handleEquip(titleId) {
     if (!onEquipTitle || !user) return;
@@ -84,18 +112,46 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko' }) 
       <section className="titles-section">
         <div className="titles-section-label">🏅 타입 도감 칭호</div>
         <div className="type-tiers-list">
-          {TYPE_TIERS.map(({ type, tiers }) => (
-            <div key={type} className="type-tier-row">
-              <div className="type-tier-label">{type}</div>
-              <div className="type-tier-cards">
-                {tiers.map(t =>
-                  earnedIds.includes(t.id)
-                    ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} />
-                    : <LockedCard key={t.id} title={t} descOverride={`${type}타입 ${t.threshold}마리 도감 등록`} />
-                )}
+          {TYPE_TIERS.map(({ type, tiers }) => {
+            const caught = typeCounts[type] || 0;
+            const total  = TYPE_TOTAL[type] || 1;
+            const pct    = Math.min(100, Math.round((caught / total) * 100));
+            const nextTier = tiers.find(t => caught < t.threshold);
+
+            return (
+              <div key={type} className="type-tier-row">
+                {/* 타입 헤더 + 진행도 */}
+                <div className="type-tier-header">
+                  <span className="type-tier-label">{type}</span>
+                  <span className="type-tier-progress-text">
+                    {caught} / {total} ({pct}%)
+                    {nextTier && <span className="type-tier-next"> · 다음 칭호까지 {nextTier.threshold - caught}마리</span>}
+                  </span>
+                </div>
+                {/* 진행도 바 */}
+                <div className="type-tier-bar-wrap">
+                  <div className="type-tier-bar" style={{ width: `${pct}%` }} />
+                  {/* 티어 마커 */}
+                  {tiers.map(t => (
+                    <div
+                      key={t.id}
+                      className={`type-tier-marker${caught >= t.threshold ? ' done' : ''}`}
+                      style={{ left: `${Math.min(100, (t.threshold / total) * 100)}%` }}
+                      title={`${t.ko} (${t.threshold}마리)`}
+                    />
+                  ))}
+                </div>
+                {/* 칭호 카드 3개 */}
+                <div className="type-tier-cards">
+                  {tiers.map(t =>
+                    earnedIds.includes(t.id)
+                      ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} />
+                      : <LockedCard key={t.id} title={t} descOverride={`${type}타입 ${t.threshold}마리 도감 등록`} />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
