@@ -45,7 +45,7 @@ function ModeSelect({ onSelect, lang }) {
   );
 }
 
-function NormalGame({ lang, onBack }) {
+function NormalGame({ lang, onBack, onEasterEgg }) {
   const g = useEndlessNormal();
   const isEn = lang === 'en';
 
@@ -114,7 +114,7 @@ function NormalGame({ lang, onBack }) {
   );
 }
 
-function ChallengeGame({ unlockDex, lang, onBack }) {
+function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg }) {
   const g = useEndlessChallenge(unlockDex);
   const isEn = lang === 'en';
   const triesLeft = g.maxTries - g.guesses.length;
@@ -216,6 +216,6 @@ export function EndlessPage({ unlockDex, lang, onEasterEgg }) {
   const [mode, setMode] = useState('select');
 
   if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} />;
-  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} />;
-  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} />;
+  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} />;
+  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} />;
 }
