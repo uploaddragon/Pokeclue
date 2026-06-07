@@ -83,6 +83,8 @@ export const FORM_LABEL_EN = {
   naive:    'Naïve Form',
   mighty:   'Mighty Form',
   hisui:    'Hisuian Form',
+  confined: 'Confined',
+  unbound:  'Unbound',
   paldea:   'Paldean Form',
   combat:   'Combat Breed',
   blaze:    'Blaze Breed',
@@ -163,6 +165,9 @@ export const FORM_LABEL = {
   mighty:   '마이티폼',
   // 히스이폼
   hisui:    '히스이폼',
+  // 후파
+  confined: '굴레에 빠진',
+  unbound:  '굴레를 벗어난',
   // 팔데아 리전폼
   paldea:   '리전폼',
   // 켄타로스 팔데아 종
