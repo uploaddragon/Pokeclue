@@ -27,13 +27,25 @@ function seededShiny(roomCode, round) {
   return (Math.abs(h) % 100) === 0; // 1%
 }
 
-export function BattlePage({ user, lang }) {
+export function BattlePage({ user, lang, onBattleWin }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
   const [friendView, setFriendView] = useState('main');
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
+  const battleWinFiredRef = useRef(false);
+
+  // 승리 확정 시 칭호 체크 (라운드당 1회)
+  useEffect(() => {
+    if (b.phase === 'finished' && b.iWon && !battleWinFiredRef.current) {
+      battleWinFiredRef.current = true;
+      onBattleWin?.(b.sharedGuesses.length);
+    }
+    if (b.phase !== 'finished') {
+      battleWinFiredRef.current = false;
+    }
+  }, [b.phase, b.iWon]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     clearInterval(timerRef.current);

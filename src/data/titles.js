@@ -251,6 +251,15 @@ export const GENERAL_TITLES = [
     threshold: 365,
   },
   {
+    id: 'gapseok',
+    ko: '틈새포착',
+    en: 'Gap Finder',
+    emoji: '🎯',
+    desc_ko: '대전에서 20턴 이상 지난 후 정답 맞히기',
+    desc_en: 'Win a battle after 20+ total turns',
+    rarity: 'epic',
+  },
+  {
     id: 'nombungi',
     ko: '놈붕이',
     en: '???',

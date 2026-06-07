@@ -34,7 +34,7 @@ export default function App() {
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
-  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss } = useTitles(user);
+  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles } = useTitles(user);
 
   // 로그인 시 태초마을 지급
   useEffect(() => {
@@ -143,7 +143,13 @@ export default function App() {
         }} />
       )}
       {page === 'game' && gameTab === 'battle' && (
-        <BattlePage user={user} lang={lang} />
+        <BattlePage user={user} lang={lang}
+          onBattleWin={(totalTurns) =>
+            checkBattleTitles({ totalTurns }).then(earned => {
+              if (earned.length > 0) pushToast(earned);
+            })
+          }
+        />
       )}
       {page === 'dex' && (
         <DexPage dex={dex} lang={lang} />

@@ -121,6 +121,14 @@ export function useTitles(user) {
     await batchAward(user, ['pallet']);
   }, [user]);
 
+  /** 대전 종료 시 호출 — 조건 달성 칭호 수여, 새로 얻은 ID 배열 반환 */
+  const checkBattleTitles = useCallback(async ({ totalTurns }) => {
+    if (!user) return [];
+    const candidates = [];
+    if (totalTurns >= 20) candidates.push('gapseok');
+    return batchAward(user, candidates);
+  }, [user]);
+
   /**
    * near-miss 누적 카운트 체크 — 새로운 추측(guess)이 near-miss면
    * user_metadata.near_miss_count를 +1하고, 5 이상이면 sparkdust 칭호 수여
@@ -146,5 +154,5 @@ export function useTitles(user) {
     }
   }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss };
+  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles };
 }
