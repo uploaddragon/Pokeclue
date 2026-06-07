@@ -29,8 +29,12 @@ const { default: DB } = await import(pathToFileURL(_dbPath).href);
 function dateHash(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
-    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
   }
+  // Wang hash mixing — 게임 로직(src/utils/game.js)과 동일하게 맞춤
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h ^= (h >>> 16);
   return Math.abs(h);
 }
 
