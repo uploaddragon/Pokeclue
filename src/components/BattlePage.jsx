@@ -21,13 +21,26 @@ function BattleTitleBadge({ titleId }) {
 const TURN_SEC = 30;
 
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-function getRandomChosung(str) {
-  const list = [...str].map(ch => {
+// 룸코드를 시드로 count개의 초성을 중복 없이 반환 (양쪽 플레이어 동일)
+function getChosungHints(ko, count, seed) {
+  const all = [...ko].map(ch => {
     const code = ch.charCodeAt(0) - 0xAC00;
     return (code >= 0 && code <= 11171) ? CHOSUNG_LIST[Math.floor(code / (21 * 28))] : null;
   }).filter(Boolean);
-  if (list.length === 0) return str[0] ?? '?';
-  return list[Math.floor(Math.random() * list.length)];
+  if (all.length === 0) return [];
+
+  // 시드 기반 셔플
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+
+  const pool = [...all];
+  const result = [];
+  for (let i = 0; i < Math.min(count, pool.length); i++) {
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+    const idx = Math.abs(h) % pool.length;
+    result.push(pool.splice(idx, 1)[0]);
+  }
+  return result;
 }
 
 function seededShiny(roomCode, round) {
@@ -45,11 +58,14 @@ export function BattlePage({ user, lang, onBattleWin }) {
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
 
-  // 10턴 도달 시 초성 하나를 고정 (리렌더링마다 바뀌지 않도록)
-  const chosungHint = useMemo(() => {
-    if (!b.answer || b.sharedGuesses.length < 10) return null;
-    return getRandomChosung(b.answer.ko);
-  }, [b.sharedGuesses.length >= 10, b.answer?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 10턴부터 5턴마다 초성 1개씩 추가 공개 (룸코드 시드로 양측 동일)
+  const hintCount = b.sharedGuesses.length >= 10
+    ? Math.floor((b.sharedGuesses.length - 10) / 5) + 1
+    : 0;
+  const chosungHints = useMemo(() => {
+    if (!b.answer || hintCount === 0) return [];
+    return getChosungHints(b.answer.ko, hintCount, b.roomCode);
+  }, [hintCount, b.answer?.id, b.roomCode]); // eslint-disable-line react-hooks/exhaustive-deps
   const battleWinFiredRef = useRef(false);
 
   // 승리 확정 시 칭호 체크 (라운드당 1회)
@@ -285,11 +301,13 @@ export function BattlePage({ user, lang, onBattleWin }) {
             : (isEn ? "⏳ Opponent's Turn…" : '⏳ 상대방 턴… 기다려주세요.')}
         </div>
 
-        {/* 10턴 초과 시 초성 힌트 */}
-        {chosungHint && (
+        {/* 10턴부터 5턴마다 초성 1개씩 추가 */}
+        {chosungHints.length > 0 && (
           <div className="battle-chosung-hint">
             💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
-            <span className="battle-chosung-text px">{chosungHint}</span>
+            {chosungHints.map((c, i) => (
+              <span key={i} className="battle-chosung-text px">{c}</span>
+            ))}
           </div>
         )}
 
