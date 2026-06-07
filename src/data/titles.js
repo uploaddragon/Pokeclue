@@ -195,8 +195,8 @@ export const GENERAL_TITLES = [
     ko: '일격필살!',
     en: 'One-Hit KO!',
     emoji: '⚔️',
-    desc_ko: '필터 없이 첫 번째 시도에 정답!',
-    desc_en: 'Cleared on the first try without any hints!',
+    desc_ko: '엔드리스/대전에서 첫 번째 시도에 정답! (데일리 제외)',
+    desc_en: 'First try correct in Endless or Battle! (Daily excluded)',
     rarity: 'legendary',
   },
   {

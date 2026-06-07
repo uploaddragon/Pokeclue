@@ -50,7 +50,7 @@ export function useTitles(user) {
     if (hour >= 6 && hour <= 7)      candidates.push('earlybird');
     if (hour === 23 && minute >= 50) candidates.push('slowstart');
     if (hour >= 4 && hour <= 5)      candidates.push('insomnia');
-    if (tries === 1 && !usedFilter)  candidates.push('onehit');
+    // 일격필살은 데일리 제외 (엔드리스/대전 전용)
     if (tries >= 30)                 candidates.push('reckless');
 
     try {
