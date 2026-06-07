@@ -306,7 +306,9 @@ export function BattlePage({ user, lang, onBattleWin }) {
           <div className="battle-chosung-hint">
             💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
             {chosungHints.map((c, i) => (
-              <span key={i} className="battle-chosung-text px">{c}</span>
+              <span key={i} className="battle-chosung-text px">
+                {i > 0 && <span className="battle-chosung-sep">, </span>}{c}
+              </span>
             ))}
           </div>
         )}
