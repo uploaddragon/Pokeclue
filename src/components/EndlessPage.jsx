@@ -45,10 +45,11 @@ function ModeSelect({ onSelect, lang }) {
   );
 }
 
-function NormalGame({ lang, onBack, onEasterEgg, onWin }) {
+function NormalGame({ lang, onBack, onEasterEgg, onWin, onGuess }) {
   const g = useEndlessNormal();
   const isEn = lang === 'en';
   const firedRef = useRef(false);
+  const prevLenRef = useRef(0);
   useEffect(() => {
     if (g.result && !firedRef.current) {
       firedRef.current = true;
@@ -56,6 +57,13 @@ function NormalGame({ lang, onBack, onEasterEgg, onWin }) {
     }
     if (!g.result) firedRef.current = false;
   }, [g.result]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (g.guesses.length > prevLenRef.current && g.answer) {
+      const last = g.guesses[g.guesses.length - 1];
+      onGuess?.(last, g.answer);
+    }
+    prevLenRef.current = g.guesses.length;
+  }, [g.guesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main>
@@ -122,17 +130,25 @@ function NormalGame({ lang, onBack, onEasterEgg, onWin }) {
   );
 }
 
-function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin }) {
+function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess }) {
   const g = useEndlessChallenge(unlockDex);
   const isEn = lang === 'en';
   const firedRef = useRef(false);
+  const prevLenRef = useRef(0);
   useEffect(() => {
     if (g.result?.win && !firedRef.current) {
       firedRef.current = true;
-      onWin?.({ tries: g.guesses.length, usedFilter: false }); // 챌린지는 필터 없음
+      onWin?.({ tries: g.guesses.length, usedFilter: false });
     }
     if (!g.result) firedRef.current = false;
   }, [g.result]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (g.guesses.length > prevLenRef.current && g.answer) {
+      const last = g.guesses[g.guesses.length - 1];
+      onGuess?.(last, g.answer);
+    }
+    prevLenRef.current = g.guesses.length;
+  }, [g.guesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const triesLeft = g.maxTries - g.guesses.length;
   const tryDots = Array.from({ length: g.maxTries }, (_, i) => i < g.guesses.length);
 
@@ -228,10 +244,10 @@ function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin }) {
   );
 }
 
-export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin }) {
+export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess }) {
   const [mode, setMode] = useState('select');
 
   if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} />;
-  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} />;
-  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} />;
+  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
+  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
 }

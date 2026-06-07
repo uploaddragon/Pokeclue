@@ -153,7 +153,7 @@ export function useTitles(user) {
     });
     if (error) { console.error('checkNearMiss updateUser error', error); return; }
 
-    if (newCount >= 5) {
+    if (newCount >= 10) {
       await batchAward(
         { ...user, user_metadata: { ...current, near_miss_count: newCount } },
         ['sparkdust'],

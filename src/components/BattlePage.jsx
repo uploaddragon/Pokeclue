@@ -50,7 +50,7 @@ function seededShiny(roomCode, round) {
   return (Math.abs(h) % 100) === 0; // 1%
 }
 
-export function BattlePage({ user, lang, onBattleWin }) {
+export function BattlePage({ user, lang, onBattleWin, onGuess }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
@@ -65,6 +65,17 @@ export function BattlePage({ user, lang, onBattleWin }) {
     ? getChosungHints(b.answer.ko, hintCount, b.roomCode)
     : [];
   const battleWinFiredRef = useRef(false);
+  const prevGuessLenRef = useRef(0);
+
+  // 새 추측마다 near-miss 체크
+  useEffect(() => {
+    const len = b.sharedGuesses.length;
+    if (len > prevGuessLenRef.current && b.answer) {
+      const last = b.sharedGuesses[len - 1];
+      onGuess?.(last, b.answer);
+    }
+    prevGuessLenRef.current = len;
+  }, [b.sharedGuesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 승리 확정 시 칭호 체크 (라운드당 1회)
   useEffect(() => {

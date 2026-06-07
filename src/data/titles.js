@@ -273,11 +273,11 @@ export const GENERAL_TITLES = [
     ko: '반짝가루',
     en: 'Stardust',
     emoji: '✨',
-    desc_ko: '모든 속성이 일치하지만 정답이 아닌 추측을 5회 이상 누적',
-    desc_en: 'Accumulated 5+ guesses matching all attributes but not the answer',
+    desc_ko: '모든 속성이 일치하지만 정답이 아닌 추측을 10회 이상 누적',
+    desc_en: 'Accumulated 10+ guesses matching all attributes but not the answer',
     rarity: 'legendary',
     progressGroup: 'near_miss',
-    threshold: 5,
+    threshold: 10,
   },
 ];
 

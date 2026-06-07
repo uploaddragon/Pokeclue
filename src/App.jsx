@@ -133,6 +133,11 @@ export default function App() {
       )}
       {page === 'game' && gameTab === 'endless' && (
         <EndlessPage unlockDex={unlockDex} lang={lang}
+          onGuess={(guess, answer) =>
+            checkNearMiss(guess, answer).then(earned => {
+              if (earned.length > 0) pushToast(earned);
+            })
+          }
           onWin={({ tries, usedFilter }) =>
             checkOnehit({ tries, usedFilter }).then(earned => {
               if (earned.length > 0) pushToast(earned);
@@ -150,6 +155,11 @@ export default function App() {
       )}
       {page === 'game' && gameTab === 'battle' && (
         <BattlePage user={user} lang={lang}
+          onGuess={(guess, answer) =>
+            checkNearMiss(guess, answer).then(earned => {
+              if (earned.length > 0) pushToast(earned);
+            })
+          }
           onBattleWin={({ totalTurns, myTries, isFirstMover }) => {
             Promise.all([
               checkBattleTitles({ totalTurns }),
