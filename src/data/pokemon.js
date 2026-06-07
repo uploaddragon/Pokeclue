@@ -426,7 +426,8 @@ const DB = [
   {id:717,ko:'이벨타르',en:'Yveltal',gen:6,t1:'악',t2:'비행',evo:1,len:4,enLen:7},
   {id:718,ko:'지가르데',en:'Zygarde',gen:6,t1:'드래곤',t2:'땅',evo:1,len:4,enLen:7},
   {id:719,ko:'디안시',en:'Diancie',gen:6,t1:'바위',t2:'페어리',evo:1,len:3,enLen:7},
-  {id:720,ko:'후파',en:'Hoopa',gen:6,t1:'에스퍼',t2:'고스트',evo:1,len:2,enLen:5},
+  {id:720,ko:'후파',en:'Hoopa',form:'confined',gen:6,t1:'에스퍼',t2:'고스트',evo:1,len:2,enLen:5},
+  {id:'720-unbound',ko:'후파',en:'Hoopa',baseId:720,form:'unbound',gen:6,t1:'에스퍼',t2:'악',evo:1,len:2,enLen:5},
   {id:721,ko:'볼케니온',en:'Volcanion',gen:6,t1:'불꽃',t2:'물',evo:1,len:4,enLen:9},
 
   // ── 7세대 ──
