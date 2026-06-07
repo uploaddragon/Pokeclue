@@ -255,8 +255,8 @@ export const GENERAL_TITLES = [
     ko: '놈붕이',
     en: '???',
     emoji: '👾',
-    desc_ko: '???',
-    desc_en: '???',
+    desc_ko: '제가 2월달에..',
+    desc_en: 'Back in February..',
     rarity: 'mystery',
   },
   {

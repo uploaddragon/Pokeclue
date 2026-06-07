@@ -46,8 +46,8 @@ function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) 
           {RARITY_LABEL_KO[title.rarity]}
         </span>
       </div>
-      <div className="title-card-name px">{isMystery ? '???' : title.ko}</div>
-      <div className="title-card-desc">{isMystery ? '???' : (title.desc_ko ?? '달성 조건')}</div>
+      <div className="title-card-name px">{title.ko}</div>
+      <div className="title-card-desc">{title.desc_ko ?? '달성 조건'}</div>
       <CardProgress progress={progress} max={progressMax} />
       {user && (
         <button className={`title-card-equip-btn${isEquipped ? ' on' : ''}`}>

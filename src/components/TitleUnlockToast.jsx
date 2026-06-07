@@ -31,7 +31,7 @@ export function TitleUnlockToast({ queue = [], onDone }) {
           setCurrent(null);
           onDone?.();
         }, 350);
-      }, 2600);
+      }, 3000);
     }, 350);
 
     return () => clearTimeout(timerRef.current);
@@ -39,7 +39,6 @@ export function TitleUnlockToast({ queue = [], onDone }) {
 
   if (!current || phase === 'idle') return null;
 
-  const isMystery = current.rarity === 'mystery';
   const s = RARITY[current.rarity];
 
   return (
@@ -49,10 +48,10 @@ export function TitleUnlockToast({ queue = [], onDone }) {
     >
       <div className="tut-label">🎖️ 칭호 해금!</div>
       <div className="tut-body">
-        <span className="tut-emoji">{isMystery ? '👾' : current.emoji}</span>
+        <span className="tut-emoji">{current.emoji}</span>
         <div className="tut-text">
-          <span className="tut-name px">{isMystery ? '???' : current.ko}</span>
-          <span className="tut-desc">{isMystery ? '???' : current.desc_ko}</span>
+          <span className="tut-name px">{current.ko}</span>
+          <span className="tut-desc">{current.desc_ko}</span>
         </div>
       </div>
     </div>
