@@ -54,7 +54,7 @@ export function BattlePage({ user, lang, onBattleWin }) {
       const myTries = b.sharedGuesses.filter((_, i) =>
         b.mySlot === 'p1' ? i % 2 === 0 : i % 2 === 1
       ).length;
-      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries });
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1' });
     }
     if (b.phase !== 'finished') {
       battleWinFiredRef.current = false;

@@ -150,10 +150,10 @@ export default function App() {
       )}
       {page === 'game' && gameTab === 'battle' && (
         <BattlePage user={user} lang={lang}
-          onBattleWin={({ totalTurns, myTries }) => {
+          onBattleWin={({ totalTurns, myTries, isFirstMover }) => {
             Promise.all([
               checkBattleTitles({ totalTurns }),
-              checkOnehit({ tries: myTries }),
+              isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
             ]).then(([e1, e2]) => {
               const earned = [...e1, ...e2];
               if (earned.length > 0) pushToast(earned);
