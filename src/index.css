@@ -953,6 +953,27 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .locked-name{color:var(--muted);}
 .title-card-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
 
+/* mystery 칭호 카드 */
+.title-card.mystery{
+  background: var(--tbg) !important;
+  border-color: var(--tb) !important;
+  color: var(--tc) !important;
+  box-shadow: 0 0 10px rgba(155,89,182,0.4), var(--shadow-sm);
+}
+.title-card.mystery .title-card-name,
+.title-card.mystery .title-card-desc,
+.title-card.mystery .title-card-rarity{
+  color: var(--tc) !important;
+  letter-spacing: .15em;
+}
+.title-card.mystery .title-card-equip-btn{
+  border-color: var(--tb);
+  color: var(--tc);
+  background: transparent;
+}
+.title-card.mystery .title-card-equip-btn:hover{ background: rgba(155,89,182,0.2); }
+.title-card.mystery .title-card-equip-btn.on{ background: var(--tb); }
+
 /* 카드 내부 미니 진행 바 */
 .title-card-progress-wrap{
   position:relative;

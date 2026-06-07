@@ -4,7 +4,7 @@ import DB from '../data/pokemon.js';
 import { supabase } from '../lib/supabase.js';
 
 const RARITY_LABEL_KO = {
-  common: '일반', rare: '레어', epic: '에픽', legendary: '전설',
+  common: '일반', rare: '레어', epic: '에픽', legendary: '전설', mystery: '???',
 };
 
 // 타입별 DB 총 수 (한 번만 계산)
@@ -33,20 +33,21 @@ function CardProgress({ progress, max }) {
 
 function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) {
   const s = RARITY[title.rarity];
+  const isMystery = title.rarity === 'mystery';
   return (
     <div
-      className={`title-card${isEquipped ? ' equipped' : ''}`}
+      className={`title-card${isEquipped ? ' equipped' : ''}${isMystery ? ' mystery' : ''}`}
       style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}
       onClick={() => user && onEquip(title.id)}
     >
       <div className="title-card-top">
-        <span className="title-card-emoji">{title.emoji}</span>
+        <span className="title-card-emoji">{isMystery ? '👾' : title.emoji}</span>
         <span className={`title-card-rarity rarity-${title.rarity}`}>
           {RARITY_LABEL_KO[title.rarity]}
         </span>
       </div>
-      <div className="title-card-name px">{title.ko}</div>
-      <div className="title-card-desc">{title.desc_ko ?? '달성 조건'}</div>
+      <div className="title-card-name px">{isMystery ? '???' : title.ko}</div>
+      <div className="title-card-desc">{isMystery ? '???' : (title.desc_ko ?? '달성 조건')}</div>
       <CardProgress progress={progress} max={progressMax} />
       {user && (
         <button className={`title-card-equip-btn${isEquipped ? ' on' : ''}`}>
@@ -59,16 +60,17 @@ function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) 
 
 function LockedCard({ title, descOverride, progress, progressMax }) {
   const s = RARITY[title.rarity];
+  const isMystery = title.rarity === 'mystery';
   return (
-    <div className="title-card locked" style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
+    <div className={`title-card locked${isMystery ? ' mystery' : ''}`} style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
       <div className="title-card-top">
-        <span className="title-card-emoji locked-emoji">🔒</span>
+        <span className="title-card-emoji locked-emoji">{isMystery ? '❓' : '🔒'}</span>
         <span className={`title-card-rarity rarity-${title.rarity}`}>
           {RARITY_LABEL_KO[title.rarity]}
         </span>
       </div>
-      <div className="title-card-name px locked-name">{title.ko}</div>
-      <div className="title-card-desc">{descOverride ?? title.desc_ko}</div>
+      <div className="title-card-name px locked-name">{isMystery ? '???' : title.ko}</div>
+      <div className="title-card-desc">{isMystery ? '???' : (descOverride ?? title.desc_ko)}</div>
       <CardProgress progress={progress} max={progressMax} />
     </div>
   );

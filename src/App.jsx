@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase.js';
 import { Header } from './components/Header.jsx';
 import { Footer } from './components/Footer.jsx';
 import { GamePage } from './components/GamePage.jsx';
@@ -110,6 +111,14 @@ export default function App() {
           onPickFromFilter={game.pickFromFilter}
           onReset={game.resetGame}
           onRanking={() => setRankingOpen(true)}
+          onEasterEgg={() => {
+            if (user) {
+              const current = user.user_metadata?.earned_titles ?? [];
+              if (!current.includes('nombungi')) {
+                supabase.auth.updateUser({ data: { earned_titles: [...current, 'nombungi'] } });
+              }
+            }
+          }}
           lang={lang}
           user={user}
           newTitleIds={newTitleIds}

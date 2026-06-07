@@ -251,6 +251,15 @@ export const GENERAL_TITLES = [
     threshold: 365,
   },
   {
+    id: 'nombungi',
+    ko: '놈붕이',
+    en: '???',
+    emoji: '👾',
+    desc_ko: '???',
+    desc_en: '???',
+    rarity: 'mystery',
+  },
+  {
     id: 'sparkdust',
     ko: '반짝가루',
     en: 'Stardust',
@@ -274,4 +283,5 @@ export const RARITY = {
   rare:      { color: '#1D4ED8', bg: '#EFF6FF', border: '#93C5FD' },
   epic:      { color: '#6D28D9', bg: '#F5F3FF', border: '#C4B5FD' },
   legendary: { color: '#B45309', bg: '#FFFBEB', border: '#FCD34D' },
+  mystery:   { color: '#E0E0E0', bg: '#1A1A2E', border: '#9B59B6' },
 };

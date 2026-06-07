@@ -11,7 +11,7 @@ const EASTER_EGGS = {
   '노목이': 225, // 딜리버드
 };
 
-export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disabled, lang = 'ko' }, ref) {
+export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disabled, lang = 'ko', onEasterEgg }, ref) {
   const [value, setValue] = useState('');
   const [matches, setMatches] = useState([]);
   const [sel, setSel] = useState(-1);
@@ -39,8 +39,9 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
     }
   }
 
-  function pick(p) {
+  function pick(p, isEgg = false) {
     onSubmit(p.id);
+    if (isEgg) onEasterEgg?.();
     setValue('');
     setMatches([]);
     setSel(-1);
@@ -51,7 +52,7 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
     const eggId = EASTER_EGGS[value.trim()];
     if (eggId) {
       const eggPoke = DB.find(p => p.id === eggId);
-      if (eggPoke) { pick(eggPoke); return; }
+      if (eggPoke) { pick(eggPoke, true); return; }
     }
     if (sel >= 0 && matches[sel]) { pick(matches[sel]); }
     else if (matches.length > 0)  { pick(matches[0]); }
@@ -70,7 +71,7 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
       const eggId = EASTER_EGGS[value.trim()];
       if (eggId) {
         const eggPoke = DB.find(p => p.id === eggId);
-        if (eggPoke) { pick(eggPoke); return; }
+        if (eggPoke) { pick(eggPoke, true); return; }
       }
       if (sel >= 0 && matches[sel]) {
         pick(matches[sel]);

@@ -46,7 +46,7 @@ export function GamePage({
   answer, guesses, gameOver, usedFilter,
   filterOpen, result,
   onSubmit, onOpenFilter, onCloseFilter, onPickFromFilter,
-  onReset, onRanking,
+  onReset, onRanking, onEasterEgg,
   lang = 'ko', user, newTitleIds = [],
 }) {
   const isEn = lang === 'en';
@@ -111,7 +111,7 @@ export function GamePage({
 
       {/* 입력 행 */}
       <div className="inputrow">
-        <Autocomplete ref={acRef} onSubmit={onSubmit} disabled={gameOver} lang={lang} />
+        <Autocomplete ref={acRef} onSubmit={onSubmit} disabled={gameOver} lang={lang} onEasterEgg={onEasterEgg} />
         <button className="btn go" onClick={() => acRef.current?.submit()}>
           {isEn ? 'Guess ▶' : '맞히기 ▶'}
         </button>
