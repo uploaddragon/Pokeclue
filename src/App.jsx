@@ -10,6 +10,7 @@ import { RankingModal } from './components/RankingModal.jsx';
 import { WelcomeModal, useWelcomeModal } from './components/WelcomeModal.jsx';
 import { BattlePage } from './components/BattlePage.jsx';
 import { TitlesPage } from './components/TitlesPage.jsx';
+import { TitleUnlockToast } from './components/TitleUnlockToast.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
@@ -23,6 +24,11 @@ export default function App() {
   const [rankingOpen, setRankingOpen] = useState(false);
   // 이번 세션에서 새로 획득한 칭호 ID 목록
   const [newTitleIds, setNewTitleIds] = useState([]);
+  // 토스트 큐 — 해금 알림을 순서대로 표시
+  const [toastQueue, setToastQueue] = useState([]);
+  function pushToast(ids) {
+    setToastQueue(q => [...q, ...(Array.isArray(ids) ? ids : [ids])]);
+  }
   const welcome = useWelcomeModal();
 
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
@@ -57,7 +63,7 @@ export default function App() {
       tries: game.guesses.length,
       usedFilter: game.usedFilter,
     }).then(earned => {
-      if (earned.length > 0) setNewTitleIds(earned);
+      if (earned.length > 0) { setNewTitleIds(earned); pushToast(earned); }
     });
   }, [game.result?.win, user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -116,6 +122,7 @@ export default function App() {
               const current = user.user_metadata?.earned_titles ?? [];
               if (!current.includes('nombungi')) {
                 supabase.auth.updateUser({ data: { earned_titles: [...current, 'nombungi'] } });
+                pushToast('nombungi');
               }
             }
           }}
@@ -142,6 +149,10 @@ export default function App() {
           dex={dex}
         />
       )}
+      <TitleUnlockToast
+        queue={toastQueue}
+        onDone={() => setToastQueue(q => q.slice(1))}
+      />
       <Footer />
     </div>
   );
