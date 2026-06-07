@@ -244,6 +244,15 @@ export const GENERAL_TITLES = [
     desc_en: '365+ total daily clears',
     rarity: 'legendary',
   },
+  {
+    id: 'sparkdust',
+    ko: '반짝가루',
+    en: 'Stardust',
+    emoji: '✨',
+    desc_ko: '모든 속성이 일치하지만 정답이 아닌 추측을 5회 이상 누적',
+    desc_en: 'Accumulated 5+ guesses matching all attributes but not the answer',
+    rarity: 'legendary',
+  },
 ];
 
 // 전체 칭호 배열 (일반 + 타입 전체)

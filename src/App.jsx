@@ -27,7 +27,7 @@ export default function App() {
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
-  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded } = useTitles(user);
+  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss } = useTitles(user);
 
   // 로그인 시 태초마을 지급
   useEffect(() => {
@@ -40,6 +40,13 @@ export default function App() {
     if (!user || loading) return;
     checkDexTitles(dex);
   }, [dex, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 새 추측마다 near-miss 체크 (반짝가루 칭호)
+  useEffect(() => {
+    if (!user || loading || game.guesses.length === 0) return;
+    const lastGuess = game.guesses[game.guesses.length - 1];
+    checkNearMiss(lastGuess, game.answer);
+  }, [game.guesses.length, user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 클리어 시 칭호 체크
   useEffect(() => {
