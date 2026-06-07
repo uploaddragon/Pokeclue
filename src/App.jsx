@@ -34,7 +34,7 @@ export default function App() {
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
-  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles } = useTitles(user);
+  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit } = useTitles(user);
 
   // 로그인 시 태초마을 지급
   useEffect(() => {
@@ -132,7 +132,13 @@ export default function App() {
         />
       )}
       {page === 'game' && gameTab === 'endless' && (
-        <EndlessPage unlockDex={unlockDex} lang={lang} onEasterEgg={() => {
+        <EndlessPage unlockDex={unlockDex} lang={lang}
+          onWin={({ tries, usedFilter }) =>
+            checkOnehit({ tries, usedFilter }).then(earned => {
+              if (earned.length > 0) pushToast(earned);
+            })
+          }
+          onEasterEgg={() => {
           if (user) {
             const current = user.user_metadata?.earned_titles ?? [];
             if (!current.includes('nombungi')) {
@@ -144,11 +150,15 @@ export default function App() {
       )}
       {page === 'game' && gameTab === 'battle' && (
         <BattlePage user={user} lang={lang}
-          onBattleWin={(totalTurns) =>
-            checkBattleTitles({ totalTurns }).then(earned => {
+          onBattleWin={({ totalTurns, myTries }) => {
+            Promise.all([
+              checkBattleTitles({ totalTurns }),
+              checkOnehit({ tries: myTries }),
+            ]).then(([e1, e2]) => {
+              const earned = [...e1, ...e2];
               if (earned.length > 0) pushToast(earned);
-            })
-          }
+            });
+          }}
         />
       )}
       {page === 'dex' && (

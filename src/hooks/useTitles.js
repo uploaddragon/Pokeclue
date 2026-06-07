@@ -121,6 +121,13 @@ export function useTitles(user) {
     await batchAward(user, ['pallet']);
   }, [user]);
 
+  /** 어느 모드든 1회 정답 시 호출 (usedFilter 없으면 true로 간주) */
+  const checkOnehit = useCallback(async ({ tries, usedFilter = false }) => {
+    if (!user) return [];
+    if (tries === 1 && !usedFilter) return batchAward(user, ['onehit']);
+    return [];
+  }, [user]);
+
   /** 대전 종료 시 호출 — 조건 달성 칭호 수여, 새로 얻은 ID 배열 반환 */
   const checkBattleTitles = useCallback(async ({ totalTurns }) => {
     if (!user) return [];
@@ -154,5 +161,5 @@ export function useTitles(user) {
     }
   }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles };
+  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit };
 }

@@ -21,12 +21,14 @@ function BattleTitleBadge({ titleId }) {
 const TURN_SEC = 30;
 
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-function getChosung(str) {
-  return [...str].map(ch => {
+function getFirstChosung(str) {
+  for (const ch of str) {
     const code = ch.charCodeAt(0) - 0xAC00;
-    if (code < 0 || code > 11171) return ch; // 한글 아닌 글자는 그대로
-    return CHOSUNG_LIST[Math.floor(code / (21 * 28))];
-  }).join(' ');
+    if (code >= 0 && code <= 11171) {
+      return CHOSUNG_LIST[Math.floor(code / (21 * 28))];
+    }
+  }
+  return str[0] ?? '?';
 }
 
 function seededShiny(roomCode, round) {
@@ -49,7 +51,10 @@ export function BattlePage({ user, lang, onBattleWin }) {
   useEffect(() => {
     if (b.phase === 'finished' && b.iWon && !battleWinFiredRef.current) {
       battleWinFiredRef.current = true;
-      onBattleWin?.(b.sharedGuesses.length);
+      const myTries = b.sharedGuesses.filter((_, i) =>
+        b.mySlot === 'p1' ? i % 2 === 0 : i % 2 === 1
+      ).length;
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries });
     }
     if (b.phase !== 'finished') {
       battleWinFiredRef.current = false;
@@ -280,7 +285,7 @@ export function BattlePage({ user, lang, onBattleWin }) {
           <div className="battle-chosung-hint">
             💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
             <span className="battle-chosung-text px">
-              {getChosung(b.answer.ko)}
+              {getFirstChosung(b.answer.ko)}
             </span>
           </div>
         )}
