@@ -98,7 +98,7 @@ function NormalGame({ lang, onBack }) {
         lang={lang}
       />
 
-      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} />
+      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} onEasterEgg={onEasterEgg} />
 
       <div className="tools">
         <button
@@ -199,7 +199,7 @@ function ChallengeGame({ unlockDex, lang, onBack }) {
         </div>
       )}
 
-      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} />
+      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} onEasterEgg={onEasterEgg} />
 
       <div className="tools">
         <span className="no-filter-notice">
@@ -212,7 +212,7 @@ function ChallengeGame({ unlockDex, lang, onBack }) {
   );
 }
 
-export function EndlessPage({ unlockDex, lang }) {
+export function EndlessPage({ unlockDex, lang, onEasterEgg }) {
   const [mode, setMode] = useState('select');
 
   if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} />;

@@ -132,7 +132,15 @@ export default function App() {
         />
       )}
       {page === 'game' && gameTab === 'endless' && (
-        <EndlessPage unlockDex={unlockDex} lang={lang} />
+        <EndlessPage unlockDex={unlockDex} lang={lang} onEasterEgg={() => {
+          if (user) {
+            const current = user.user_metadata?.earned_titles ?? [];
+            if (!current.includes('nombungi')) {
+              supabase.auth.updateUser({ data: { earned_titles: [...current, 'nombungi'] } });
+              pushToast('nombungi');
+            }
+          }
+        }} />
       )}
       {page === 'game' && gameTab === 'battle' && (
         <BattlePage user={user} lang={lang} />
