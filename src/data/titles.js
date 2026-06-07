@@ -225,6 +225,8 @@ export const GENERAL_TITLES = [
     desc_ko: '데일리 10회 이상 정답',
     desc_en: '10+ total daily clears',
     rarity: 'common',
+    progressGroup: 'daily_clears',
+    threshold: 10,
   },
   {
     id: 'elitetrainer',
@@ -234,6 +236,8 @@ export const GENERAL_TITLES = [
     desc_ko: '데일리 100회 이상 정답',
     desc_en: '100+ total daily clears',
     rarity: 'epic',
+    progressGroup: 'daily_clears',
+    threshold: 100,
   },
   {
     id: 'champion',
@@ -243,6 +247,8 @@ export const GENERAL_TITLES = [
     desc_ko: '데일리 365회 이상 정답',
     desc_en: '365+ total daily clears',
     rarity: 'legendary',
+    progressGroup: 'daily_clears',
+    threshold: 365,
   },
   {
     id: 'sparkdust',
@@ -252,6 +258,8 @@ export const GENERAL_TITLES = [
     desc_ko: '모든 속성이 일치하지만 정답이 아닌 추측을 5회 이상 누적',
     desc_en: 'Accumulated 5+ guesses matching all attributes but not the answer',
     rarity: 'legendary',
+    progressGroup: 'near_miss',
+    threshold: 5,
   },
 ];
 
