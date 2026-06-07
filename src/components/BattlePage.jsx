@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useBattle } from '../hooks/useBattle.js';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
@@ -21,14 +21,13 @@ function BattleTitleBadge({ titleId }) {
 const TURN_SEC = 30;
 
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-function getFirstChosung(str) {
-  for (const ch of str) {
+function getRandomChosung(str) {
+  const list = [...str].map(ch => {
     const code = ch.charCodeAt(0) - 0xAC00;
-    if (code >= 0 && code <= 11171) {
-      return CHOSUNG_LIST[Math.floor(code / (21 * 28))];
-    }
-  }
-  return str[0] ?? '?';
+    return (code >= 0 && code <= 11171) ? CHOSUNG_LIST[Math.floor(code / (21 * 28))] : null;
+  }).filter(Boolean);
+  if (list.length === 0) return str[0] ?? '?';
+  return list[Math.floor(Math.random() * list.length)];
 }
 
 function seededShiny(roomCode, round) {
@@ -45,6 +44,12 @@ export function BattlePage({ user, lang, onBattleWin }) {
   const [friendView, setFriendView] = useState('main');
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
+
+  // 10턴 도달 시 초성 하나를 고정 (리렌더링마다 바뀌지 않도록)
+  const chosungHint = useMemo(() => {
+    if (!b.answer || b.sharedGuesses.length < 10) return null;
+    return getRandomChosung(b.answer.ko);
+  }, [b.sharedGuesses.length >= 10, b.answer?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const battleWinFiredRef = useRef(false);
 
   // 승리 확정 시 칭호 체크 (라운드당 1회)
@@ -281,12 +286,10 @@ export function BattlePage({ user, lang, onBattleWin }) {
         </div>
 
         {/* 10턴 초과 시 초성 힌트 */}
-        {b.sharedGuesses.length >= 10 && b.answer && (
+        {chosungHint && (
           <div className="battle-chosung-hint">
             💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
-            <span className="battle-chosung-text px">
-              {getFirstChosung(b.answer.ko)}
-            </span>
+            <span className="battle-chosung-text px">{chosungHint}</span>
           </div>
         )}
 
