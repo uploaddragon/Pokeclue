@@ -20,6 +20,15 @@ function BattleTitleBadge({ titleId }) {
 
 const TURN_SEC = 30;
 
+const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function getChosung(str) {
+  return [...str].map(ch => {
+    const code = ch.charCodeAt(0) - 0xAC00;
+    if (code < 0 || code > 11171) return ch; // 한글 아닌 글자는 그대로
+    return CHOSUNG_LIST[Math.floor(code / (21 * 28))];
+  }).join(' ');
+}
+
 function seededShiny(roomCode, round) {
   const str = `${roomCode}-${round}`;
   let h = 0;
@@ -265,6 +274,16 @@ export function BattlePage({ user, lang, onBattleWin }) {
             ? (isEn ? '🎯 Your Turn! Enter a Pokémon name.' : '🎯 내 턴! 포켓몬 이름을 입력하세요.')
             : (isEn ? "⏳ Opponent's Turn…" : '⏳ 상대방 턴… 기다려주세요.')}
         </div>
+
+        {/* 10턴 초과 시 초성 힌트 */}
+        {b.sharedGuesses.length >= 10 && b.answer && (
+          <div className="battle-chosung-hint">
+            💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
+            <span className="battle-chosung-text px">
+              {getChosung(b.answer.ko)}
+            </span>
+          </div>
+        )}
 
         <Autocomplete onSubmit={handleSubmit} disabled={!b.isMyTurn} lang={lang} />
         <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
