@@ -5,6 +5,11 @@ import { TypeBadge } from './TypeBadge.jsx';
 import { TICON } from '../data/types.js';
 import { displayName } from '../utils/game.js';
 
+// 이스터에그: 특정 단어 입력 시 몰래 다른 포켓몬 제출 (추천엔 표시 안 됨)
+const EASTER_EGGS = {
+  '병1신': 401, // 귀뚤뚜기
+};
+
 export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disabled, lang = 'ko' }, ref) {
   const [value, setValue] = useState('');
   const [matches, setMatches] = useState([]);
@@ -25,7 +30,12 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
     const v = e.target.value;
     setValue(v);
     setSel(-1);
-    setMatches(search(v, lang));
+    // 이스터에그 단어는 추천 목록에 표시하지 않음
+    if (EASTER_EGGS[v.trim()]) {
+      setMatches([]);
+    } else {
+      setMatches(search(v, lang));
+    }
   }
 
   function pick(p) {
@@ -36,6 +46,12 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
   }
 
   function trySubmit() {
+    // 이스터에그 확인
+    const eggId = EASTER_EGGS[value.trim()];
+    if (eggId) {
+      const eggPoke = DB.find(p => p.id === eggId);
+      if (eggPoke) { pick(eggPoke); return; }
+    }
     if (sel >= 0 && matches[sel]) { pick(matches[sel]); }
     else if (matches.length > 0)  { pick(matches[0]); }
   }
@@ -50,6 +66,11 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
       e.preventDefault();
       setSel(s => Math.max(s - 1, 0));
     } else if (e.key === 'Enter') {
+      const eggId = EASTER_EGGS[value.trim()];
+      if (eggId) {
+        const eggPoke = DB.find(p => p.id === eggId);
+        if (eggPoke) { pick(eggPoke); return; }
+      }
       if (sel >= 0 && matches[sel]) {
         pick(matches[sel]);
       } else if (matches.length > 0) {
