@@ -953,6 +953,33 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .locked-name{color:var(--muted);}
 .title-card-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
 
+/* 카드 내부 미니 진행 바 */
+.title-card-progress-wrap{
+  position:relative;
+  margin-top:8px;
+  height:8px;
+  background:rgba(0,0,0,0.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+.title-card-progress-bar{
+  position:absolute;inset:0;
+  background:var(--tc);
+  border-radius:4px;
+  transition:width 0.4s ease;
+}
+.title-card-progress-text{
+  position:absolute;
+  inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  color:var(--ink);
+  mix-blend-mode:difference;
+  filter:invert(1);
+  white-space:nowrap;
+  line-height:1;
+}
+
 .title-card-equip-btn{
   margin-top:6px;width:100%;
   padding:7px 0;border-radius:8px;

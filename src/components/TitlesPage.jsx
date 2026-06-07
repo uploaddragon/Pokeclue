@@ -19,24 +19,19 @@ const TYPE_TOTAL = (() => {
   return map;
 })();
 
-// 일반 칭호 분류
-const CUMULATIVE_GROUPS = [
-  {
-    key: 'daily_clears',
-    label: '📅 데일리 클리어 누적',
-    max: 365,
-    titles: GENERAL_TITLES.filter(t => t.progressGroup === 'daily_clears'),
-  },
-  {
-    key: 'near_miss',
-    label: '✨ 반짝가루',
-    max: 5,
-    titles: GENERAL_TITLES.filter(t => t.progressGroup === 'near_miss'),
-  },
-];
-const SPECIAL_TITLES = GENERAL_TITLES.filter(t => !t.progressGroup);
+/* progress: 현재 값, max: 목표값 (있을 때만 렌더) */
+function CardProgress({ progress, max }) {
+  if (max == null) return null;
+  const pct = Math.min(100, Math.round((progress / max) * 100));
+  return (
+    <div className="title-card-progress-wrap">
+      <div className="title-card-progress-bar" style={{ width: `${pct}%` }} />
+      <span className="title-card-progress-text">{progress} / {max}</span>
+    </div>
+  );
+}
 
-function TitleCard({ title, isEquipped, onEquip, user }) {
+function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) {
   const s = RARITY[title.rarity];
   return (
     <div
@@ -51,7 +46,8 @@ function TitleCard({ title, isEquipped, onEquip, user }) {
         </span>
       </div>
       <div className="title-card-name px">{title.ko}</div>
-      <div className="title-card-desc">{title.desc_ko ?? `달성 조건`}</div>
+      <div className="title-card-desc">{title.desc_ko ?? '달성 조건'}</div>
+      <CardProgress progress={progress} max={progressMax} />
       {user && (
         <button className={`title-card-equip-btn${isEquipped ? ' on' : ''}`}>
           {isEquipped ? '✓ 장착 중' : '장착하기'}
@@ -61,7 +57,7 @@ function TitleCard({ title, isEquipped, onEquip, user }) {
   );
 }
 
-function LockedCard({ title, descOverride }) {
+function LockedCard({ title, descOverride, progress, progressMax }) {
   const s = RARITY[title.rarity];
   return (
     <div className="title-card locked" style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
@@ -73,47 +69,7 @@ function LockedCard({ title, descOverride }) {
       </div>
       <div className="title-card-name px locked-name">{title.ko}</div>
       <div className="title-card-desc">{descOverride ?? title.desc_ko}</div>
-    </div>
-  );
-}
-
-// 누적 진행도 그룹 (진행 바 + 카드들)
-function CumulativeGroup({ group, current, earnedIds, equippedTitle, onEquip, user }) {
-  const { max, titles } = group;
-  const pct = Math.min(100, Math.round((current / max) * 100));
-  const nextTitle = titles.find(t => current < t.threshold);
-
-  return (
-    <div className="type-tier-row">
-      <div className="type-tier-header">
-        <span className="type-tier-label">{group.label}</span>
-        <span className="type-tier-progress-text">
-          {current} / {max}
-          {nextTitle && (
-            <span className="type-tier-next">
-              {' '}· 다음 칭호까지 {nextTitle.threshold - current}회
-            </span>
-          )}
-        </span>
-      </div>
-      <div className="type-tier-bar-wrap">
-        <div className="type-tier-bar" style={{ width: `${pct}%` }} />
-        {titles.map(t => (
-          <div
-            key={t.id}
-            className={`type-tier-marker${current >= t.threshold ? ' done' : ''}`}
-            style={{ left: `${Math.min(100, (t.threshold / max) * 100)}%` }}
-            title={`${t.ko} (${t.threshold}회)`}
-          />
-        ))}
-      </div>
-      <div className="type-tier-cards">
-        {titles.map(t =>
-          earnedIds.includes(t.id)
-            ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={onEquip} user={user} />
-            : <LockedCard key={t.id} title={t} />
-        )}
-      </div>
+      <CardProgress progress={progress} max={progressMax} />
     </div>
   );
 }
@@ -121,11 +77,9 @@ function CumulativeGroup({ group, current, earnedIds, equippedTitle, onEquip, us
 export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', dex = {} }) {
   const equippedTitle = user?.user_metadata?.equipped_title ?? null;
 
-  // 누적 카운터 상태
   const [dailyClearCount, setDailyClearCount] = useState(0);
   const nearMissCount = user?.user_metadata?.near_miss_count ?? 0;
 
-  // 데일리 클리어 수 Supabase에서 조회
   useEffect(() => {
     if (!user) return;
     supabase
@@ -133,18 +87,15 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
       .select('date', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .eq('solved', true)
-      .then(({ count }) => {
-        if (count != null) setDailyClearCount(count);
-      });
+      .then(({ count }) => { if (count != null) setDailyClearCount(count); });
   }, [user?.id]);
 
-  // 누적 카운터 맵
+  // progressGroup → 현재 카운트 맵
   const progressCounts = {
     daily_clears: dailyClearCount,
     near_miss: nearMissCount,
   };
 
-  // 도감에서 타입별 등록 수 계산
   const typeCounts = useMemo(() => {
     const map = {};
     const REAL = new Set(TYPE_TIERS.map(t => t.type));
@@ -178,33 +129,17 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
         </div>
       </div>
 
-      {/* ── 누적 칭호 ── */}
+      {/* ── 일반 칭호 ── */}
       <section className="titles-section">
-        <div className="titles-section-label">📈 누적 칭호</div>
-        <div className="type-tiers-list">
-          {CUMULATIVE_GROUPS.map(group => (
-            <CumulativeGroup
-              key={group.key}
-              group={group}
-              current={progressCounts[group.key] ?? 0}
-              earnedIds={earnedIds}
-              equippedTitle={equippedTitle}
-              onEquip={handleEquip}
-              user={user}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* ── 특수 조건 칭호 ── */}
-      <section className="titles-section">
-        <div className="titles-section-label">⭐ 특수 조건 칭호</div>
+        <div className="titles-section-label">📋 일반 칭호</div>
         <div className="titles-cards">
-          {SPECIAL_TITLES.map(t =>
-            earnedIds.includes(t.id)
-              ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} />
-              : <LockedCard key={t.id} title={t} />
-          )}
+          {GENERAL_TITLES.map(t => {
+            const current = t.progressGroup ? (progressCounts[t.progressGroup] ?? 0) : undefined;
+            const max = t.threshold ?? undefined;
+            return earnedIds.includes(t.id)
+              ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} progress={current} progressMax={max} />
+              : <LockedCard key={t.id} title={t} progress={current} progressMax={max} />;
+          })}
         </div>
       </section>
 
