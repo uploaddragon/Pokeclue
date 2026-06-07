@@ -1,44 +1,49 @@
 import { useState, useEffect, useRef } from 'react';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
 
-/**
- * 칭호 해금 알림 토스트
- * - queue 배열의 첫 번째 칭호를 위에서 내려왔다가 사라지는 애니메이션으로 표시
- * - 하나가 끝나면 다음 칭호를 표시
- */
 export function TitleUnlockToast({ queue = [], onDone }) {
-  const [current, setCurrent]   = useState(null);  // 현재 표시 중인 title 객체
-  const [phase, setPhase]       = useState('idle'); // idle | enter | show | exit
-  const timerRef                = useRef(null);
+  const [current, setCurrent] = useState(null);
+  const [phase, setPhase]     = useState('idle');
+  const runningRef = useRef(false);
+  const t1 = useRef(null);
+  const t2 = useRef(null);
+  const t3 = useRef(null);
 
   useEffect(() => {
-    if (phase !== 'idle' || queue.length === 0) return;
+    if (runningRef.current || queue.length === 0) return;
 
     const id = queue[0];
     const title = TITLE_MAP[id];
     if (!title) { onDone?.(); return; }
 
+    runningRef.current = true;
     setCurrent(title);
     setPhase('enter');
 
-    // enter(300ms) → show(2600ms) → exit(300ms) → done
-    timerRef.current = setTimeout(() => {
+    t1.current = setTimeout(() => {
       setPhase('show');
-      timerRef.current = setTimeout(() => {
+      t2.current = setTimeout(() => {
         setPhase('exit');
-        timerRef.current = setTimeout(() => {
+        t3.current = setTimeout(() => {
           setPhase('idle');
           setCurrent(null);
+          runningRef.current = false;
           onDone?.();
         }, 350);
       }, 3000);
     }, 350);
 
-    return () => clearTimeout(timerRef.current);
-  }, [queue, phase]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => {
+      clearTimeout(t1.current);
+      clearTimeout(t2.current);
+      clearTimeout(t3.current);
+      runningRef.current = false;
+    };
+  }, [queue.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!current || phase === 'idle') return null;
 
+  const isMystery = current.rarity === 'mystery';
   const s = RARITY[current.rarity];
 
   return (

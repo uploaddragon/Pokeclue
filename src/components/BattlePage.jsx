@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useBattle } from '../hooks/useBattle.js';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
@@ -58,14 +58,12 @@ export function BattlePage({ user, lang, onBattleWin }) {
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
 
-  // 10턴부터 5턴마다 초성 1개씩 추가 공개 (룸코드 시드로 양측 동일)
-  const hintCount = b.sharedGuesses.length >= 10
-    ? Math.floor((b.sharedGuesses.length - 10) / 5) + 1
-    : 0;
-  const chosungHints = useMemo(() => {
-    if (!b.answer || hintCount === 0) return [];
-    return getChosungHints(b.answer.ko, hintCount, b.roomCode);
-  }, [hintCount, b.answer?.id, b.roomCode]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 10, 15, 20, 25... 턴마다 초성 1개씩 추가 공개 (룸코드 시드 → 양측 동일, 매 렌더 계산해도 결과 동일)
+  const turns = b.sharedGuesses.length;
+  const hintCount = turns >= 10 ? Math.floor((turns - 10) / 5) + 1 : 0;
+  const chosungHints = (b.answer && hintCount > 0)
+    ? getChosungHints(b.answer.ko, hintCount, b.roomCode)
+    : [];
   const battleWinFiredRef = useRef(false);
 
   // 승리 확정 시 칭호 체크 (라운드당 1회)
