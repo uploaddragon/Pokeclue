@@ -68,7 +68,7 @@ const DB = [
   {id:138,ko:'암나이트',en:'Omanyte',gen:1,t1:'바위',t2:'물',evo:1,len:4,enLen:7},{id:139,ko:'암스타',en:'Omastar',gen:1,t1:'바위',t2:'물',evo:2,len:3,enLen:7},
   {id:140,ko:'투구',en:'Kabuto',gen:1,t1:'바위',t2:'물',evo:1,len:2,enLen:6},{id:141,ko:'투구푸스',en:'Kabutops',gen:1,t1:'바위',t2:'물',evo:2,len:4,enLen:8},
   {id:142,ko:'프테라',en:'Aerodactyl',gen:1,t1:'바위',t2:'비행',evo:1,len:3,enLen:10},
-  {id:143,ko:'잠만보',en:'Snorlax',gen:1,t1:'노말',t2:'없음',evo:1,len:3,enLen:7},
+  {id:143,ko:'잠만보',en:'Snorlax',gen:1,t1:'노말',t2:'없음',evo:2,len:3,enLen:7},
   {id:144,ko:'프리져',en:'Articuno',gen:1,t1:'얼음',t2:'비행',evo:1,len:3,enLen:8},{id:145,ko:'썬더',en:'Zapdos',gen:1,t1:'전기',t2:'비행',evo:1,len:2,enLen:6},{id:146,ko:'파이어',en:'Moltres',gen:1,t1:'불꽃',t2:'비행',evo:1,len:3,enLen:7},
   {id:147,ko:'미뇽',en:'Dratini',gen:1,t1:'드래곤',t2:'없음',evo:1,len:2,enLen:7},{id:148,ko:'신뇽',en:'Dragonair',gen:1,t1:'드래곤',t2:'없음',evo:2,len:2,enLen:9},{id:149,ko:'망나뇽',en:'Dragonite',gen:1,t1:'드래곤',t2:'비행',evo:3,len:3,enLen:9},
   {id:150,ko:'뮤츠',en:'Mewtwo',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:2,enLen:6},{id:151,ko:'뮤',en:'Mew',gen:1,t1:'에스퍼',t2:'없음',evo:1,len:1,enLen:3},
@@ -798,7 +798,7 @@ const DB = [
   {id:'99-gmax',  ko:'킹크랩',  en:'Kingler',    baseId:99,  form:'gmax',gen:1,t1:'물',  t2:'없음',  evo:2,len:3,enLen:7},
   {id:'131-gmax', ko:'라프라스',en:'Lapras',     baseId:131, form:'gmax',gen:1,t1:'물',  t2:'얼음',  evo:1,len:4,enLen:6},
   {id:'133-gmax', ko:'이브이',  en:'Eevee',      baseId:133, form:'gmax',gen:1,t1:'노말',t2:'없음',  evo:1,len:3,enLen:5},
-  {id:'143-gmax', ko:'잠만보',  en:'Snorlax',    baseId:143, form:'gmax',gen:1,t1:'노말',t2:'없음',  evo:1,len:3,enLen:7},
+  {id:'143-gmax', ko:'잠만보',  en:'Snorlax',    baseId:143, form:'gmax',gen:1,t1:'노말',t2:'없음',  evo:2,len:3,enLen:7},
   // ── 거다이맥스 (7세대) ──
   {id:'809-gmax', ko:'멜메탈',  en:'Melmetal',   baseId:809, form:'gmax',gen:7,t1:'강철',t2:'없음',  evo:2,len:3,enLen:8},
   // ── 거다이맥스 (8세대) ──
@@ -825,7 +825,7 @@ const DB = [
   {id:'58-hisui',  ko:'가디',     en:'Growlithe', baseId:58,  form:'hisui',gen:8,t1:'불꽃', t2:'바위',   evo:1,len:2,enLen:9},
   {id:'59-hisui',  ko:'윈디',     en:'Arcanine',  baseId:59,  form:'hisui',gen:8,t1:'불꽃', t2:'바위',   evo:2,len:2,enLen:8},
   {id:'100-hisui', ko:'찌리리공', en:'Voltorb',   baseId:100, form:'hisui',gen:8,t1:'풀',   t2:'전기',   evo:1,len:4,enLen:7},
-  {id:'101-hisui', ko:'붐볼',     en:'Electrode', baseId:101, form:'hisui',gen:8,t1:'풀',   t2:'전기',   evo:2,len:2,enLen:9},
+  {id:'101-hisui', ko:'붐볼',     en:'Electrode', baseId:101, form:'hisui',gen:1,t1:'풀',   t2:'전기',   evo:2,len:2,enLen:9},
   {id:'157-hisui', ko:'블레이범', en:'Typhlosion',baseId:157, form:'hisui',gen:8,t1:'불꽃', t2:'고스트', evo:3,len:4,enLen:10},
   {id:'211-hisui', ko:'침바루',   en:'Qwilfish',  baseId:211, form:'hisui',gen:8,t1:'독',   t2:'악',     evo:1,len:3,enLen:8},
   {id:'215-hisui', ko:'포푸니',   en:'Sneasel',   baseId:215, form:'hisui',gen:8,t1:'격투', t2:'독',     evo:1,len:3,enLen:7},

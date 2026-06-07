@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from './lib/supabase.js';
 import { Header } from './components/Header.jsx';
 import { Footer } from './components/Footer.jsx';
@@ -26,6 +26,8 @@ export default function App() {
   const [newTitleIds, setNewTitleIds] = useState([]);
   // 토스트 큐 — 해금 알림을 순서대로 표시
   const [toastQueue, setToastQueue] = useState([]);
+  // 페이지 로드 시 이미 클리어된 상태였는지 (시간 칭호 중복 수여 방지)
+  const winPreexistedRef = useRef(null);
   function pushToast(ids) {
     setToastQueue(q => [...q, ...(Array.isArray(ids) ? ids : [ids])]);
   }
@@ -55,10 +57,18 @@ export default function App() {
     checkNearMiss(lastGuess, game.answer);
   }, [game.guesses.length, user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 클리어 시 칭호 체크
+  // 페이지 로드 시 이미 클리어 상태였으면 기록 (시간 칭호 중복 방지)
+  useEffect(() => {
+    if (winPreexistedRef.current === null) {
+      winPreexistedRef.current = !!game.result?.win;
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 클리어 시 칭호 체크 — 이번 세션에서 직접 클리어했을 때만 실행
   useEffect(() => {
     if (!game.result?.win) return;
     if (loading || !user) return;
+    if (winPreexistedRef.current) return; // 이미 클리어된 채로 접속한 경우 건너뜀
     checkAndAwardTitles({
       tries: game.guesses.length,
       usedFilter: game.usedFilter,
