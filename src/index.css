@@ -796,6 +796,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-hud-player.active{box-shadow:inset 0 0 0 3px var(--yellow);}
 .battle-hud-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
 .battle-hud-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.battle-title-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;border:1.5px solid;font-size:11px;font-weight:600;font-family:'Galmuri11',monospace;width:fit-content;align-self:center;}
 .battle-hud-tries{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--red);line-height:1.4;}
 .battle-hud-tries-unit{font-size:9px;color:var(--muted);}
 .battle-hud-arrow{font-family:'Press Start 2P',monospace;font-size:8px;line-height:1.6;margin-top:2px;}

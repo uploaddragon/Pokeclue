@@ -4,6 +4,19 @@ import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { displayName } from '../utils/game.js';
 import { spr, sprShiny } from '../utils/sprite.js';
+import { TITLE_MAP, RARITY } from '../data/titles.js';
+
+function BattleTitleBadge({ titleId }) {
+  if (!titleId) return null;
+  const t = TITLE_MAP[titleId];
+  if (!t) return null;
+  const s = RARITY[t.rarity];
+  return (
+    <span className="battle-title-badge" style={{ color: s.color, background: s.bg, borderColor: s.border }}>
+      {t.emoji} {t.ko}
+    </span>
+  );
+}
 
 const TURN_SEC = 30;
 
@@ -197,6 +210,7 @@ export function BattlePage({ user, lang }) {
           <div className={`battle-hud-player me${b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'ME' : '나'}</div>
             <div className="battle-hud-nick">{b.myNick}</div>
+            <BattleTitleBadge titleId={b.myTitle} />
             <div className="battle-hud-tries">{myTries}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
             {b.isMyTurn && <div className="battle-hud-arrow my">▶ {isEn ? 'Your turn' : '내 턴'}</div>}
           </div>
@@ -220,6 +234,7 @@ export function BattlePage({ user, lang }) {
           <div className={`battle-hud-player op${!b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
+            <BattleTitleBadge titleId={b.opTitle} />
             <div className="battle-hud-tries">{b.opTries || 0}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
             {!b.isMyTurn && <div className="battle-hud-arrow op">◀ {isEn ? "Their turn" : '상대 턴'}</div>}
           </div>

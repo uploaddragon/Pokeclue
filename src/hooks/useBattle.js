@@ -11,12 +11,13 @@ function getIdentity(user) {
   if (user) return {
     uid: user.id, anon: null,
     nick: user.user_metadata?.pokeclue_nickname || user.user_metadata?.full_name || user.email?.split('@')[0] || '트레이너',
+    title: user.user_metadata?.equipped_title ?? null,
   };
   try {
     const s = JSON.parse(localStorage.getItem('pokeclue_anon') || 'null');
-    if (s?.id) return { uid: null, anon: s.id, nick: s.nickname || '트레이너' };
+    if (s?.id) return { uid: null, anon: s.id, nick: s.nickname || '트레이너', title: null };
   } catch {}
-  return { uid: null, anon: null, nick: '트레이너' };
+  return { uid: null, anon: null, nick: '트레이너', title: null };
 }
 
 export function useBattle(user) {
@@ -115,7 +116,7 @@ export function useBattle(user) {
     const { error: e } = await bc.from('battle_rooms').insert({
       id: code, answer_id: String(poke.id), status: 'waiting',
       current_turn: 'p1', shared_guesses: [],
-      p1_uid: me.uid, p1_anon: me.anon, p1_nick: me.nick,
+      p1_uid: me.uid, p1_anon: me.anon, p1_nick: me.nick, p1_title: me.title,
     });
     if (e) throw new Error(e.message || e.code || JSON.stringify(e));
     return { code, poke };
@@ -146,7 +147,7 @@ export function useBattle(user) {
     if (me.uid && r.p1_uid === me.uid) { setError('내가 만든 방에는 입장할 수 없어요.'); return; }
 
     const { error: e2 } = await bc.from('battle_rooms').update({
-      p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing',
+      p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, p2_title: me.title, status: 'playing',
     }).eq('id', upper).eq('status', 'waiting');
     if (e2) { setError('입장에 실패했어요.'); return; }
 
@@ -171,7 +172,7 @@ export function useBattle(user) {
 
       const target = available[0];
       const { data: updated, error: e } = await bc.from('battle_rooms').update({
-        p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, status: 'playing',
+        p2_uid: me.uid, p2_anon: me.anon, p2_nick: me.nick, p2_title: me.title, status: 'playing',
       }).eq('id', target.id).eq('status', 'waiting').select();
 
       if (!e && updated?.length > 0) {
@@ -305,11 +306,12 @@ export function useBattle(user) {
   );
   const opNick  = room ? (mySlot === 'p1' ? room.p2_nick  : room.p1_nick)  : null;
   const opTries = room ? (mySlot === 'p1' ? room.p2_tries : room.p1_tries) : 0;
+  const opTitle = room ? (mySlot === 'p1' ? room.p2_title : room.p1_title) : null;
   const iWon = room?.winner === mySlot;
 
   return {
     phase, roomCode, room, mySlot, answer, error,
-    myNick: me.nick, opNick, opTries, iWon, winner: room?.winner,
+    myNick: me.nick, myTitle: me.title, opNick, opTitle, opTries, iWon, winner: room?.winner,
     isMyTurn, currentTurn, mySkips, sharedGuesses,
     createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, requestRematch, reset,
   };
