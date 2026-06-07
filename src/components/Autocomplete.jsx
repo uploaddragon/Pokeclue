@@ -8,6 +8,7 @@ import { displayName } from '../utils/game.js';
 // 이스터에그: 특정 단어 입력 시 몰래 다른 포켓몬 제출 (추천엔 표시 안 됨)
 const EASTER_EGGS = {
   '병1신': 401, // 귀뚤뚜기
+  '노목이': 225, // 딜리버드
 };
 
 export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disabled, lang = 'ko' }, ref) {
