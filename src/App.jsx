@@ -47,7 +47,9 @@ export default function App() {
   // 도감 변경 시 타입 칭호 체크
   useEffect(() => {
     if (!user || loading) return;
-    checkDexTitles(dex);
+    checkDexTitles(dex).then(earned => {
+      if (earned.length > 0) pushToast(earned);
+    });
   }, [dex, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 새 추측마다 near-miss 체크 (반짝가루 칭호)
