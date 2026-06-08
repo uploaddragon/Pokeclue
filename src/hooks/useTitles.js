@@ -1,8 +1,22 @@
 import { useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
-import { getTodayStr } from '../utils/game.js';
+import { getTodayStr, compareForm } from '../utils/game.js';
 import DB from '../data/pokemon.js';
 import { TYPE_TIERS } from '../data/titles.js';
+
+/** 추측이 '전부 일치하지만 정답이 아닌' near-miss인지 판별 */
+function isNearMiss(guess, answer) {
+  if (!guess || !answer) return false;
+  if (String(guess.id) === String(answer.id)) return false;
+  return (
+    guess.gen === answer.gen &&
+    guess.t1  === answer.t1  &&
+    guess.t2  === answer.t2  &&
+    guess.evo === answer.evo &&
+    guess.len === answer.len &&
+    compareForm(guess, answer) === 'cc'
+  );
+}
 
 /** UTC → KST(+9) 변환 후 { hour, minute } 반환 */
 function getKST() {
@@ -36,7 +50,7 @@ export function useTitles(user) {
     if (hour >= 6 && hour <= 7)      candidates.push('earlybird');
     if (hour === 23 && minute >= 50) candidates.push('slowstart');
     if (hour >= 4 && hour <= 5)      candidates.push('insomnia');
-    if (tries === 1 && !usedFilter)  candidates.push('onehit');
+    // 일격필살은 데일리 제외 (엔드리스/대전 전용)
     if (tries >= 30)                 candidates.push('reckless');
 
     try {
@@ -107,5 +121,45 @@ export function useTitles(user) {
     await batchAward(user, ['pallet']);
   }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded };
+  /** 어느 모드든 1회 정답 시 호출 (usedFilter 없으면 true로 간주) */
+  const checkOnehit = useCallback(async ({ tries, usedFilter = false }) => {
+    if (!user) return [];
+    if (tries === 1 && !usedFilter) return batchAward(user, ['onehit']);
+    return [];
+  }, [user]);
+
+  /** 대전 종료 시 호출 — 조건 달성 칭호 수여, 새로 얻은 ID 배열 반환 */
+  const checkBattleTitles = useCallback(async ({ totalTurns }) => {
+    if (!user) return [];
+    const candidates = [];
+    if (totalTurns >= 20) candidates.push('gapseok');
+    return batchAward(user, candidates);
+  }, [user]);
+
+  /**
+   * near-miss 누적 카운트 체크 — 새로운 추측(guess)이 near-miss면
+   * user_metadata.near_miss_count를 +1하고, 5 이상이면 sparkdust 칭호 수여
+   */
+  const checkNearMiss = useCallback(async (guess, answer) => {
+    if (!user) return;
+    if (!isNearMiss(guess, answer)) return;
+
+    const current = user.user_metadata ?? {};
+    const prevCount = current.near_miss_count ?? 0;
+    const newCount = prevCount + 1;
+
+    const { error } = await supabase.auth.updateUser({
+      data: { near_miss_count: newCount },
+    });
+    if (error) { console.error('checkNearMiss updateUser error', error); return; }
+
+    if (newCount >= 10) {
+      await batchAward(
+        { ...user, user_metadata: { ...current, near_miss_count: newCount } },
+        ['sparkdust'],
+      );
+    }
+  }, [user]);
+
+  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit };
 }

@@ -29,8 +29,12 @@ const { default: DB } = await import(pathToFileURL(_dbPath).href);
 function dateHash(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
-    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
   }
+  // Wang hash mixing — 게임 로직(src/utils/game.js)과 동일하게 맞춤
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+  h ^= (h >>> 16);
   return Math.abs(h);
 }
 
@@ -217,14 +221,27 @@ async function sendEmail(imageBuffer, dateStr, pokemonName) {
 
 // ── 메인 ──────────────────────────────────
 async function main() {
-  // KST 기준으로 어제 날짜 계산 (서버는 UTC — +9시간 보정)
-  const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
-  const yesterday = new Date(nowKST);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const dateStr = getDateStr(yesterday);
+  // DATE_OVERRIDE 환경변수가 있으면 해당 날짜 사용, 없으면 KST 어제 날짜
+  let dateStr;
+  if (process.env.DATE_OVERRIDE && /^\d{4}-\d{2}-\d{2}$/.test(process.env.DATE_OVERRIDE)) {
+    dateStr = process.env.DATE_OVERRIDE;
+    console.log(`📅 오버라이드 날짜: ${dateStr}`);
+  } else {
+    const nowKST = new Date(Date.now() + 9 * 60 * 60 * 1000);
+    const yesterday = new Date(nowKST);
+    yesterday.setDate(yesterday.getDate() - 1);
+    dateStr = getDateStr(yesterday);
+    console.log(`📅 어제: ${dateStr}`);
+  }
 
-  console.log(`📅 어제: ${dateStr}`);
-  const pokemon = pickAnswerForDate(dateStr);
+  let pokemon;
+  if (process.env.POKEMON_OVERRIDE) {
+    pokemon = DB.find(p => displayName(p) === process.env.POKEMON_OVERRIDE);
+    if (!pokemon) throw new Error(`포켓몬을 찾을 수 없음: ${process.env.POKEMON_OVERRIDE}`);
+    console.log(`🎯 오버라이드 포켓몬: ${displayName(pokemon)}`);
+  } else {
+    pokemon = pickAnswerForDate(dateStr);
+  }
   const name = displayName(pokemon);
   console.log(`🎯 정답: ${name} (id: ${pokemon.id})`);
 

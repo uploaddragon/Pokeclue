@@ -5,6 +5,15 @@ on:
     # 매일 KST 00:05 (UTC 15:05)
     - cron: '5 15 * * *'
   workflow_dispatch:
+    inputs:
+      date_override:
+        description: '날짜 오버라이드 (YYYY-MM-DD). 비우면 어제 날짜 자동 사용.'
+        required: false
+        default: ''
+      pokemon_override:
+        description: '포켓몬 이름 오버라이드 (한글). 입력 시 해당 포켓몬으로 강제 전송.'
+        required: false
+        default: ''
 
 jobs:
   generate:
@@ -32,6 +41,8 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
           SEND_TO: ${{ secrets.SEND_TO }}
+          DATE_OVERRIDE: ${{ github.event.inputs.date_override }}
+          POKEMON_OVERRIDE: ${{ github.event.inputs.pokemon_override }}
         run: node generate-daily.js
 
       - name: Upload image artifact

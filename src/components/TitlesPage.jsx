@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { GENERAL_TITLES, TYPE_TIERS, RARITY } from '../data/titles.js';
 import DB from '../data/pokemon.js';
+import { supabase } from '../lib/supabase.js';
 
 const RARITY_LABEL_KO = {
-  common: '일반', rare: '레어', epic: '에픽', legendary: '전설',
+  common: '일반', rare: '레어', epic: '에픽', legendary: '전설', mythic: '신화', mystery: '???',
 };
 
 // 타입별 DB 총 수 (한 번만 계산)
@@ -18,22 +19,36 @@ const TYPE_TOTAL = (() => {
   return map;
 })();
 
-function TitleCard({ title, isEquipped, onEquip, user }) {
+/* progress: 현재 값, max: 목표값 (있을 때만 렌더) */
+function CardProgress({ progress, max }) {
+  if (max == null) return null;
+  const pct = Math.min(100, Math.round((progress / max) * 100));
+  return (
+    <div className="title-card-progress-wrap">
+      <div className="title-card-progress-bar" style={{ width: `${pct}%` }} />
+      <span className="title-card-progress-text">{progress} / {max}</span>
+    </div>
+  );
+}
+
+function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) {
   const s = RARITY[title.rarity];
+  const isMystery = title.rarity === 'mystery';
   return (
     <div
-      className={`title-card${isEquipped ? ' equipped' : ''}`}
+      className={`title-card${isEquipped ? ' equipped' : ''}${isMystery ? ' mystery' : ''}`}
       style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}
       onClick={() => user && onEquip(title.id)}
     >
       <div className="title-card-top">
-        <span className="title-card-emoji">{title.emoji}</span>
+        <span className="title-card-emoji">{isMystery ? '👾' : title.emoji}</span>
         <span className={`title-card-rarity rarity-${title.rarity}`}>
           {RARITY_LABEL_KO[title.rarity]}
         </span>
       </div>
       <div className="title-card-name px">{title.ko}</div>
-      <div className="title-card-desc">{title.desc_ko ?? `${title.threshold}마리 도감 등록`}</div>
+      <div className="title-card-desc">{title.desc_ko ?? '달성 조건'}</div>
+      <CardProgress progress={progress} max={progressMax} />
       {user && (
         <button className={`title-card-equip-btn${isEquipped ? ' on' : ''}`}>
           {isEquipped ? '✓ 장착 중' : '장착하기'}
@@ -43,18 +58,20 @@ function TitleCard({ title, isEquipped, onEquip, user }) {
   );
 }
 
-function LockedCard({ title, descOverride }) {
+function LockedCard({ title, descOverride, progress, progressMax }) {
   const s = RARITY[title.rarity];
+  const isMystery = title.rarity === 'mystery';
   return (
-    <div className="title-card locked" style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
+    <div className={`title-card locked${isMystery ? ' mystery' : ''}`} style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
       <div className="title-card-top">
-        <span className="title-card-emoji locked-emoji">🔒</span>
+        <span className="title-card-emoji locked-emoji">{isMystery ? '❓' : '🔒'}</span>
         <span className={`title-card-rarity rarity-${title.rarity}`}>
           {RARITY_LABEL_KO[title.rarity]}
         </span>
       </div>
-      <div className="title-card-name px locked-name">{title.ko}</div>
-      <div className="title-card-desc">{descOverride ?? title.desc_ko}</div>
+      <div className="title-card-name px locked-name">{isMystery ? '???' : title.ko}</div>
+      <div className="title-card-desc">{isMystery ? '???' : (descOverride ?? title.desc_ko)}</div>
+      <CardProgress progress={progress} max={progressMax} />
     </div>
   );
 }
@@ -62,7 +79,25 @@ function LockedCard({ title, descOverride }) {
 export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', dex = {} }) {
   const equippedTitle = user?.user_metadata?.equipped_title ?? null;
 
-  // 도감에서 타입별 등록 수 계산
+  const [dailyClearCount, setDailyClearCount] = useState(0);
+  const nearMissCount = user?.user_metadata?.near_miss_count ?? 0;
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('daily_results')
+      .select('date', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('solved', true)
+      .then(({ count }) => { if (count != null) setDailyClearCount(count); });
+  }, [user?.id]);
+
+  // progressGroup → 현재 카운트 맵
+  const progressCounts = {
+    daily_clears: dailyClearCount,
+    near_miss: nearMissCount,
+  };
+
   const typeCounts = useMemo(() => {
     const map = {};
     const REAL = new Set(TYPE_TIERS.map(t => t.type));
@@ -100,11 +135,13 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
       <section className="titles-section">
         <div className="titles-section-label">📋 일반 칭호</div>
         <div className="titles-cards">
-          {GENERAL_TITLES.map(t =>
-            earnedIds.includes(t.id)
-              ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} />
-              : <LockedCard key={t.id} title={t} />
-          )}
+          {GENERAL_TITLES.map(t => {
+            const current = t.progressGroup ? (progressCounts[t.progressGroup] ?? 0) : undefined;
+            const max = t.threshold ?? undefined;
+            return earnedIds.includes(t.id)
+              ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} progress={current} progressMax={max} />
+              : <LockedCard key={t.id} title={t} progress={current} progressMax={max} />;
+          })}
         </div>
       </section>
 
@@ -120,7 +157,6 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
 
             return (
               <div key={type} className="type-tier-row">
-                {/* 타입 헤더 + 진행도 */}
                 <div className="type-tier-header">
                   <span className="type-tier-label">{type}</span>
                   <span className="type-tier-progress-text">
@@ -128,10 +164,8 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
                     {nextTier && <span className="type-tier-next"> · 다음 칭호까지 {nextTier.threshold - caught}마리</span>}
                   </span>
                 </div>
-                {/* 진행도 바 */}
                 <div className="type-tier-bar-wrap">
                   <div className="type-tier-bar" style={{ width: `${pct}%` }} />
-                  {/* 티어 마커 */}
                   {tiers.map(t => (
                     <div
                       key={t.id}
@@ -141,7 +175,6 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
                     />
                   ))}
                 </div>
-                {/* 칭호 카드 3개 */}
                 <div className="type-tier-cards">
                   {tiers.map(t =>
                     earnedIds.includes(t.id)

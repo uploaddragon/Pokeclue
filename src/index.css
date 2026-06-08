@@ -953,6 +953,167 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .locked-name{color:var(--muted);}
 .title-card-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
 
+/* ── 대전 초성 힌트 ── */
+.battle-chosung-hint{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 6px auto 2px;
+  max-width: 480px;
+  padding: 8px 16px;
+  background: #FFFBEB;
+  border: 2px solid #FCD34D;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #92400E;
+  font-weight: 600;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.battle-chosung-text{
+  font-size: 16px;
+  color: #B45309;
+  margin: 0 4px;
+}
+
+/* ── 칭호 해금 토스트 ── */
+.title-unlock-toast{
+  position: fixed;
+  top: 72px; /* 헤더 아래 */
+  left: 50%;
+  transform: translateX(-50%) translateY(-200%);
+  z-index: 9999;
+  min-width: 260px;
+  max-width: 340px;
+  background: var(--tbg);
+  border: 2px solid var(--tb);
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18), var(--shadow-sm);
+  padding: 14px 18px 16px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.title-unlock-enter{
+  animation: toast-in 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.title-unlock-show{
+  transform: translateX(-50%) translateY(0);
+}
+.title-unlock-exit{
+  animation: toast-out 0.32s ease-in forwards;
+}
+@keyframes toast-in {
+  from { transform: translateX(-50%) translateY(-200%); opacity:0; }
+  to   { transform: translateX(-50%) translateY(0);     opacity:1; }
+}
+@keyframes toast-out {
+  from { transform: translateX(-50%) translateY(0);     opacity:1; }
+  to   { transform: translateX(-50%) translateY(-200%); opacity:0; }
+}
+.tut-label{
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tc);
+  opacity: 0.7;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.tut-body{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tut-emoji{
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.tut-text{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tut-name{
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tc);
+}
+.tut-desc{
+  font-size: 12px;
+  color: var(--tc);
+  opacity: 0.65;
+  line-height: 1.4;
+}
+
+/* mystery 칭호 카드 */
+.title-card.mystery{
+  background: var(--tbg) !important;
+  border-color: var(--tb) !important;
+  color: var(--tc) !important;
+  box-shadow: 0 0 10px rgba(155,89,182,0.4), var(--shadow-sm);
+}
+.title-card.mystery .title-card-name,
+.title-card.mystery .title-card-desc,
+.title-card.mystery .title-card-rarity{
+  color: var(--tc) !important;
+  letter-spacing: .15em;
+}
+.title-card.mystery .title-card-equip-btn{
+  border-color: var(--tb);
+  color: var(--tc);
+  background: transparent;
+}
+.title-card.mystery .title-card-equip-btn:hover{ background: rgba(155,89,182,0.2); }
+.title-card.mystery .title-card-equip-btn.on{ background: var(--tb); }
+
+/* mythic 칭호 카드 */
+.title-card.mythic{
+  background: var(--tbg) !important;
+  border-color: var(--tb) !important;
+  color: var(--tc) !important;
+  box-shadow: 0 0 12px rgba(231,76,60,0.5), var(--shadow-sm);
+}
+.title-card.mythic .title-card-name,
+.title-card.mythic .title-card-desc,
+.title-card.mythic .title-card-rarity{
+  color: var(--tc) !important;
+}
+.title-card.mythic .title-card-equip-btn{
+  border-color: var(--tb);
+  color: var(--tc);
+  background: transparent;
+}
+.title-card.mythic .title-card-equip-btn:hover{ background: rgba(231,76,60,0.2); }
+.title-card.mythic .title-card-equip-btn.on{ background: var(--tb); }
+
+/* 카드 내부 미니 진행 바 */
+.title-card-progress-wrap{
+  position:relative;
+  margin-top:8px;
+  height:8px;
+  background:rgba(0,0,0,0.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+.title-card-progress-bar{
+  position:absolute;inset:0;
+  background:var(--tc);
+  border-radius:4px;
+  transition:width 0.4s ease;
+}
+.title-card-progress-text{
+  position:absolute;
+  inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  color:var(--ink);
+  mix-blend-mode:difference;
+  filter:invert(1);
+  white-space:nowrap;
+  line-height:1;
+}
+
 .title-card-equip-btn{
   margin-top:6px;width:100%;
   padding:7px 0;border-radius:8px;
