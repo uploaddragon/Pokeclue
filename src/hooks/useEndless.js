@@ -94,9 +94,16 @@ export function useEndlessNormal() {
   const closeFilter = useCallback(() => setFilterOpen(false), []);
   const pickFromFilter = useCallback((id) => { setFilterOpen(false); submitGuess(id); }, [submitGuess]);
 
+  const giveUp = useCallback(() => {
+    setState(prev => {
+      if (prev.gameOver) return prev;
+      return { ...prev, gameOver: true, result: { win: false } };
+    });
+  }, []);
+
   return {
     answer, guesses, gameOver, filterOpen, usedFilter, result,
-    submitGuess, openFilter, closeFilter, pickFromFilter, nextPokemon,
+    submitGuess, openFilter, closeFilter, pickFromFilter, nextPokemon, giveUp,
   };
 }
 

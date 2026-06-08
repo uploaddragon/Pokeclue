@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { FilterModal } from './FilterModal.jsx';
@@ -45,9 +45,25 @@ function ModeSelect({ onSelect, lang }) {
   );
 }
 
-function NormalGame({ lang, onBack }) {
+function NormalGame({ lang, onBack, onEasterEgg, onWin, onGuess }) {
   const g = useEndlessNormal();
   const isEn = lang === 'en';
+  const firedRef = useRef(false);
+  const prevLenRef = useRef(0);
+  useEffect(() => {
+    if (g.result && !firedRef.current) {
+      firedRef.current = true;
+      onWin?.({ tries: g.guesses.length, usedFilter: g.usedFilter ?? false });
+    }
+    if (!g.result) firedRef.current = false;
+  }, [g.result]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (g.guesses.length > prevLenRef.current && g.answer) {
+      const last = g.guesses[g.guesses.length - 1];
+      onGuess?.(last, g.answer);
+    }
+    prevLenRef.current = g.guesses.length;
+  }, [g.guesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main>
@@ -98,7 +114,7 @@ function NormalGame({ lang, onBack }) {
         lang={lang}
       />
 
-      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} />
+      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} onEasterEgg={onEasterEgg} />
 
       <div className="tools">
         <button
@@ -107,6 +123,13 @@ function NormalGame({ lang, onBack }) {
         >
           {isEn ? '▸ Filter' : '▸ 필터 열람'}
         </button>
+        {!g.gameOver && (
+          <button className="tool-btn" onClick={() => {
+            if (window.confirm(isEn ? 'Run away? The answer will be revealed.' : '도망치시겠어요? 정답이 공개됩니다.')) g.giveUp();
+          }}>
+            🏃 {isEn ? 'Run Away' : '도망치다'}
+          </button>
+        )}
       </div>
 
       <GuessTable guesses={g.guesses} answer={g.answer} lang={lang} />
@@ -114,9 +137,25 @@ function NormalGame({ lang, onBack }) {
   );
 }
 
-function ChallengeGame({ unlockDex, lang, onBack }) {
+function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess }) {
   const g = useEndlessChallenge(unlockDex);
   const isEn = lang === 'en';
+  const firedRef = useRef(false);
+  const prevLenRef = useRef(0);
+  useEffect(() => {
+    if (g.result?.win && !firedRef.current) {
+      firedRef.current = true;
+      onWin?.({ tries: g.guesses.length, usedFilter: false });
+    }
+    if (!g.result) firedRef.current = false;
+  }, [g.result]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (g.guesses.length > prevLenRef.current && g.answer) {
+      const last = g.guesses[g.guesses.length - 1];
+      onGuess?.(last, g.answer);
+    }
+    prevLenRef.current = g.guesses.length;
+  }, [g.guesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const triesLeft = g.maxTries - g.guesses.length;
   const tryDots = Array.from({ length: g.maxTries }, (_, i) => i < g.guesses.length);
 
@@ -199,7 +238,7 @@ function ChallengeGame({ unlockDex, lang, onBack }) {
         </div>
       )}
 
-      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} />
+      <Autocomplete onSubmit={g.submitGuess} disabled={g.gameOver} lang={lang} onEasterEgg={onEasterEgg} />
 
       <div className="tools">
         <span className="no-filter-notice">
@@ -212,10 +251,10 @@ function ChallengeGame({ unlockDex, lang, onBack }) {
   );
 }
 
-export function EndlessPage({ unlockDex, lang }) {
+export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess }) {
   const [mode, setMode] = useState('select');
 
   if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} />;
-  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} />;
-  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} />;
+  if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
+  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
 }

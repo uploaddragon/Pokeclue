@@ -20,6 +20,29 @@ function BattleTitleBadge({ titleId }) {
 
 const TURN_SEC = 30;
 
+const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+// 룸코드를 시드로 count개의 초성을 중복 없이 반환 (양쪽 플레이어 동일)
+function getChosungHints(ko, count, seed) {
+  const all = [...ko].map(ch => {
+    const code = ch.charCodeAt(0) - 0xAC00;
+    return (code >= 0 && code <= 11171) ? CHOSUNG_LIST[Math.floor(code / (21 * 28))] : null;
+  }).filter(Boolean);
+  if (all.length === 0) return [];
+
+  // 시드 기반 셔플
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+
+  const pool = [...all];
+  const result = [];
+  for (let i = 0; i < Math.min(count, pool.length); i++) {
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+    const idx = Math.abs(h) % pool.length;
+    result.push(pool.splice(idx, 1)[0]);
+  }
+  return result;
+}
+
 function seededShiny(roomCode, round) {
   const str = `${roomCode}-${round}`;
   let h = 0;
@@ -27,13 +50,46 @@ function seededShiny(roomCode, round) {
   return (Math.abs(h) % 100) === 0; // 1%
 }
 
-export function BattlePage({ user, lang }) {
+export function BattlePage({ user, lang, onBattleWin, onGuess }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
   const [friendView, setFriendView] = useState('main');
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
+
+  // 10, 15, 20, 25... 턴마다 초성 1개씩 추가 공개 (룸코드 시드 → 양측 동일, 매 렌더 계산해도 결과 동일)
+  const turns = b.sharedGuesses.length;
+  const hintCount = turns >= 10 ? Math.floor((turns - 10) / 5) + 1 : 0;
+  const chosungHints = (b.answer && hintCount > 0)
+    ? getChosungHints(b.answer.ko, hintCount, b.roomCode)
+    : [];
+  const battleWinFiredRef = useRef(false);
+  const prevGuessLenRef = useRef(0);
+
+  // 새 추측마다 near-miss 체크
+  useEffect(() => {
+    const len = b.sharedGuesses.length;
+    if (len > prevGuessLenRef.current && b.answer) {
+      const last = b.sharedGuesses[len - 1];
+      onGuess?.(last, b.answer);
+    }
+    prevGuessLenRef.current = len;
+  }, [b.sharedGuesses.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 승리 확정 시 칭호 체크 (라운드당 1회)
+  useEffect(() => {
+    if (b.phase === 'finished' && b.iWon && !battleWinFiredRef.current) {
+      battleWinFiredRef.current = true;
+      const myTries = b.sharedGuesses.filter((_, i) =>
+        b.mySlot === 'p1' ? i % 2 === 0 : i % 2 === 1
+      ).length;
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1' });
+    }
+    if (b.phase !== 'finished') {
+      battleWinFiredRef.current = false;
+    }
+  }, [b.phase, b.iWon]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     clearInterval(timerRef.current);
@@ -254,14 +310,26 @@ export function BattlePage({ user, lang }) {
             : (isEn ? "⏳ Opponent's Turn…" : '⏳ 상대방 턴… 기다려주세요.')}
         </div>
 
+        {/* 10턴부터 5턴마다 초성 1개씩 추가 */}
+        {chosungHints.length > 0 && (
+          <div className="battle-chosung-hint">
+            💡 {isEn ? 'Hint' : '힌트'}&nbsp;·&nbsp;
+            {chosungHints.map((c, i) => (
+              <span key={i} className="battle-chosung-text px">
+                {i > 0 && <span className="battle-chosung-sep">, </span>}{c}
+              </span>
+            ))}
+          </div>
+        )}
+
         <Autocomplete onSubmit={handleSubmit} disabled={!b.isMyTurn} lang={lang} />
         <GuessTable guesses={b.sharedGuesses} answer={b.answer} lang={lang} />
 
         <div className="battle-giveup-wrap">
           <button className="battle-giveup-btn" onClick={() => {
-            if (window.confirm(isEn ? 'Give up? You will lose.' : '항복하시겠어요? 패배 처리됩니다.')) b.giveUp();
+            if (window.confirm(isEn ? 'Give up? You will lose.' : '도망치시겠어요? 패배 처리됩니다.')) b.giveUp();
           }}>
-            🏳 {isEn ? 'Give Up' : '항복'}
+            🏃 {isEn ? 'Run Away' : '도망치다'}
           </button>
         </div>
       </main>
