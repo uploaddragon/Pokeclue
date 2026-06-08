@@ -164,7 +164,7 @@ export const FORM_LABEL = {
   naive:    '나이브폼',
   mighty:   '마이티폼',
   // 히스이폼
-  hisui:    '히스이폼',
+  hisui:    '리전폼',
   // 후파
   confined: '굴레에 빠진',
   unbound:  '굴레를 벗어난',
