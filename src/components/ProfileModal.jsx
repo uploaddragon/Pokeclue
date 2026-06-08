@@ -82,42 +82,33 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
               {isEn ? 'No titles yet. Clear the daily to earn some!' : '아직 획득한 칭호가 없어요. 데일리를 클리어해보세요!'}
             </div>
           ) : (
-            <div className="profile-titles-grid">
-              {earned.map(t => {
-                const style = RARITY[t.rarity];
-                const isEquipped = equippedTitle === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    className={`title-chip${isEquipped ? ' equipped' : ''}`}
-                    style={{
-                      '--tc': style.color,
-                      '--tbg': style.bg,
-                      '--tb': style.border,
-                    }}
-                    onClick={() => handleEquip(t.id)}
-                    title={isEn ? t.desc_en : t.desc_ko}
-                    disabled={equipping}
-                  >
-                    <span className="title-chip-emoji">{t.emoji}</span>
-                    <span className="title-chip-name">{isEn ? t.en : t.ko}</span>
-                    {isEquipped && <span className="title-chip-check">✓</span>}
-                  </button>
-                );
-              })}
+            <div className="profile-titles-scroll">
+              <div className="profile-titles-grid">
+                {earned.map(t => {
+                  const style = RARITY[t.rarity];
+                  const isEquipped = equippedTitle === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      className={`title-chip${isEquipped ? ' equipped' : ''}`}
+                      style={{
+                        '--tc': style.color,
+                        '--tbg': style.bg,
+                        '--tb': style.border,
+                      }}
+                      onClick={() => handleEquip(t.id)}
+                      title={isEn ? t.desc_en : t.desc_ko}
+                      disabled={equipping}
+                    >
+                      <span className="title-chip-emoji">{t.emoji}</span>
+                      <span className="title-chip-name">{isEn ? t.en : t.ko}</span>
+                      {isEquipped && <span className="title-chip-check">✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
-
-          {/* 미획득 칭호 목록 */}
-          <div className="profile-titles-locked">
-            {TITLES.filter(t => !earnedIds.includes(t.id)).map(t => (
-              <div key={t.id} className="title-locked-item">
-                <span className="title-locked-emoji">🔒</span>
-                <span className="title-locked-name">{isEn ? t.en : t.ko}</span>
-                <span className="title-locked-desc">{isEn ? t.desc_en : t.desc_ko}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         <button className="profile-save-btn" onClick={handleSave} disabled={saving}>
