@@ -80,22 +80,25 @@ function NormalGame({ lang, onBack, onEasterEgg, onWin, onGuess }) {
       </div>
 
       {g.result && (
-        <div className={`result-banner show${g.result.isShiny ? ' shiny' : ''}`}>
+        <div className={`result-banner show${g.result.win ? (g.result.isShiny ? ' shiny' : '') : ' fail'}`}>
           <div className="res-poke">
             <img
-              src={g.result.isShiny ? sprShiny(g.answer.id) : spr(g.answer.id)}
+              src={g.result.win && g.result.isShiny ? sprShiny(g.answer.id) : spr(g.answer.id)}
               alt={isEn ? g.answer.en || g.answer.ko : g.answer.ko}
-              className={`res-sprite${g.result.isShiny ? ' shiny-sprite' : ''}`}
+              className={`res-sprite${g.result.win && g.result.isShiny ? ' shiny-sprite' : ''}`}
             />
             <div>
               <div className="res-t">
-                {g.result.isShiny ? '✨ ' : '★ '}
-                {isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}
+                {g.result.win
+                  ? `${g.result.isShiny ? '✨ ' : '★ '}${isEn ? `${g.answer.en || g.answer.ko} correct!` : `${g.answer.ko} 정답!`}`
+                  : `${isEn ? 'Answer: ' : '정답: '}${isEn ? g.answer.en || g.answer.ko : g.answer.ko}`}
               </div>
               <div className="res-s">
-                {g.result.isShiny
-                  ? (isEn ? '✨ Shiny! Lucky!' : '✨ 이로치 등장! 행운이에요!')
-                  : (isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`)}
+                {g.result.win
+                  ? g.result.isShiny
+                    ? (isEn ? '✨ Shiny! Lucky!' : '✨ 이로치 등장! 행운이에요!')
+                    : (isEn ? `Cleared in ${g.guesses.length} tries!` : `${g.guesses.length}번 만에 클리어!`)
+                  : (isEn ? 'You ran away...' : '도망쳤습니다...')}
               </div>
             </div>
           </div>
