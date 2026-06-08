@@ -51,7 +51,7 @@ function NormalGame({ lang, onBack, onEasterEgg, onWin, onGuess }) {
   const firedRef = useRef(false);
   const prevLenRef = useRef(0);
   useEffect(() => {
-    if (g.result && !firedRef.current) {
+    if (g.result?.win && !firedRef.current) {
       firedRef.current = true;
       onWin?.({ tries: g.guesses.length, usedFilter: g.usedFilter ?? false });
     }
