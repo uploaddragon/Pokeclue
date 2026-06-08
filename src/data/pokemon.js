@@ -837,7 +837,7 @@ const DB = [
   {id:'628-hisui', ko:'워글',     en:'Braviary',  baseId:628, form:'hisui',gen:8,t1:'에스퍼',t2:'비행',  evo:2,len:2,enLen:8},
   {id:'705-hisui', ko:'미끄네일', en:'Sliggoo',   baseId:705, form:'hisui',gen:8,t1:'드래곤',t2:'강철',  evo:2,len:4,enLen:7},
   {id:'706-hisui', ko:'미끄래곤', en:'Goodra',    baseId:706, form:'hisui',gen:8,t1:'드래곤',t2:'강철',  evo:3,len:4,enLen:6},
-  {id:'713-hisui', ko:'크레베이스',en:'Avalugg',  baseId:713, form:'hisui',gen:8,t1:'얼음', t2:'바위',   evo:2,len:5,enLen:7},
+  {id:'713-hisui', ko:'크레베이스',en:'Avalugg',  baseId:713, form:'hisui',gen:6,t1:'얼음', t2:'바위',   evo:2,len:5,enLen:7},
   {id:'724-hisui', ko:'모크나이퍼',en:'Decidueye',baseId:724, form:'hisui',gen:8,t1:'풀',   t2:'격투',   evo:3,len:5,enLen:9},
 
   // ── 8세대 추가 폼 ──
