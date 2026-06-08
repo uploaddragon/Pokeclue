@@ -12,7 +12,7 @@ const DB = [
   {id:27,ko:'모래두지',en:'Sandshrew',gen:1,t1:'땅',t2:'없음',evo:1,len:4,enLen:9},{id:28,ko:'고지',en:'Sandslash',gen:1,t1:'땅',t2:'없음',evo:2,len:2,enLen:9},
   {id:29,ko:'니드런♀',en:'Nidoran♀',gen:1,t1:'독',t2:'없음',evo:1,len:4,enLen:8},{id:30,ko:'니드리나',en:'Nidorina',gen:1,t1:'독',t2:'없음',evo:2,len:4,enLen:8},{id:31,ko:'니드퀸',en:'Nidoqueen',gen:1,t1:'독',t2:'땅',evo:3,len:3,enLen:9},
   {id:32,ko:'니드런♂',en:'Nidoran♂',gen:1,t1:'독',t2:'없음',evo:1,len:4,enLen:8},{id:33,ko:'니드리노',en:'Nidorino',gen:1,t1:'독',t2:'없음',evo:2,len:4,enLen:8},{id:34,ko:'니드킹',en:'Nidoking',gen:1,t1:'독',t2:'땅',evo:3,len:3,enLen:8},
-  {id:35,ko:'삐삐',en:'Clefairy',gen:1,t1:'페어리',t2:'없음',evo:1,len:2,enLen:8},{id:36,ko:'픽시',en:'Clefable',gen:1,t1:'페어리',t2:'없음',evo:2,len:2,enLen:8},
+  {id:35,ko:'삐삐',en:'Clefairy',gen:1,t1:'페어리',t2:'없음',evo:2,len:2,enLen:8},{id:36,ko:'픽시',en:'Clefable',gen:1,t1:'페어리',t2:'없음',evo:3,len:2,enLen:8},
   {id:37,ko:'식스테일',en:'Vulpix',gen:1,t1:'불꽃',t2:'없음',evo:1,len:4,enLen:6},{id:38,ko:'나인테일',en:'Ninetales',gen:1,t1:'불꽃',t2:'없음',evo:2,len:4,enLen:9},
   {id:39,ko:'푸린',en:'Jigglypuff',gen:1,t1:'노말',t2:'페어리',evo:1,len:2,enLen:10},{id:40,ko:'푸크린',en:'Wigglytuff',gen:1,t1:'노말',t2:'페어리',evo:2,len:3,enLen:10},
   {id:41,ko:'주뱃',en:'Zubat',gen:1,t1:'독',t2:'비행',evo:1,len:2,enLen:5},{id:42,ko:'골뱃',en:'Golbat',gen:1,t1:'독',t2:'비행',evo:2,len:2,enLen:6},
