@@ -235,10 +235,13 @@ async function main() {
   }
 
   let pokemon;
-  if (process.env.POKEMON_OVERRIDE) {
-    pokemon = DB.find(p => displayName(p) === process.env.POKEMON_OVERRIDE);
-    if (!pokemon) throw new Error(`포켓몬을 찾을 수 없음: ${process.env.POKEMON_OVERRIDE}`);
-    console.log(`🎯 오버라이드 포켓몬: ${displayName(pokemon)}`);
+  if (process.env.POKEMON_ID_OVERRIDE) {
+    const rawId = process.env.POKEMON_ID_OVERRIDE.trim();
+    // 숫자면 Number로, 아니면 문자열(mega/pinsir 등) 그대로 비교
+    const idVal = /^\d+$/.test(rawId) ? Number(rawId) : rawId;
+    pokemon = DB.find(p => p.id === idVal);
+    if (!pokemon) throw new Error(`포켓몬 ID를 찾을 수 없음: ${rawId}`);
+    console.log(`🎯 오버라이드 포켓몬: ${displayName(pokemon)} (id: ${pokemon.id})`);
   } else {
     pokemon = pickAnswerForDate(dateStr);
   }
