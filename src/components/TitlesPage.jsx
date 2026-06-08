@@ -4,7 +4,7 @@ import DB from '../data/pokemon.js';
 import { supabase } from '../lib/supabase.js';
 
 const RARITY_LABEL_KO = {
-  common: '일반', rare: '레어', epic: '에픽', legendary: '전설', mystery: '???',
+  common: '일반', rare: '레어', epic: '에픽', legendary: '전설', mythic: '신화', mystery: '???',
 };
 
 // 타입별 DB 총 수 (한 번만 계산)

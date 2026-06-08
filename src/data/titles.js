@@ -197,7 +197,7 @@ export const GENERAL_TITLES = [
     emoji: '⚔️',
     desc_ko: '엔드리스/대전에서 첫 번째 시도에 정답! (데일리 제외)',
     desc_en: 'First try correct in Endless or Battle! (Daily excluded)',
-    rarity: 'legendary',
+    rarity: 'mythic',
   },
   {
     id: 'reckless',
@@ -292,5 +292,6 @@ export const RARITY = {
   rare:      { color: '#1D4ED8', bg: '#EFF6FF', border: '#93C5FD' },
   epic:      { color: '#6D28D9', bg: '#F5F3FF', border: '#C4B5FD' },
   legendary: { color: '#B45309', bg: '#FFFBEB', border: '#FCD34D' },
+  mythic:    { color: '#C0392B', bg: '#FFF0EE', border: '#E74C3C' },
   mystery:   { color: '#E0E0E0', bg: '#1A1A2E', border: '#9B59B6' },
 };
