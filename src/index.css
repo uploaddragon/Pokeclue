@@ -1067,6 +1067,26 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .title-card.mystery .title-card-equip-btn:hover{ background: rgba(155,89,182,0.2); }
 .title-card.mystery .title-card-equip-btn.on{ background: var(--tb); }
 
+/* mythic 칭호 카드 */
+.title-card.mythic{
+  background: var(--tbg) !important;
+  border-color: var(--tb) !important;
+  color: var(--tc) !important;
+  box-shadow: 0 0 12px rgba(231,76,60,0.5), var(--shadow-sm);
+}
+.title-card.mythic .title-card-name,
+.title-card.mythic .title-card-desc,
+.title-card.mythic .title-card-rarity{
+  color: var(--tc) !important;
+}
+.title-card.mythic .title-card-equip-btn{
+  border-color: var(--tb);
+  color: var(--tc);
+  background: transparent;
+}
+.title-card.mythic .title-card-equip-btn:hover{ background: rgba(231,76,60,0.2); }
+.title-card.mythic .title-card-equip-btn.on{ background: var(--tb); }
+
 /* 카드 내부 미니 진행 바 */
 .title-card-progress-wrap{
   position:relative;
