@@ -1,4 +1,5 @@
 import DB from '../data/pokemon.js';
+import ANSWERS from '../data/answers.json';
 import { TYPE_EN } from '../data/types.js';
 
 export function getTodayStr() {
@@ -23,6 +24,13 @@ function dateHash(str) {
 
 export function pickAnswer() {
   const today = getTodayStr();
+  // answers.json 고정 매핑 우선 사용 — DB 변경에도 날짜별 정답 불변
+  const id = ANSWERS[today];
+  if (id !== undefined) {
+    const p = DB.find(p => p.id === id);
+    if (p) return p;
+  }
+  // fallback: 기존 해시 방식 (answers.json 범위 밖 날짜)
   const idx = dateHash(today + 'GJHJ') % DB.length;
   return DB[idx];
 }

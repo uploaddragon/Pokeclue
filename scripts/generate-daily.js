@@ -19,24 +19,16 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── DB 로드 ──────────────────────────────
-// main 브랜치: src/data/pokemon.js / master 브랜치: frontend/src/data/pokemon.js
 const _p1 = path.join(__dirname, '../src/data/pokemon.js');
 const _p2 = path.join(__dirname, '../frontend/src/data/pokemon.js');
 const _dbPath = fs.existsSync(_p1) ? _p1 : _p2;
 const { default: DB } = await import(pathToFileURL(_dbPath).href);
 
-// ── pickAnswer 로직 ───────────────────────
-function dateHash(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-  }
-  // Wang hash mixing — 게임 로직(src/utils/game.js)과 동일하게 맞춤
-  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-  h ^= (h >>> 16);
-  return Math.abs(h);
-}
+// ── answers.json 로드 (날짜→포켓몬ID 고정 매핑) ──
+const _aPath1 = path.join(__dirname, '../src/data/answers.json');
+const _aPath2 = path.join(__dirname, '../frontend/src/data/answers.json');
+const _answersPath = fs.existsSync(_aPath1) ? _aPath1 : _aPath2;
+const ANSWERS = JSON.parse(fs.readFileSync(_answersPath, 'utf-8'));
 
 function getDateStr(date) {
   const y = date.getFullYear();
@@ -46,7 +38,22 @@ function getDateStr(date) {
 }
 
 function pickAnswerForDate(dateStr) {
-  return DB[dateHash(dateStr) % DB.length];
+  // answers.json 고정 매핑 우선 — DB 변경에도 날짜별 정답 불변
+  const id = ANSWERS[dateStr];
+  if (id !== undefined) {
+    const p = DB.find(p => p.id === id);
+    if (p) return p;
+  }
+  // fallback: 해시 방식 (answers.json 범위 밖 날짜)
+  function dateHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
+    h ^= (h >>> 16);
+    return Math.abs(h);
+  }
+  return DB[dateHash(dateStr + 'GJHJ') % DB.length];
 }
 
 // ── displayName ───────────────────────────
