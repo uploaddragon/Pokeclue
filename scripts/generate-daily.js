@@ -93,13 +93,12 @@ function fetchBuffer(url) {
   });
 }
 
-async function fetchSpriteBuffer(id) {
-  const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+function fetchUrl(url) {
   return new Promise((resolve, reject) => {
-    const client = https;
+    const client = url.startsWith('https') ? https : http;
     client.get(url, res => {
       if (res.statusCode === 301 || res.statusCode === 302) {
-        return fetchSpriteBuffer(res.headers.location).then(resolve).catch(reject);
+        return fetchUrl(res.headers.location).then(resolve).catch(reject);
       }
       if (res.statusCode === 404) { res.resume(); resolve(null); return; }
       const chunks = [];
@@ -110,15 +109,37 @@ async function fetchSpriteBuffer(id) {
   });
 }
 
-async function getSpriteBase64(pokemon) {
-  // 1차: 포켓몬 id로 시도
-  let buf = await fetchSpriteBuffer(pokemon.id);
-  // 실패 시 baseId로 폴백 (gmax 등 특수폼)
-  if (!buf && pokemon.baseId) {
-    console.log(`⚠️  스프라이트 없음(${pokemon.id}), baseId(${pokemon.baseId})로 폴백`);
-    buf = await fetchSpriteBuffer(pokemon.baseId);
+async function getSpriteUrl(pokemon) {
+  // 1차: 표준 경로 시도
+  const standard = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+  const buf = await fetchUrl(standard);
+  if (buf) return standard;
+
+  // 2차: PokeAPI에서 폼별 실제 스프라이트 URL 조회 (gmax 등)
+  if (pokemon.en && pokemon.form) {
+    const apiName = `${pokemon.en.toLowerCase()}-${pokemon.form}`;
+    console.log(`🔍 PokeAPI 폼 조회: ${apiName}`);
+    const apiData = await fetchUrl(`https://pokeapi.co/api/v2/pokemon/${apiName}/`);
+    if (apiData) {
+      const json = JSON.parse(apiData.toString());
+      const spriteUrl = json.sprites?.front_default;
+      if (spriteUrl) { console.log(`✅ 폼 스프라이트: ${spriteUrl}`); return spriteUrl; }
+    }
   }
-  if (!buf) throw new Error(`스프라이트를 찾을 수 없음: ${pokemon.id}`);
+
+  // 3차: baseId 폴백
+  if (pokemon.baseId) {
+    console.log(`⚠️  baseId(${pokemon.baseId}) 폴백`);
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.baseId}.png`;
+  }
+
+  throw new Error(`스프라이트를 찾을 수 없음: ${pokemon.id}`);
+}
+
+async function getSpriteBase64(pokemon) {
+  const url = await getSpriteUrl(pokemon);
+  const buf = await fetchUrl(url);
+  if (!buf) throw new Error(`스프라이트 다운로드 실패: ${url}`);
   return buf.toString('base64');
 }
 
