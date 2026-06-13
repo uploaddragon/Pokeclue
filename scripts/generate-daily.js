@@ -101,7 +101,7 @@ async function fetchSpriteBuffer(id) {
       if (res.statusCode === 301 || res.statusCode === 302) {
         return fetchSpriteBuffer(res.headers.location).then(resolve).catch(reject);
       }
-      if (res.statusCode === 404) { resolve(null); return; }
+      if (res.statusCode === 404) { res.resume(); resolve(null); return; }
       const chunks = [];
       res.on('data', c => chunks.push(c));
       res.on('end', () => resolve(Buffer.concat(chunks)));
