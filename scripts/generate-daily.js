@@ -93,9 +93,32 @@ function fetchBuffer(url) {
   });
 }
 
-async function getSpriteBase64(id) {
+async function fetchSpriteBuffer(id) {
   const url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-  const buf = await fetchBuffer(url);
+  return new Promise((resolve, reject) => {
+    const client = https;
+    client.get(url, res => {
+      if (res.statusCode === 301 || res.statusCode === 302) {
+        return fetchSpriteBuffer(res.headers.location).then(resolve).catch(reject);
+      }
+      if (res.statusCode === 404) { resolve(null); return; }
+      const chunks = [];
+      res.on('data', c => chunks.push(c));
+      res.on('end', () => resolve(Buffer.concat(chunks)));
+      res.on('error', reject);
+    }).on('error', reject);
+  });
+}
+
+async function getSpriteBase64(pokemon) {
+  // 1차: 포켓몬 id로 시도
+  let buf = await fetchSpriteBuffer(pokemon.id);
+  // 실패 시 baseId로 폴백 (gmax 등 특수폼)
+  if (!buf && pokemon.baseId) {
+    console.log(`⚠️  스프라이트 없음(${pokemon.id}), baseId(${pokemon.baseId})로 폴백`);
+    buf = await fetchSpriteBuffer(pokemon.baseId);
+  }
+  if (!buf) throw new Error(`스프라이트를 찾을 수 없음: ${pokemon.id}`);
   return buf.toString('base64');
 }
 
@@ -256,7 +279,7 @@ async function main() {
   console.log(`🎯 정답: ${name} (id: ${pokemon.id})`);
 
   console.log('🖼  스프라이트 다운로드 중...');
-  const spriteBase64 = await getSpriteBase64(pokemon.id);
+  const spriteBase64 = await getSpriteBase64(pokemon);
 
   console.log('🎨 SVG 렌더링 중...');
   const svgContent = buildSvg(pokemon, dateStr, spriteBase64);
