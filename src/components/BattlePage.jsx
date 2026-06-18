@@ -6,6 +6,25 @@ import { displayName } from '../utils/game.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
 
+function BattleAvatar({ profilePokemon }) {
+  const sprSrc = profilePokemon
+    ? (profilePokemon.endsWith('-shiny') ? sprShiny(profilePokemon.slice(0, -6)) : spr(profilePokemon))
+    : null;
+  return (
+    <div className="battle-avatar-circle">
+      {sprSrc
+        ? <img src={sprSrc} className="battle-avatar-spr" alt="" />
+        : <svg viewBox="0 0 40 40" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" fill="#fff" stroke="#222" strokeWidth="2"/>
+            <path d="M2 20 Q2 2 20 2 Q38 2 38 20Z" fill="#e63329"/>
+            <rect x="2" y="18.5" width="36" height="3" fill="#222"/>
+            <circle cx="20" cy="20" r="5.5" fill="#fff" stroke="#222" strokeWidth="2.5"/>
+            <circle cx="20" cy="20" r="2.5" fill="#ddd"/>
+          </svg>}
+    </div>
+  );
+}
+
 function BattleTitleBadge({ titleId }) {
   if (!titleId) return null;
   const t = TITLE_MAP[titleId];
@@ -265,11 +284,7 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
         <div className="battle-hud">
           <div className={`battle-hud-player me${b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'ME' : '나'}</div>
-            {b.myProfilePokemon && (() => {
-              const isShiny = b.myProfilePokemon.endsWith('-shiny');
-              const pid = isShiny ? b.myProfilePokemon.slice(0, -6) : b.myProfilePokemon;
-              return <img src={isShiny ? sprShiny(pid) : spr(pid)} className="battle-profile-spr" alt="" />;
-            })()}
+            <BattleAvatar profilePokemon={b.myProfilePokemon} />
             <div className="battle-hud-nick">{b.myNick}</div>
             <BattleTitleBadge titleId={b.myTitle} />
             <div className="battle-hud-tries">{myTries}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
@@ -294,11 +309,7 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
 
           <div className={`battle-hud-player op${!b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
-            {b.opProfilePokemon && (() => {
-              const isShiny = b.opProfilePokemon.endsWith('-shiny');
-              const pid = isShiny ? b.opProfilePokemon.slice(0, -6) : b.opProfilePokemon;
-              return <img src={isShiny ? sprShiny(pid) : spr(pid)} className="battle-profile-spr" alt="" />;
-            })()}
+            <BattleAvatar profilePokemon={b.opProfilePokemon} />
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
             <BattleTitleBadge titleId={b.opTitle} />
             <div className="battle-hud-tries">{b.opTries || 0}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
