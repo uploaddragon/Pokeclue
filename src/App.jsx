@@ -33,7 +33,7 @@ export default function App() {
   }
   const welcome = useWelcomeModal();
 
-  const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname } = useAuth();
+  const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
   const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit } = useTitles(user);
@@ -96,6 +96,8 @@ export default function App() {
         onUpdateNickname={updateNickname}
         earnedIds={earnedIds}
         onEquipTitle={equipTitle}
+        dex={dex}
+        onUpdateProfilePokemon={updateProfilePokemon}
       />
 
       {authOpen && (

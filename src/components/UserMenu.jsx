@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ProfileModal } from './ProfileModal.jsx';
 
-export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, onEquipTitle }) {
+export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, onEquipTitle, dex, onUpdateProfilePokemon }) {
   const isEn = lang === 'en';
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -57,6 +57,8 @@ export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, o
           onSave={onUpdateNickname}
           earnedIds={earnedIds ?? []}
           onEquipTitle={onEquipTitle}
+          dex={dex ?? {}}
+          onUpdateProfilePokemon={onUpdateProfilePokemon}
         />
       )}
     </div>

@@ -55,5 +55,21 @@ export function useAuth() {
     return error;
   }
 
-  return { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname };
+  async function updateProfilePokemon(pokemonId, isShiny) {
+    const value = pokemonId == null ? null : (isShiny ? `${pokemonId}-shiny` : String(pokemonId));
+    const { data, error } = await supabase.auth.updateUser({
+      data: { profile_pokemon: value },
+    });
+    if (!error) {
+      setUser(data.user);
+      await supabase
+        .from('daily_results')
+        .update({ profile_pokemon: value })
+        .eq('user_id', data.user.id)
+        .eq('date', getTodayStr());
+    }
+    return error;
+  }
+
+  return { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon };
 }

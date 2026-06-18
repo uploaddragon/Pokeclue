@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { TITLES, TITLE_MAP, RARITY } from '../data/titles.js';
+import { spr, sprShiny } from '../utils/sprite.js';
+import DB from '../data/pokemon.js';
 
-export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEquipTitle }) {
+export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEquipTitle, dex = {}, onUpdateProfilePokemon }) {
   const isEn = lang === 'en';
   const currentNickname =
     user.user_metadata?.pokeclue_nickname ||
@@ -13,9 +15,16 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [equipping, setEquipping] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(user.user_metadata?.profile_pokemon ?? null);
 
   const avatar = user.user_metadata?.avatar_url;
   const equippedTitle = user.user_metadata?.equipped_title ?? null;
+
+  // 도감 등록된 포켓몬 목록
+  const dexPokemon = Object.entries(dex).map(([id, entry]) => {
+    const p = DB.find(p => String(p.id) === String(id));
+    return p ? { ...p, dexEntry: entry } : null;
+  }).filter(Boolean);
 
   async function handleSave() {
     const trimmed = nickname.trim();
@@ -24,6 +33,11 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
     setSaving(true);
     setError('');
     const err = await onSave(trimmed);
+    if (!err && onUpdateProfilePokemon) {
+      const isShiny = selectedProfile?.endsWith('-shiny') ?? false;
+      const pid = selectedProfile ? (isShiny ? selectedProfile.slice(0, -6) : selectedProfile) : null;
+      await onUpdateProfilePokemon(pid, isShiny);
+    }
     setSaving(false);
     if (err) { setError(isEn ? 'Failed to save.' : '저장에 실패했어요.'); return; }
     onClose();
@@ -66,6 +80,51 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
             placeholder={isEn ? 'Enter nickname' : '닉네임 입력'}
           />
           {error && <div className="profile-error">{error}</div>}
+        </div>
+
+        {/* ── 프로필 포켓몬 섹션 ── */}
+        <div className="profile-titles-section">
+          <div className="profile-titles-header">
+            <span className="profile-label">{isEn ? 'Profile Pokémon' : '프로필 포켓몬'}</span>
+            {selectedProfile && (
+              <button className="profile-pokemon-clear" onClick={() => setSelectedProfile(null)}>
+                {isEn ? 'Clear' : '해제'}
+              </button>
+            )}
+          </div>
+          {dexPokemon.length === 0 ? (
+            <div className="profile-titles-empty">
+              {isEn ? 'Clear the daily to register Pokémon to your Dex!' : '데일리를 클리어하면 도감에 포켓몬이 등록돼요!'}
+            </div>
+          ) : (
+            <div className="profile-pokemon-grid">
+              {dexPokemon.map(p => {
+                const normalKey = String(p.id);
+                const shinyKey = `${p.id}-shiny`;
+                const hasShiny = p.dexEntry.shiny;
+                return (
+                  <div key={p.id} className="profile-pokemon-item">
+                    <button
+                      className={`profile-pokemon-btn${selectedProfile === normalKey ? ' selected' : ''}`}
+                      onClick={() => setSelectedProfile(selectedProfile === normalKey ? null : normalKey)}
+                      title={isEn ? p.en : p.ko}
+                    >
+                      <img src={spr(p.id)} alt={p.ko} className="profile-pokemon-spr" />
+                    </button>
+                    {hasShiny && (
+                      <button
+                        className={`profile-pokemon-btn shiny${selectedProfile === shinyKey ? ' selected' : ''}`}
+                        onClick={() => setSelectedProfile(selectedProfile === shinyKey ? null : shinyKey)}
+                        title={`✨ ${isEn ? p.en : p.ko}`}
+                      >
+                        <img src={sprShiny(p.id)} alt={`✨${p.ko}`} className="profile-pokemon-spr" />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* ── 칭호 섹션 ── */}

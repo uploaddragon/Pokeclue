@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabasePublic } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
+import { spr, sprShiny } from '../utils/sprite.js';
 
 function TitleBadge({ titleId }) {
   const t = TITLE_MAP[titleId];
@@ -23,7 +24,7 @@ export function RankingModal({ onClose, user, lang }) {
     async function fetchRanking() {
       const { data, error } = await supabasePublic
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, solved, used_filter, nickname, equipped_title')
+        .select('id, user_id, anon_id, tries, solved, used_filter, nickname, equipped_title, profile_pokemon')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
@@ -83,6 +84,11 @@ export function RankingModal({ onClose, user, lang }) {
                   <span className="ranking-pos">
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
                   </span>
+                  {r.profile_pokemon && (() => {
+                    const isShiny = r.profile_pokemon.endsWith('-shiny');
+                    const pid = isShiny ? r.profile_pokemon.slice(0, -6) : r.profile_pokemon;
+                    return <img src={isShiny ? sprShiny(pid) : spr(pid)} className="ranking-profile-spr" alt="" />;
+                  })()}
                   <span className="ranking-nickname">
                     {r.nickname || '트레이너'}
                     {r.equipped_title && TITLE_MAP[r.equipped_title] && (

@@ -722,6 +722,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .ranking-no-filter{color:var(--yellow);font-size:6px;white-space:nowrap;text-shadow:0 0 0 #000;-webkit-text-stroke:0.3px #a07000;}
 .ranking-me-badge{background:var(--yellow);color:#222;border:2px solid #222;padding:3px 7px;font-size:7px;flex-shrink:0;}
 .ranking-empty{padding:28px;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);line-height:2.4;}
+.ranking-profile-spr{width:32px;height:32px;object-fit:contain;image-rendering:pixelated;flex-shrink:0;}
 .ranking-btn{background:#1a1a1a;}
 
 /* ── Battle Mode ── */
@@ -798,6 +799,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-hud-player.active{box-shadow:inset 0 0 0 3px var(--yellow);}
 .battle-hud-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
 .battle-hud-nick{font-family:'Press Start 2P',monospace;font-size:9px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.battle-profile-spr{width:40px;height:40px;object-fit:contain;image-rendering:pixelated;}
 .battle-title-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;border:1.5px solid;font-size:11px;font-weight:600;font-family:'Galmuri11',monospace;width:fit-content;align-self:center;}
 .battle-hud-tries{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--red);line-height:1.4;}
 .battle-hud-tries-unit{font-size:9px;color:var(--muted);}
@@ -1170,6 +1172,25 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 /* ══════════════════════════════════════════
    칭호 시스템
 ══════════════════════════════════════════ */
+
+/* ── ProfileModal 프로필 포켓몬 섹션 ── */
+.profile-pokemon-grid{display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto;padding:4px 2px;}
+.profile-pokemon-grid::-webkit-scrollbar{width:4px;}
+.profile-pokemon-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.profile-pokemon-item{display:flex;gap:4px;}
+.profile-pokemon-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:48px;height:48px;padding:2px;
+  border:2px solid var(--border);border-radius:8px;background:var(--card);
+  cursor:pointer;transition:border-color .15s,background .15s;
+}
+.profile-pokemon-btn:hover{border-color:var(--primary);background:var(--hover);}
+.profile-pokemon-btn.selected{border-color:var(--primary);background:var(--primary-light,#e8f0fe);}
+.profile-pokemon-btn.shiny{border-color:#c8a000;}
+.profile-pokemon-btn.shiny.selected{border-color:#c8a000;background:#fff8e0;}
+.profile-pokemon-spr{width:38px;height:38px;object-fit:contain;image-rendering:pixelated;}
+.profile-pokemon-clear{font-size:12px;padding:3px 8px;border-radius:12px;border:1px solid var(--border);background:var(--card);cursor:pointer;color:var(--muted);}
+.profile-pokemon-clear:hover{background:var(--hover);}
 
 /* ── ProfileModal 칭호 섹션 ── */
 .profile-titles-section{margin-top:18px;border-top:2px solid var(--line);padding-top:14px;}
