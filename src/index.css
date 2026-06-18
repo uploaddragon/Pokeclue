@@ -691,9 +691,11 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 /* ── Profile Modal ── */
 .profile-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:32px 36px;max-width:520px;width:94%;position:relative;text-align:center;}
 .profile-modal-title{font-family:'Press Start 2P',monospace;font-size:13px;color:#1a1a1a;margin-bottom:20px;}
-.profile-avatar-wrap{margin:0 auto 10px;width:72px;height:72px;}
-.profile-avatar-img{width:72px;height:72px;border-radius:50%;border:3px solid #222;object-fit:cover;}
-.profile-avatar-fallback{width:72px;height:72px;border-radius:50%;border:3px solid #222;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:24px;color:#222;}
+.profile-avatar-wrap{margin:0 auto 10px;width:80px;height:80px;}
+.profile-avatar-img{width:80px;height:80px;border-radius:50%;border:3px solid #222;object-fit:cover;}
+.profile-avatar-poke{object-fit:contain;image-rendering:pixelated;background:#f5f0e8;}
+.profile-avatar-fallback{width:80px;height:80px;border-radius:50%;border:3px solid #222;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:24px;color:#222;}
+.profile-avatar-ball{background:#f5f0e8;}
 .profile-email{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);margin-bottom:22px;line-height:2;word-break:break-all;}
 .profile-field{text-align:left;margin-bottom:18px;}
 .profile-label{display:block;font-family:'Press Start 2P',monospace;font-size:9px;color:#555;margin-bottom:8px;}

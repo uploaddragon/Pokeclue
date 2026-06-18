@@ -62,9 +62,24 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
         <div className="profile-modal-title">{isEn ? 'Profile' : '프로필 설정'}</div>
 
         <div className="profile-avatar-wrap">
-          {avatar
-            ? <img src={avatar} alt="" className="profile-avatar-img" />
-            : <div className="profile-avatar-fallback">{currentNickname[0]?.toUpperCase()}</div>}
+          {(() => {
+            if (selectedProfile) {
+              const isShiny = selectedProfile.endsWith('-shiny');
+              const pid = isShiny ? selectedProfile.slice(0, -6) : selectedProfile;
+              return <img src={isShiny ? sprShiny(pid) : spr(pid)} alt="" className="profile-avatar-img profile-avatar-poke" />;
+            }
+            return (
+              <div className="profile-avatar-fallback profile-avatar-ball">
+                <svg viewBox="0 0 40 40" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="20" cy="20" r="18" fill="#fff" stroke="#222" strokeWidth="2"/>
+                  <path d="M2 20 Q2 2 20 2 Q38 2 38 20Z" fill="#e63329"/>
+                  <rect x="2" y="18.5" width="36" height="3" fill="#222"/>
+                  <circle cx="20" cy="20" r="5.5" fill="#fff" stroke="#222" strokeWidth="2.5"/>
+                  <circle cx="20" cy="20" r="2.5" fill="#ddd"/>
+                </svg>
+              </div>
+            );
+          })()}
         </div>
 
         <div className="profile-email">{user.email}</div>
