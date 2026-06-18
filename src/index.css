@@ -671,6 +671,8 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 }
 .user-avatar-btn:hover{border-color:white;}
 .user-avatar-img{width:100%;height:100%;object-fit:cover;}
+.user-avatar-poke{object-fit:contain;image-rendering:pixelated;background:#f5f0e8;}
+.user-avatar-ball{display:flex;align-items:center;justify-content:center;}
 .user-avatar-fallback{font-family:'Press Start 2P',monospace;font-size:13px;color:#222;}
 .user-dropdown{
   position:absolute;top:calc(100% + 8px);right:0;
