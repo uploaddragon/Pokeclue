@@ -4,6 +4,8 @@ import { getTodayStr } from '../utils/game.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 
+const MEDAL = ['🥇', '🥈', '🥉'];
+
 function TitleBadge({ titleId }) {
   const t = TITLE_MAP[titleId];
   if (!t) return null;
@@ -12,6 +14,28 @@ function TitleBadge({ titleId }) {
     <span className="rank-title-badge" style={{ color: s.color, background: s.bg, borderColor: s.border }}>
       {t.emoji} {t.ko}
     </span>
+  );
+}
+
+function RankAvatar({ rank, profilePokemon }) {
+  const medal = rank <= 3 ? MEDAL[rank - 1] : null;
+  const sprSrc = profilePokemon
+    ? (profilePokemon.endsWith('-shiny')
+        ? sprShiny(profilePokemon.slice(0, -6))
+        : spr(profilePokemon))
+    : null;
+
+  return (
+    <div className="rank-avatar-wrap">
+      <div className={`rank-avatar-circle rank${rank <= 3 ? rank : ''}`}>
+        {sprSrc
+          ? <img src={sprSrc} className="rank-avatar-spr" alt="" />
+          : <span className="rank-avatar-fallback">?</span>}
+      </div>
+      {medal
+        ? <span className="rank-avatar-medal">{medal}</span>
+        : <span className="rank-avatar-num">#{rank}</span>}
+    </div>
   );
 }
 
@@ -39,7 +63,6 @@ export function RankingModal({ onClose, user, lang }) {
 
   const total = rows.length;
   const avg = total > 0 ? (rows.reduce((s, r) => s + r.tries, 0) / total).toFixed(1) : '-';
-  // 내 행 찾기 (로그인 or 익명)
   const anonId = (() => {
     try { return JSON.parse(localStorage.getItem('pokeclue_anon') || 'null')?.id; } catch { return null; }
   })();
@@ -81,29 +104,22 @@ export function RankingModal({ onClose, user, lang }) {
               const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
               return (
                 <div key={r.id ?? i} className={`ranking-row${isMe ? ' me' : ''}`}>
-                  <span className="ranking-pos">
-                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
-                  </span>
-                  {r.profile_pokemon && (() => {
-                    const isShiny = r.profile_pokemon.endsWith('-shiny');
-                    const pid = isShiny ? r.profile_pokemon.slice(0, -6) : r.profile_pokemon;
-                    return <img src={isShiny ? sprShiny(pid) : spr(pid)} className="ranking-profile-spr" alt="" />;
-                  })()}
-                  <span className="ranking-nickname">
-                    {r.nickname || '트레이너'}
+                  <RankAvatar rank={i + 1} profilePokemon={r.profile_pokemon} />
+                  <div className="ranking-info">
+                    <span className="ranking-nickname">
+                      {r.nickname || '트레이너'}
+                      {isMe && <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>}
+                    </span>
                     {r.equipped_title && TITLE_MAP[r.equipped_title] && (
                       <TitleBadge titleId={r.equipped_title} />
                     )}
-                  </span>
+                  </div>
                   <span className="ranking-tries-wrap">
                     {!r.used_filter && (
                       <span className="ranking-no-filter">{isEn ? 'no filter!' : '필터 미사용!'}</span>
                     )}
                     <span className="ranking-tries">{r.tries}{isEn ? ' tries' : '번'}</span>
                   </span>
-                  {isMe && (
-                    <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>
-                  )}
                 </div>
               );
             })
