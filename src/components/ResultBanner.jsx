@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { spr } from '../utils/sprite.js';
+import { spr, sprShiny } from '../utils/sprite.js';
 import { displayName, getTodayStr } from '../utils/game.js';
 import { supabasePublic } from '../lib/supabase.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
@@ -19,6 +19,37 @@ function TitleBadge({ titleId }) {
   );
 }
 
+const MEDAL = ['🥇', '🥈', '🥉'];
+
+function Pokeball() {
+  return (
+    <svg viewBox="0 0 40 40" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="#fff" stroke="#222" strokeWidth="2"/>
+      <path d="M2 20 Q2 2 20 2 Q38 2 38 20Z" fill="#e63329"/>
+      <rect x="2" y="18.5" width="36" height="3" fill="#222"/>
+      <circle cx="20" cy="20" r="5.5" fill="#fff" stroke="#222" strokeWidth="2.5"/>
+      <circle cx="20" cy="20" r="2.5" fill="#ddd"/>
+    </svg>
+  );
+}
+
+function RankAvatar({ rank, profilePokemon }) {
+  const medal = rank <= 3 ? MEDAL[rank - 1] : null;
+  const sprSrc = profilePokemon
+    ? (profilePokemon.endsWith('-shiny') ? sprShiny(profilePokemon.slice(0, -6)) : spr(profilePokemon))
+    : null;
+  return (
+    <div className="rank-avatar-wrap">
+      <div className={`rank-avatar-circle rank${rank <= 3 ? rank : ''}`}>
+        {sprSrc ? <img src={sprSrc} className="rank-avatar-spr" alt="" /> : <Pokeball />}
+      </div>
+      {medal
+        ? <span className="rank-avatar-medal">{medal}</span>
+        : <span className="rank-avatar-num">#{rank}</span>}
+    </div>
+  );
+}
+
 /* ── Ranking data hook ── */
 export function useInlineRanking(win) {
   const [rows, setRows] = useState([]);
@@ -29,7 +60,7 @@ export function useInlineRanking(win) {
     async function fetchRanking() {
       const { data } = await supabasePublic
         .from('daily_results')
-        .select('id, user_id, anon_id, tries, nickname, used_filter, equipped_title')
+        .select('id, user_id, anon_id, tries, nickname, used_filter, equipped_title, profile_pokemon')
         .eq('date', getTodayStr())
         .eq('solved', true)
         .order('tries', { ascending: true })
@@ -82,10 +113,7 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
             const isMe = (user && r.user_id === user.id) || (anonId && r.anon_id === anonId);
             return (
               <div key={r.id ?? globalIdx} className={`ritem${isMe ? ' me' : ''}`}>
-                {globalIdx === 0 ? <div className="medal">🥇</div>
-                 : globalIdx === 1 ? <div className="medal">🥈</div>
-                 : globalIdx === 2 ? <div className="medal">🥉</div>
-                 : <div className="pos">{globalIdx + 1}</div>}
+                <RankAvatar rank={globalIdx + 1} profilePokemon={r.profile_pokemon} />
                 <div className="who">
                   <span className="who-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
                   {r.equipped_title && TITLE_MAP[r.equipped_title] && (

@@ -254,6 +254,7 @@ main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:26px 22px 60px;}
 .ritem:first-child{border-top:0;}
 .ritem .pos{width:30px;text-align:center;font-family:'Galmuri11',monospace;font-size:15px;color:var(--muted);flex:0 0 auto;}
 .ritem .medal{font-size:20px;width:30px;text-align:center;flex:0 0 auto;}
+.ritem .rank-avatar-wrap{flex:0 0 auto;}
 .ritem .who{display:flex;flex-direction:column;gap:2px;font-size:14px;font-weight:600;flex:1;overflow:hidden;}
 .ritem .nofilter{font-size:11px;color:var(--correct-d);font-weight:700;}
 .ritem .tries{display:flex;align-items:center;gap:12px;flex-shrink:0;font-family:'Galmuri11',monospace;font-size:15px;}
