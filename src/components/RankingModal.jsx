@@ -17,6 +17,18 @@ function TitleBadge({ titleId }) {
   );
 }
 
+function Pokeball() {
+  return (
+    <svg viewBox="0 0 40 40" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="#fff" stroke="#222" strokeWidth="2"/>
+      <path d="M2 20 Q2 2 20 2 Q38 2 38 20Z" fill="#e63329"/>
+      <rect x="2" y="18.5" width="36" height="3" fill="#222"/>
+      <circle cx="20" cy="20" r="5.5" fill="#fff" stroke="#222" strokeWidth="2.5"/>
+      <circle cx="20" cy="20" r="2.5" fill="#ddd"/>
+    </svg>
+  );
+}
+
 function RankAvatar({ rank, profilePokemon }) {
   const medal = rank <= 3 ? MEDAL[rank - 1] : null;
   const sprSrc = profilePokemon
@@ -30,7 +42,7 @@ function RankAvatar({ rank, profilePokemon }) {
       <div className={`rank-avatar-circle rank${rank <= 3 ? rank : ''}`}>
         {sprSrc
           ? <img src={sprSrc} className="rank-avatar-spr" alt="" />
-          : <span className="rank-avatar-fallback">?</span>}
+          : <Pokeball />}
       </div>
       {medal
         ? <span className="rank-avatar-medal">{medal}</span>

@@ -65,11 +65,12 @@ async function saveDailyToSupabase(user, { tries, solved, usedFilter }) {
       || user.email?.split('@')[0]
       || '트레이너';
     const equippedTitle = user.user_metadata?.equipped_title ?? null;
+    const profilePokemon = user.user_metadata?.profile_pokemon ?? null;
 
     const { error } = await supabase
       .from('daily_results')
       .upsert(
-        { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname, equipped_title: equippedTitle },
+        { user_id: user.id, date: today, tries, solved, used_filter: usedFilter, nickname, equipped_title: equippedTitle, profile_pokemon: profilePokemon },
         { onConflict: 'user_id,date' }
       );
     if (error) console.error('daily_results upsert error', error);
