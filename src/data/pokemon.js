@@ -694,6 +694,7 @@ const DB = [
   {id:'27-alola',  ko:'모래두지',en:'Sandshrew',baseId:27, form:'alola',gen:1,t1:'얼음', t2:'강철', evo:1,len:4,enLen:9},
   {id:'28-alola',  ko:'고지',   en:'Sandslash',baseId:28,  form:'alola',gen:1,t1:'얼음', t2:'강철', evo:2,len:2,enLen:9},
   {id:'37-alola',  ko:'식스테일',en:'Vulpix',  baseId:37, form:'alola',gen:1,t1:'얼음', t2:'없음', evo:1,len:4,enLen:6},
+  {id:'38-alola',  ko:'나인테일',en:'Ninetales',baseId:38, form:'alola',gen:1,t1:'얼음', t2:'페어리',evo:2,len:4,enLen:9},
   {id:'50-alola',  ko:'디그다', en:'Diglett',  baseId:50,  form:'alola',gen:1,t1:'땅',   t2:'강철', evo:1,len:3,enLen:7},
   {id:'51-alola',  ko:'닥트리오',en:'Dugtrio', baseId:51, form:'alola',gen:1,t1:'땅',   t2:'강철', evo:2,len:4,enLen:7},
   {id:'52-alola',  ko:'나옹',   en:'Meowth',   baseId:52,  form:'alola',gen:1,t1:'악',   t2:'없음', evo:1,len:2,enLen:6},
