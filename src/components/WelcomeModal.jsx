@@ -49,8 +49,8 @@ export function WelcomeModal({ onClose, onNeverShow, lang }) {
 
           <p>
             {isEn
-              ? '💡 Stuck? Use [Filter] to narrow down the list based on your clues — but the shiny rate drops from 5% → 1%.'
-              : '💡 막막하다면 [필터 열람]으로 후보를 좁혀보세요. 단, 이로치 확률이 5% → 1%로 줄어듭니다.'}
+              ? '💡 Stuck? Use [Filter] to narrow down the list based on your clues — but the shiny rate drops from 10% → 1%.'
+              : '💡 막막하다면 [필터 열람]으로 후보를 좁혀보세요. 단, 이로치 확률이 10% → 1%로 줄어듭니다.'}
           </p>
           <p>
             {isEn

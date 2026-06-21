@@ -17,7 +17,7 @@ function InfoSection({ lang = 'ko', usedFilter }) {
         <div className="panel info-card">
           <div className="info-icon">🗂️✨</div>
           <div className="info-title px">{isEn ? 'Filter & Shiny' : '필터 & 이로치'}</div>
-          <div className="info-desc">{isEn ? <>Filter shows possible Pokémon based on your clues.<br />But using it drops the shiny rate from 5% → 1%.<br />Try without filter!</> : <>필터는 단서를 토대로 해당하는 포켓몬 명단을 알려줍니다.<br />하지만 열람 시 이로치 확률이 5% → 1%로 떨어집니다.<br />필터 미사용으로 도전해보세요!</>}</div>
+          <div className="info-desc">{isEn ? <>Filter shows possible Pokémon based on your clues.<br />But using it drops the shiny rate from 10% → 1%.<br />Try without filter!</> : <>필터는 단서를 토대로 해당하는 포켓몬 명단을 알려줍니다.<br />하지만 열람 시 이로치 확률이 10% → 1%로 떨어집니다.<br />필터 미사용으로 도전해보세요!</>}</div>
         </div>
         <div className="panel info-card">
           <div className="info-icon">∞</div>
@@ -29,7 +29,7 @@ function InfoSection({ lang = 'ko', usedFilter }) {
         <div className="shiny-info-title px">✦ {isEn ? 'Shiny Challenge System' : '이로치 챌린지 시스템'}</div>
         <div className="shiny-info-rows">
           <span className="shiny-info-row">
-            <span className="shiny-pct" style={{ background: usedFilter ? 'var(--miss)' : 'var(--correct)' }}>5%</span>
+            <span className="shiny-pct" style={{ background: usedFilter ? 'var(--miss)' : 'var(--correct)' }}>10%</span>
             <span>{isEn ? 'Clear without using filter' : '필터 미사용 클리어'}</span>
           </span>
           <span className="shiny-info-row">
@@ -51,7 +51,7 @@ export function GamePage({
 }) {
   const isEn = lang === 'en';
   const acRef = useRef(null);
-  const shinyPct = usedFilter ? '1%' : '5%';
+  const shinyPct = usedFilter ? '1%' : '10%';
 
   /* ── 클리어(win) 화면 ── */
   if (gameOver && result?.win) {
