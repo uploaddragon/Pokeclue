@@ -40,6 +40,10 @@ export function useBattle(user) {
   useEffect(() => { roomCodeRef.current = roomCode; }, [roomCode]);
 
   useEffect(() => () => {
+    const code = roomCodeRef.current;
+    if (code) {
+      bc.from('battle_rooms').delete().eq('id', code).eq('status', 'waiting');
+    }
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
     clearInterval(pollRef.current);
@@ -108,7 +112,13 @@ export function useBattle(user) {
 
   function startTimeout() {
     clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setPhase('timeout'), 60000);
+    timeoutRef.current = setTimeout(async () => {
+      const code = roomCodeRef.current;
+      if (code) {
+        await bc.from('battle_rooms').delete().eq('id', code).eq('status', 'waiting');
+      }
+      setPhase('timeout');
+    }, 60000);
   }
 
   async function createRoom(me) {
@@ -291,9 +301,14 @@ export function useBattle(user) {
     if (e) console.error('[Battle] giveUp error', e);
   }, [roomCode, mySlot]);
 
-  function reset() {
+  async function reset() {
+    const code = roomCodeRef.current;
+    if (code) {
+      await bc.from('battle_rooms').delete().eq('id', code).eq('status', 'waiting');
+    }
     if (channelRef.current) bc.removeChannel(channelRef.current);
     clearTimeout(timeoutRef.current);
+    clearInterval(pollRef.current);
     channelRef.current = null;
     setPhase('select'); setRoomCode(''); setRoom(null); setMySlot(null);
     setAnswer(null); setError('');
