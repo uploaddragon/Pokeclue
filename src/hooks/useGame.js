@@ -90,6 +90,28 @@ export function useGame(unlockDex, user, authLoading) {
   const [state, setState] = useState(initState);
   const { answer, guesses, gameOver, usedFilter, result } = state;
   const [filterOpen, setFilterOpen] = useState(false);
+  const syncedRef = useRef(false);
+
+  // 로그인 유저: 서버에 이미 오늘 클리어 기록이 있으면 클리어 상태로 전환
+  useEffect(() => {
+    if (syncedRef.current || authLoading || !user) return;
+    syncedRef.current = true;
+    (async () => {
+      const { data } = await supabase
+        .from('daily_results')
+        .select('tries, used_filter')
+        .eq('user_id', user.id)
+        .eq('date', getTodayStr())
+        .eq('solved', true)
+        .maybeSingle();
+      if (data) {
+        setState(prev => {
+          if (prev.gameOver) return prev;
+          return { ...prev, gameOver: true, result: { win: true, synced: true } };
+        });
+      }
+    })();
+  }, [user?.id, authLoading]);
 
   // localStorage 동기화
   useEffect(() => {
