@@ -40,25 +40,13 @@ function BattleTitleBadge({ titleId }) {
 const TURN_SEC = 30;
 
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-// 룸코드를 시드로 count개의 초성을 중복 없이 반환 (양쪽 플레이어 동일)
-function getChosungHints(ko, count, seed) {
+function getChosungHints(ko, count) {
   const all = [...ko].map(ch => {
     const code = ch.charCodeAt(0) - 0xAC00;
     return (code >= 0 && code <= 11171) ? CHOSUNG_LIST[Math.floor(code / (21 * 28))] : null;
   }).filter(Boolean);
   if (all.length === 0) return [];
-
-  // 시드 기반 셔플
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
-
-  const pool = [...all];
-  const result = [];
-  for (let i = 0; i < Math.min(count, pool.length); i++) {
-    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-    const idx = Math.abs(h) % pool.length;
-    result.push(pool.splice(idx, 1)[0]);
-  }
+  const result = all.slice(0, count);
   return result;
 }
 
@@ -77,11 +65,11 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
   const [timer, setTimer] = useState(TURN_SEC);
   const timerRef = useRef(null);
 
-  // 10, 15, 20, 25... 턴마다 초성 1개씩 추가 공개 (룸코드 시드 → 양측 동일, 매 렌더 계산해도 결과 동일)
+  // 10턴부터 3턴마다 초성 1개씩 추가 공개 (첫 글자부터 순서대로)
   const turns = b.sharedGuesses.length;
-  const hintCount = turns >= 10 ? Math.floor((turns - 10) / 5) + 1 : 0;
+  const hintCount = turns >= 10 ? Math.floor((turns - 10) / 3) + 1 : 0;
   const chosungHints = (b.answer && hintCount > 0)
-    ? getChosungHints(b.answer.ko, hintCount, b.roomCode)
+    ? getChosungHints(b.answer.ko, hintCount)
     : [];
   const battleWinFiredRef = useRef(false);
   const prevGuessLenRef = useRef(0);
