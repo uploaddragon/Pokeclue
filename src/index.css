@@ -578,16 +578,16 @@ tr:last-child td{border-bottom:none;}
 /* ── 챌린지 랭킹 버튼 ── */
 .challenge-rank-btn-wrap{text-align:center;padding-bottom:32px;}
 .challenge-rank-btn{
-  font-family:'Press Start 2P',monospace;font-size:10px;
-  padding:12px 24px;border:3px solid #222;background:var(--gold);color:#222;
+  font-family:'Galmuri11','Press Start 2P',monospace;font-size:14px;font-weight:700;
+  padding:14px 28px;border:3px solid #222;border-radius:10px;background:var(--gold);color:#222;
   cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform .1s,box-shadow .1s;
 }
 .challenge-rank-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
 
 /* ── 챌린지 랭킹 모달 탭 ── */
-.challenge-rank-tabs{display:flex;gap:0;margin-bottom:12px;border:2px solid #222;overflow:hidden;}
+.challenge-rank-tabs{display:flex;gap:0;margin-bottom:14px;border:2px solid #222;border-radius:8px;overflow:hidden;}
 .challenge-rank-tab{
-  flex:1;padding:12px 0;font-family:'Press Start 2P',monospace;font-size:10px;
+  flex:1;padding:12px 0;font-family:'Galmuri11','Press Start 2P',monospace;font-size:13px;
   border:none;background:#f5f0e8;color:var(--muted);cursor:pointer;
   transition:background .15s,color .15s;
 }
@@ -595,7 +595,7 @@ tr:last-child td{border-bottom:none;}
 .challenge-rank-tab:not(:last-child){border-right:2px solid #222;}
 .challenge-rank-myrank{
   text-align:center;padding:12px 0 4px;
-  font-family:'Press Start 2P',monospace;font-size:11px;color:var(--gold);
+  font-family:'Galmuri11','Press Start 2P',monospace;font-size:14px;font-weight:700;color:var(--gold);
 }
 .endless-card{
   background:var(--panel);
@@ -732,15 +732,15 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .profile-save-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:4px 4px 0 #000;}
 
 /* ── Ranking Modal ── */
-.ranking-modal{background:var(--bg);border:4px solid #222;box-shadow:8px 8px 0 #000;padding:32px 28px;max-width:540px;width:94%;position:relative;text-align:center;}
-.ranking-title{font-family:'Press Start 2P',monospace;font-size:14px;margin-bottom:20px;color:#1a1a1a;}
+.ranking-modal{background:var(--bg);border:4px solid #222;border-radius:16px;box-shadow:8px 8px 0 #000;padding:32px 28px;max-width:540px;width:94%;position:relative;text-align:center;}
+.ranking-title{font-family:'Galmuri11','Press Start 2P',monospace;font-size:18px;font-weight:700;margin-bottom:20px;color:#1a1a1a;}
 .ranking-stats{display:flex;justify-content:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
 .ranking-stat-box{background:white;border:3px solid #222;box-shadow:3px 3px 0 #000;padding:10px 16px;min-width:76px;}
 .ranking-stat-box.highlight{border-color:var(--yellow);background:#fff9e6;}
 .ranking-stat-val{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--red);margin-bottom:6px;}
 .ranking-stat-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);}
-.ranking-list{max-height:360px;overflow-y:auto;border:2px solid #ddd;background:white;}
-.ranking-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #eee;font-family:'Press Start 2P',monospace;font-size:10px;}
+.ranking-list{max-height:360px;overflow-y:auto;border:2px solid #ddd;border-radius:10px;background:white;}
+.ranking-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #eee;font-family:'Galmuri11','Press Start 2P',monospace;font-size:13px;}
 .ranking-row:last-child{border-bottom:none;}
 .ranking-row.me{background:#fff9e6;border-left:4px solid var(--yellow);}
 
@@ -767,9 +767,9 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .ranking-info{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0;}
 .ranking-nickname{display:flex;align-items:center;gap:6px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ranking-tries-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
-.ranking-tries{color:#555;white-space:nowrap;font-size:11px;}
-.ranking-no-filter{color:var(--yellow);font-size:6px;white-space:nowrap;-webkit-text-stroke:0.3px #a07000;}
-.ranking-me-badge{background:var(--yellow);color:#222;border:2px solid #222;padding:2px 6px;font-size:6px;flex-shrink:0;white-space:nowrap;}
+.ranking-tries{color:#555;white-space:nowrap;font-size:13px;}
+.ranking-no-filter{color:var(--yellow);font-size:10px;white-space:nowrap;-webkit-text-stroke:0.3px #a07000;}
+.ranking-me-badge{background:var(--yellow);color:#222;border:2px solid #222;border-radius:4px;padding:2px 6px;font-size:9px;flex-shrink:0;white-space:nowrap;}
 .ranking-empty{padding:28px;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);line-height:2.4;}
 .ranking-btn{background:#1a1a1a;}
 
