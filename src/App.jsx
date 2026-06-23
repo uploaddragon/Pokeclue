@@ -146,7 +146,7 @@ export default function App() {
         />
       )}
       {page === 'game' && gameTab === 'endless' && (
-        <EndlessPage unlockDex={unlockDex} lang={lang}
+        <EndlessPage unlockDex={unlockDex} lang={lang} user={user}
           onGuess={(guess, answer) =>
             checkNearMiss(guess, answer).then(earned => {
               if (earned.length > 0) pushToast(earned);

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import DB from '../data/pokemon.js';
 import { getTodayStr } from '../utils/game.js';
+import { supabase } from '../lib/supabase.js';
 
 const CHALLENGE_MAX_TRIES = 8;
 const CHALLENGE_DAILY_LIMIT = 3;
@@ -122,6 +123,16 @@ function initChallengeState() {
   return { answer: pickRandom(), guesses: [], gameOver: false, result: null };
 }
 
+async function saveChallengeClear(pokemonId, tries) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+  await supabase.from('challenge_clears').insert({
+    user_id: session.user.id,
+    pokemon_id: String(pokemonId),
+    tries,
+  });
+}
+
 export function useEndlessChallenge(unlockDex) {
   const [daily, setDaily]   = useState(loadChallengeDaily);
   const [state, setState]   = useState(initChallengeState);
@@ -154,6 +165,7 @@ export function useEndlessChallenge(unlockDex) {
       if (isCorrect) {
         const isShiny = Math.random() < 0.01;
         unlockDex(prev.answer, isShiny, next.length);
+        saveChallengeClear(prev.answer.id, next.length);
         return { ...prev, guesses: next, gameOver: true, result: { win: true, isShiny } };
       }
       if (outOfTries) {

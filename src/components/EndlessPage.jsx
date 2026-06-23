@@ -3,11 +3,13 @@ import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { FilterModal } from './FilterModal.jsx';
 import { ResultBanner } from './ResultBanner.jsx';
+import { ChallengeRankingModal } from './ChallengeRankingModal.jsx';
 import { useEndlessNormal, useEndlessChallenge } from '../hooks/useEndless.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 
-function ModeSelect({ onSelect, lang }) {
+function ModeSelect({ onSelect, lang, user }) {
   const isEn = lang === 'en';
+  const [rankOpen, setRankOpen] = useState(false);
   return (
     <main>
       <div className="endless-hero">
@@ -41,6 +43,12 @@ function ModeSelect({ onSelect, lang }) {
           <div className="endless-card-cta challenge">{isEn ? 'Play Challenge ▶' : '챌린지 시작 ▶'}</div>
         </div>
       </div>
+      <div className="challenge-rank-btn-wrap">
+        <button className="challenge-rank-btn" onClick={() => setRankOpen(true)}>
+          🏆 {isEn ? 'Challenge Ranking' : '챌린지 랭킹'}
+        </button>
+      </div>
+      {rankOpen && <ChallengeRankingModal onClose={() => setRankOpen(false)} user={user} lang={lang} />}
     </main>
   );
 }
@@ -254,10 +262,10 @@ function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess })
   );
 }
 
-export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess }) {
+export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess, user }) {
   const [mode, setMode] = useState('select');
 
-  if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} />;
+  if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} user={user} />;
   if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
   if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
 }
