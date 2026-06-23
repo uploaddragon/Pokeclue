@@ -174,9 +174,11 @@ export default function App() {
               if (earned.length > 0) pushToast(earned);
             })
           }
-          onBattleWin={({ totalTurns, myTries, isFirstMover, answer }) => {
-            const isShiny = Math.random() < 0.01;
-            unlockDex(answer, isShiny, myTries);
+          onBattleWin={({ totalTurns, myTries, isFirstMover, answer, wonBySolving }) => {
+            if (wonBySolving && totalTurns > 3) {
+              const isShiny = Math.random() < 0.01;
+              unlockDex(answer, isShiny, myTries);
+            }
             Promise.all([
               checkBattleTitles({ totalTurns }),
               isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),

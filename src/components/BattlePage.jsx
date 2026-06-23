@@ -91,7 +91,9 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
       const myTries = b.sharedGuesses.filter((_, i) =>
         b.mySlot === 'p1' ? i % 2 === 0 : i % 2 === 1
       ).length;
-      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer });
+      const mySolvedKey = b.mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
+      const wonBySolving = !!b.room?.[mySolvedKey];
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer, wonBySolving });
     }
     if (b.phase !== 'finished') {
       battleWinFiredRef.current = false;
