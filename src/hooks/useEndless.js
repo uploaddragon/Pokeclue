@@ -125,12 +125,18 @@ function initChallengeState() {
 
 async function saveChallengeClear(pokemonId, tries) {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return;
-  await supabase.from('challenge_clears').insert({
-    user_id: session.user.id,
+  if (!session) { console.warn('[Challenge] no session, skip save'); return; }
+  const u = session.user;
+  const nickname = u.user_metadata?.pokeclue_nickname || u.user_metadata?.full_name || u.email?.split('@')[0] || '트레이너';
+  const { error } = await supabase.from('challenge_clears').insert({
+    user_id: u.id,
     pokemon_id: String(pokemonId),
     tries,
+    nickname,
+    equipped_title: u.user_metadata?.equipped_title ?? null,
+    profile_pokemon: u.user_metadata?.profile_pokemon ?? null,
   });
+  if (error) console.error('[Challenge] save error', error);
 }
 
 export function useEndlessChallenge(unlockDex) {
