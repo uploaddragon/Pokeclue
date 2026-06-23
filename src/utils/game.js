@@ -232,6 +232,10 @@ export function computeFilter(answer, guesses, lang = 'ko') {
   const genNot = new Set(), t1Not = new Set(), t2Not = new Set();
   let evoMin = minEvoGlobal, evoMax = maxEvo, lenMin = minLenGlobal, lenMax = maxLen;
   let lenOk = null;
+  let formOk = null;
+  const formNot = new Set();
+
+  const aForm = answer.form ?? 'base';
 
   guesses.forEach(g => {
     if (g.gen === answer.gen) genOk = g.gen;
@@ -250,6 +254,14 @@ export function computeFilter(answer, guesses, lang = 'ko') {
     if (g[lf] === answer[lf]) lenOk = g[lf];
     else if (g[lf] < answer[lf]) lenMin = Math.max(lenMin, g[lf] + 1);
     else lenMax = Math.min(lenMax, g[lf] - 1);
+
+    const gForm = g.form ?? 'base';
+    const result = compareForm(g, answer);
+    if (result === 'cc') formOk = aForm;
+    else {
+      const gGroup = REGIONAL.has(gForm) ? 'regional' : gForm;
+      formNot.add(gGroup);
+    }
   });
 
   const isEn = lang === 'en';
@@ -270,6 +282,20 @@ export function computeFilter(answer, guesses, lang = 'ko') {
   if (lenOk) conds.push({ cls: 'ok', text: isEn ? `Length = ${lenOk}` : `글자수 = ${lenOk}자` });
   else if (lenMin > minLenGlobal || lenMax < maxLen) conds.push({ cls: 'rng', text: isEn ? `Length ${lenMin}~${lenMax}` : `글자수 ${lenMin}~${lenMax}자` });
 
+  const formGroupLabel = (f) => {
+    if (f === 'base') return isEn ? 'Base' : '기본';
+    if (f === 'mega') return isEn ? 'Mega' : '메가진화';
+    if (f === 'gmax') return isEn ? 'G-Max' : '거다이맥스';
+    if (f === 'regional') return isEn ? 'Regional' : '리전폼';
+    return formLabel(f, lang);
+  };
+  if (formOk) {
+    const grp = REGIONAL.has(aForm) ? 'regional' : aForm;
+    conds.push({ cls: 'ok', text: isEn ? `Form = ${formGroupLabel(grp)}` : `폼 = ${formGroupLabel(grp)}` });
+  } else if (formNot.size) {
+    conds.push({ cls: 'no', text: isEn ? `Form ≠ ${[...formNot].map(formGroupLabel).join(',')}` : `폼 ≠ ${[...formNot].map(formGroupLabel).join(',')}` });
+  }
+
   const filtered = DB.filter(p => {
     if (guesses.find(g => g.id === p.id)) return false;
     if (genOk && p.gen !== genOk) return false;
@@ -282,6 +308,14 @@ export function computeFilter(answer, guesses, lang = 'ko') {
     else { if (p.evo < evoMin || p.evo > evoMax) return false; }
     if (lenOk) { if (p[lf] !== lenOk) return false; }
     else { if (p[lf] < lenMin || p[lf] > lenMax) return false; }
+    const pForm = p.form ?? 'base';
+    const pGroup = REGIONAL.has(pForm) ? 'regional' : pForm;
+    if (formOk) {
+      const aGroup = REGIONAL.has(aForm) ? 'regional' : aForm;
+      if (pGroup !== aGroup) return false;
+    } else if (formNot.size) {
+      if (formNot.has(pGroup)) return false;
+    }
     return true;
   });
 
