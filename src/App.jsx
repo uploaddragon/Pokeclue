@@ -182,7 +182,7 @@ export default function App() {
             const validWin = wonBySolving || totalTurns > 3;
             Promise.all([
               validWin ? checkBattleTitles({ totalTurns }) : Promise.resolve([]),
-              validWin && isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
+              validWin && wonBySolving && totalTurns === 1 ? checkOnehit({ tries: 1 }) : Promise.resolve([]),
             ]).then(([e1, e2]) => {
               const earned = [...e1, ...e2];
               if (earned.length > 0) pushToast(earned);
