@@ -179,9 +179,10 @@ export default function App() {
               const isShiny = Math.random() < 0.01;
               unlockDex(answer, isShiny, myTries);
             }
+            const validWin = wonBySolving || totalTurns > 3;
             Promise.all([
-              wonBySolving ? checkBattleTitles({ totalTurns }) : Promise.resolve([]),
-              wonBySolving && isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
+              validWin ? checkBattleTitles({ totalTurns }) : Promise.resolve([]),
+              validWin && isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
             ]).then(([e1, e2]) => {
               const earned = [...e1, ...e2];
               if (earned.length > 0) pushToast(earned);
