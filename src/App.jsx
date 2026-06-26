@@ -175,7 +175,7 @@ export default function App() {
             })
           }
           onBattleWin={({ totalTurns, myTries, isFirstMover, answer, wonBySolving }) => {
-            if (wonBySolving) {
+            if (wonBySolving || totalTurns > 3) {
               const isShiny = Math.random() < 0.01;
               unlockDex(answer, isShiny, myTries);
             }
