@@ -180,8 +180,8 @@ export default function App() {
               unlockDex(answer, isShiny, myTries);
             }
             Promise.all([
-              checkBattleTitles({ totalTurns }),
-              isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
+              wonBySolving ? checkBattleTitles({ totalTurns }) : Promise.resolve([]),
+              wonBySolving && isFirstMover ? checkOnehit({ tries: myTries }) : Promise.resolve([]),
             ]).then(([e1, e2]) => {
               const earned = [...e1, ...e2];
               if (earned.length > 0) pushToast(earned);
