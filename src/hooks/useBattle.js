@@ -2,6 +2,30 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import DB from '../data/pokemon.js';
 import { supabase as bc } from '../lib/supabase.js';
 
+async function recordBattleResult(userId, won) {
+  if (!userId) return;
+  const { data } = await bc.from('battle_stats').select('wins, losses').eq('user_id', userId).maybeSingle();
+  if (data) {
+    await bc.from('battle_stats').update({
+      wins: data.wins + (won ? 1 : 0),
+      losses: data.losses + (won ? 0 : 1),
+      updated_at: new Date().toISOString(),
+    }).eq('user_id', userId);
+  } else {
+    await bc.from('battle_stats').insert({
+      user_id: userId,
+      wins: won ? 1 : 0,
+      losses: won ? 0 : 1,
+    });
+  }
+}
+
+async function fetchBattleStats(userId) {
+  if (!userId) return { wins: 0, losses: 0 };
+  const { data } = await bc.from('battle_stats').select('wins, losses').eq('user_id', userId).maybeSingle();
+  return data || { wins: 0, losses: 0 };
+}
+
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
@@ -27,6 +51,9 @@ export function useBattle(user) {
   const [room, setRoom] = useState(null);
   const [mySlot, setMySlot] = useState(null); // 'p1'|'p2'
   const [answer, setAnswer] = useState(null);
+  const [myStats, setMyStats] = useState({ wins: 0, losses: 0 });
+  const [opStats, setOpStats] = useState({ wins: 0, losses: 0 });
+  const battleRecordedRef = useRef(false);
   const [error, setError] = useState('');
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -39,6 +66,11 @@ export function useBattle(user) {
   useEffect(() => { mySlotRef.current = mySlot; }, [mySlot]);
   useEffect(() => { roomCodeRef.current = roomCode; }, [roomCode]);
 
+  // 내 전적 로드
+  useEffect(() => {
+    if (user?.id) fetchBattleStats(user.id).then(setMyStats);
+  }, [user?.id]);
+
   useEffect(() => () => {
     const code = roomCodeRef.current;
     if (code) {
@@ -48,6 +80,24 @@ export function useBattle(user) {
     clearTimeout(timeoutRef.current);
     clearInterval(pollRef.current);
   }, []);
+
+  // 게임 종료 시 전적 기록
+  useEffect(() => {
+    if (phase !== 'finished' || !user?.id || !room?.winner || battleRecordedRef.current) return;
+    battleRecordedRef.current = true;
+    const won = room.winner === mySlot;
+    recordBattleResult(user.id, won).then(() => {
+      fetchBattleStats(user.id).then(setMyStats);
+    });
+  }, [phase, room?.winner]);
+
+  // 상대 전적 조회
+  useEffect(() => {
+    if (phase !== 'playing' || !room || !mySlot) return;
+    const opUid = mySlot === 'p1' ? room.p2_uid : room.p1_uid;
+    if (opUid) fetchBattleStats(opUid).then(setOpStats);
+    else setOpStats({ wins: 0, losses: 0 });
+  }, [phase, room?.p1_uid, room?.p2_uid, mySlot]);
 
   // Realtime 폴백: waiting/searching 상태에서 1초마다 DB 직접 확인
   useEffect(() => {
@@ -269,6 +319,7 @@ export function useBattle(user) {
     const myKey = mySlot === 'p1' ? 'p1_rematch' : 'p2_rematch';
 
     await bc.from('battle_rooms').update({ [myKey]: true }).eq('id', roomCode);
+    battleRecordedRef.current = false;
     setPhase('rematch_wait');
 
     const { data } = await bc.from('battle_rooms')
@@ -310,8 +361,9 @@ export function useBattle(user) {
     clearTimeout(timeoutRef.current);
     clearInterval(pollRef.current);
     channelRef.current = null;
+    battleRecordedRef.current = false;
     setPhase('select'); setRoomCode(''); setRoom(null); setMySlot(null);
-    setAnswer(null); setError('');
+    setAnswer(null); setError(''); setOpStats({ wins: 0, losses: 0 });
   }
 
   const me = getIdentity(user);
@@ -333,6 +385,7 @@ export function useBattle(user) {
     phase, roomCode, room, mySlot, answer, error,
     myNick: me.nick, myTitle: me.title, myProfilePokemon: me.profilePokemon,
     opNick, opTitle, opTries, opProfilePokemon, iWon, winner: room?.winner,
+    myStats, opStats,
     isMyTurn, currentTurn, mySkips, sharedGuesses,
     createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, requestRematch, reset,
   };

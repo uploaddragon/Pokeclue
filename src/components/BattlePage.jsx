@@ -277,6 +277,7 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
             <BattleAvatar profilePokemon={b.myProfilePokemon} />
             <div className="battle-hud-nick">{b.myNick}</div>
             <BattleTitleBadge titleId={b.myTitle} />
+            <div className="battle-hud-record">{b.myStats.wins}{isEn ? 'W' : '승'} {b.myStats.losses}{isEn ? 'L' : '패'}</div>
             <div className="battle-hud-tries">{myTries}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
             {b.isMyTurn && <div className="battle-hud-arrow my">▶ {isEn ? 'Your turn' : '내 턴'}</div>}
           </div>
@@ -302,6 +303,7 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
             <BattleAvatar profilePokemon={b.opProfilePokemon} />
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
             <BattleTitleBadge titleId={b.opTitle} />
+            <div className="battle-hud-record">{b.opStats.wins}{isEn ? 'W' : '승'} {b.opStats.losses}{isEn ? 'L' : '패'}</div>
             <div className="battle-hud-tries">{b.opTries || 0}<span className="battle-hud-tries-unit">{isEn ? ' tries' : '번'}</span></div>
             {!b.isMyTurn && <div className="battle-hud-arrow op">◀ {isEn ? "Their turn" : '상대 턴'}</div>}
           </div>
