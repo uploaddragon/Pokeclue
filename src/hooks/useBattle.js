@@ -81,9 +81,13 @@ export function useBattle(user) {
     clearInterval(pollRef.current);
   }, []);
 
-  // 게임 종료 시 전적 기록
+  // 게임 종료 시 전적 기록 (3턴 이하 도주/끊김은 제외)
   useEffect(() => {
     if (phase !== 'finished' || !user?.id || !room?.winner || battleRecordedRef.current) return;
+    const totalTurns = (room.shared_guesses || []).length;
+    const mySolvedKey = mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
+    const wonBySolving = !!room[mySolvedKey];
+    if (!wonBySolving && totalTurns <= 3) return;
     battleRecordedRef.current = true;
     const won = room.winner === mySlot;
     recordBattleResult(user.id, won).then(() => {
