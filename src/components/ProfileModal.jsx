@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TITLES, TITLE_MAP, RARITY } from '../data/titles.js';
 import { spr, sprShiny } from '../utils/sprite.js';
+import { supabasePublic } from '../lib/supabase.js';
 import DB from '../data/pokemon.js';
 
 export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEquipTitle, dex = {}, onUpdateProfilePokemon }) {
@@ -19,6 +20,24 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
 
   const avatar = user.user_metadata?.avatar_url;
   const equippedTitle = user.user_metadata?.equipped_title ?? null;
+
+  // 통계 로드
+  const [stats, setStats] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const [dailyRes, challengeRes, battleRes] = await Promise.all([
+        supabasePublic.from('daily_results').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('solved', true),
+        supabasePublic.from('challenge_clears').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+        supabasePublic.from('battle_stats').select('wins, losses').eq('user_id', user.id).maybeSingle(),
+      ]);
+      setStats({
+        dailyClears: dailyRes.count ?? 0,
+        challengeClears: challengeRes.count ?? 0,
+        battleWins: battleRes.data?.wins ?? 0,
+        battleLosses: battleRes.data?.losses ?? 0,
+      });
+    })();
+  }, [user.id]);
 
   // 도감 등록된 포켓몬 목록
   const dexPokemon = Object.entries(dex).map(([id, entry]) => {
@@ -83,6 +102,32 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
         </div>
 
         <div className="profile-email">{user.email}</div>
+
+        {/* ── 통계 섹션 ── */}
+        <div className="profile-stats-section">
+          <div className="profile-stats-grid">
+            <div className="profile-stat-item">
+              <div className="profile-stat-val">{Object.keys(dex).length}</div>
+              <div className="profile-stat-label">{isEn ? 'Dex' : '도감'}</div>
+            </div>
+            <div className="profile-stat-item">
+              <div className="profile-stat-val">{stats?.dailyClears ?? '–'}</div>
+              <div className="profile-stat-label">{isEn ? 'Daily' : '데일리'}</div>
+            </div>
+            <div className="profile-stat-item">
+              <div className="profile-stat-val">{stats?.challengeClears ?? '–'}</div>
+              <div className="profile-stat-label">{isEn ? 'Challenge' : '챌린지'}</div>
+            </div>
+            <div className="profile-stat-item">
+              <div className="profile-stat-val">{stats ? `${stats.battleWins}${isEn ? 'W' : '승'} ${stats.battleLosses}${isEn ? 'L' : '패'}` : '–'}</div>
+              <div className="profile-stat-label">{isEn ? 'Battle' : '대전'}</div>
+            </div>
+          </div>
+          <div className="profile-stat-join">
+            {isEn ? 'Joined ' : '가입일 '}
+            {new Date(user.created_at).toLocaleDateString(isEn ? 'en-US' : 'ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </div>
+        </div>
 
         <div className="profile-field">
           <label className="profile-label">{isEn ? 'Nickname' : '닉네임'}</label>
