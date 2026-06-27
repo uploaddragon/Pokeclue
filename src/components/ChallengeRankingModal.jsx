@@ -45,9 +45,7 @@ function RankAvatar({ rank, profilePokemon }) {
   );
 }
 
-export function ChallengeRankingModal({ onClose, user, lang }) {
-  const isEn = lang === 'en';
-  const [tab, setTab] = useState('monthly');
+function useChallengeRanking(tab) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -98,70 +96,64 @@ export function ChallengeRankingModal({ onClose, user, lang }) {
     })();
   }, [tab]);
 
-  const myRow = user ? rows.find(r => r.userId === user.id) : null;
-  const myRank = myRow ? rows.indexOf(myRow) + 1 : null;
+  return { rows, loading };
+}
+
+function RankingRows({ rows, user, lang }) {
+  const isEn = lang === 'en';
+  if (rows.length === 0) return <div className="ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>;
+  return rows.map((r, i) => {
+    const isMe = user && r.userId === user.id;
+    return (
+      <div key={r.userId} className={`ranking-row${isMe ? ' me' : ''}`}>
+        <RankAvatar rank={i + 1} profilePokemon={r.profilePokemon} />
+        <div className="ranking-info">
+          <span className="ranking-nickname">
+            {r.nickname}
+            {isMe && <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>}
+          </span>
+          {r.equippedTitle && TITLE_MAP[r.equippedTitle] && (
+            <TitleBadge titleId={r.equippedTitle} />
+          )}
+        </div>
+        <span className="ranking-tries-wrap">
+          <span className="ranking-tries">{r.clears}{isEn ? ' clears' : '회 클리어'}</span>
+          <span className="ranking-no-filter">{isEn ? `avg ${r.avgTries}` : `평균 ${r.avgTries}번`}</span>
+        </span>
+      </div>
+    );
+  });
+}
+
+export function ChallengeRankingPanel({ user, lang }) {
+  const isEn = lang === 'en';
+  const [tab, setTab] = useState('monthly');
+  const { rows, loading } = useChallengeRanking(tab);
 
   const now = new Date();
   const monthLabel = isEn
-    ? `${now.toLocaleString('en', { month: 'long' })} ${now.getFullYear()}`
+    ? `${now.toLocaleString('en', { month: 'short' })} ${now.getFullYear()}`
     : `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
 
   return (
-    <div className="auth-modal-bg" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="ranking-modal">
-        <button className="auth-modal-close" onClick={onClose}>✕</button>
-        <div className="ranking-title">★ {isEn ? 'Challenge Ranking' : '챌린지 랭킹'}</div>
+    <div className="challenge-rank-panel">
+      <div className="challenge-rank-panel-title">★ {isEn ? 'Challenge Ranking' : '챌린지 랭킹'}</div>
 
-        <div className="challenge-rank-tabs">
-          <button
-            className={`challenge-rank-tab${tab === 'monthly' ? ' on' : ''}`}
-            onClick={() => setTab('monthly')}
-          >
-            {isEn ? 'Monthly' : '월간'} ({monthLabel})
-          </button>
-          <button
-            className={`challenge-rank-tab${tab === 'all' ? ' on' : ''}`}
-            onClick={() => setTab('all')}
-          >
-            {isEn ? 'All Time' : '전체'}
-          </button>
-        </div>
+      <div className="challenge-rank-tabs">
+        <button className={`challenge-rank-tab${tab === 'monthly' ? ' on' : ''}`} onClick={() => setTab('monthly')}>
+          {isEn ? 'Monthly' : '월간'}
+        </button>
+        <button className={`challenge-rank-tab${tab === 'all' ? ' on' : ''}`} onClick={() => setTab('all')}>
+          {isEn ? 'All Time' : '전체'}
+        </button>
+      </div>
 
-        <div className="ranking-list">
-          {loading ? (
-            <div className="ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
-          ) : rows.length === 0 ? (
-            <div className="ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>
-          ) : (
-            rows.map((r, i) => {
-              const isMe = user && r.userId === user.id;
-              return (
-                <div key={r.userId} className={`ranking-row${isMe ? ' me' : ''}`}>
-                  <RankAvatar rank={i + 1} profilePokemon={r.profilePokemon} />
-                  <div className="ranking-info">
-                    <span className="ranking-nickname">
-                      {r.nickname}
-                      {isMe && <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>}
-                    </span>
-                    {r.equippedTitle && TITLE_MAP[r.equippedTitle] && (
-                      <TitleBadge titleId={r.equippedTitle} />
-                    )}
-                  </div>
-                  <span className="ranking-tries-wrap">
-                    <span className="ranking-tries">{r.clears}{isEn ? ' clears' : '회 클리어'}</span>
-                    <span className="ranking-no-filter">{isEn ? `avg ${r.avgTries}` : `평균 ${r.avgTries}번`}</span>
-                  </span>
-                </div>
-              );
-            })
-          )}
-        </div>
+      <div className="challenge-rank-panel-sub">{tab === 'monthly' ? monthLabel : (isEn ? 'All Time' : '전체 기간')}</div>
 
-        {myRank && (
-          <div className="challenge-rank-myrank">
-            {isEn ? 'My rank: ' : '내 순위: '}#{myRank}
-          </div>
-        )}
+      <div className="challenge-rank-list">
+        {loading
+          ? <div className="ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
+          : <RankingRows rows={rows} user={user} lang={lang} />}
       </div>
     </div>
   );

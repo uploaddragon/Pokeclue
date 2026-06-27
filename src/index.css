@@ -573,16 +573,31 @@ tr:last-child td{border-bottom:none;}
 .endless-hero-badge{font-family:'Press Start 2P',monospace;font-size:52px;color:var(--red);line-height:1;}
 
 /* ── Endless Mode Select ── */
-.endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 20px;}
+.endless-layout{display:flex;gap:24px;justify-content:center;align-items:flex-start;padding:0 16px 32px;flex-wrap:wrap;}
+.endless-left{flex:1;min-width:300px;max-width:560px;}
+.endless-right{flex:0 0 320px;min-width:280px;}
+.endless-select{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:8px 0 0;}
 
-/* ── 챌린지 랭킹 버튼 ── */
-.challenge-rank-btn-wrap{text-align:center;padding-bottom:32px;}
-.challenge-rank-btn{
-  font-family:'Galmuri11','Press Start 2P',monospace;font-size:14px;font-weight:700;
-  padding:14px 28px;border:3px solid #222;border-radius:10px;background:var(--gold);color:#222;
-  cursor:pointer;box-shadow:4px 4px 0 #000;transition:transform .1s,box-shadow .1s;
+/* ── 챌린지 랭킹 패널 (인라인) ── */
+.challenge-rank-panel{
+  background:var(--panel);border:3px solid #222;border-radius:14px;
+  box-shadow:var(--shadow-sm);padding:20px 16px;
 }
-.challenge-rank-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000;}
+.challenge-rank-panel-title{
+  font-family:'Galmuri11',monospace;font-size:16px;font-weight:700;
+  color:#1a1a1a;margin-bottom:12px;
+}
+.challenge-rank-panel-sub{
+  font-family:'Galmuri11',monospace;font-size:11px;color:var(--muted);
+  margin-bottom:8px;text-align:center;
+}
+.challenge-rank-list{
+  max-height:400px;overflow-y:auto;
+  border:2px solid #ddd;border-radius:10px;background:white;
+}
+.challenge-rank-list .ranking-row{font-size:11px;padding:10px 12px;}
+.challenge-rank-list .ranking-tries{font-size:11px;}
+.challenge-rank-list .ranking-no-filter{font-size:9px;}
 
 /* ── 챌린지 랭킹 모달 탭 ── */
 .challenge-rank-tabs{display:flex;gap:0;margin-bottom:14px;border:2px solid #222;border-radius:8px;overflow:hidden;}
@@ -1319,6 +1334,9 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   main{padding:16px 12px 40px;}
   .how{grid-template-columns:1fr;}
   .footer-inner{grid-template-columns:1fr 1fr;gap:16px;}
+  .endless-layout{flex-direction:column;align-items:center;}
+  .endless-left{max-width:100%;min-width:0;}
+  .endless-right{flex:unset;width:100%;max-width:92%;}
   .endless-select{flex-direction:column;align-items:center;}
   .endless-card{max-width:92%;width:100%;}
   .endless-game-header{margin-bottom:4px;}

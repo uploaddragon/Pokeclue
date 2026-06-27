@@ -3,13 +3,12 @@ import { Autocomplete } from './Autocomplete.jsx';
 import { GuessTable } from './GuessTable.jsx';
 import { FilterModal } from './FilterModal.jsx';
 import { ResultBanner } from './ResultBanner.jsx';
-import { ChallengeRankingModal } from './ChallengeRankingModal.jsx';
+import { ChallengeRankingPanel } from './ChallengeRankingModal.jsx';
 import { useEndlessNormal, useEndlessChallenge } from '../hooks/useEndless.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 
 function ModeSelect({ onSelect, lang, user }) {
   const isEn = lang === 'en';
-  const [rankOpen, setRankOpen] = useState(false);
   return (
     <main>
       <div className="endless-hero">
@@ -17,38 +16,39 @@ function ModeSelect({ onSelect, lang, user }) {
         <div className="hero-t">{isEn ? 'Endless Mode' : '엔드리스 모드'}</div>
         <div className="hero-s">{isEn ? 'Choose your mode and keep playing!' : '데일리 이후에도 계속 포켓몬을 추리하세요!'}</div>
       </div>
-      <div className="endless-select">
-        <div className="endless-card" onClick={() => onSelect('normal')}>
-          <div className="endless-card-icon">∞</div>
-          <div className="endless-card-title">{isEn ? 'Normal' : '일반'}</div>
-          <div className="endless-card-sub">{isEn ? 'Relaxed play, no limits' : '부담 없이 즐기는 무한 플레이'}</div>
-          <ul className="endless-card-desc">
-            <li>{isEn ? 'Unlimited tries per round' : '라운드당 무한 시도'}</li>
-            <li>{isEn ? 'Filter allowed' : '필터 허용'}</li>
-            <li>{isEn ? 'Play as many rounds as you want' : '원하는 만큼 계속 플레이'}</li>
-            <li className="endless-card-note">{isEn ? 'No Dex registration' : '도감 등록 없음'}</li>
-          </ul>
-          <div className="endless-card-cta">{isEn ? 'Play Normal ▶' : '일반 시작 ▶'}</div>
+      <div className="endless-layout">
+        <div className="endless-left">
+          <div className="endless-select">
+            <div className="endless-card" onClick={() => onSelect('normal')}>
+              <div className="endless-card-icon">∞</div>
+              <div className="endless-card-title">{isEn ? 'Normal' : '일반'}</div>
+              <div className="endless-card-sub">{isEn ? 'Relaxed play, no limits' : '부담 없이 즐기는 무한 플레이'}</div>
+              <ul className="endless-card-desc">
+                <li>{isEn ? 'Unlimited tries per round' : '라운드당 무한 시도'}</li>
+                <li>{isEn ? 'Filter allowed' : '필터 허용'}</li>
+                <li>{isEn ? 'Play as many rounds as you want' : '원하는 만큼 계속 플레이'}</li>
+                <li className="endless-card-note">{isEn ? 'No Dex registration' : '도감 등록 없음'}</li>
+              </ul>
+              <div className="endless-card-cta">{isEn ? 'Play Normal ▶' : '일반 시작 ▶'}</div>
+            </div>
+            <div className="endless-card challenge" onClick={() => onSelect('challenge')}>
+              <div className="endless-card-icon">★</div>
+              <div className="endless-card-title">{isEn ? 'Challenge' : '챌린지'}</div>
+              <div className="endless-card-sub">{isEn ? 'Test your skills, earn rewards' : '실력을 시험하고 도감을 채우세요'}</div>
+              <ul className="endless-card-desc">
+                <li>{isEn ? '8 tries to guess correctly' : '8번 이내에 정답 맞히기'}</li>
+                <li>{isEn ? 'No filter — pure instinct!' : '필터 불가 — 직감으로 승부!'}</li>
+                <li>{isEn ? 'Clear → Dex registration' : '클리어 시 도감 자동 등록'}</li>
+                <li>{isEn ? '3 daily attempts' : '하루 3회 도전 기회'}</li>
+              </ul>
+              <div className="endless-card-cta challenge">{isEn ? 'Play Challenge ▶' : '챌린지 시작 ▶'}</div>
+            </div>
+          </div>
         </div>
-        <div className="endless-card challenge" onClick={() => onSelect('challenge')}>
-          <div className="endless-card-icon">★</div>
-          <div className="endless-card-title">{isEn ? 'Challenge' : '챌린지'}</div>
-          <div className="endless-card-sub">{isEn ? 'Test your skills, earn rewards' : '실력을 시험하고 도감을 채우세요'}</div>
-          <ul className="endless-card-desc">
-            <li>{isEn ? '8 tries to guess correctly' : '8번 이내에 정답 맞히기'}</li>
-            <li>{isEn ? 'No filter — pure instinct!' : '필터 불가 — 직감으로 승부!'}</li>
-            <li>{isEn ? 'Clear → Dex registration' : '클리어 시 도감 자동 등록'}</li>
-            <li>{isEn ? '3 daily attempts' : '하루 3회 도전 기회'}</li>
-          </ul>
-          <div className="endless-card-cta challenge">{isEn ? 'Play Challenge ▶' : '챌린지 시작 ▶'}</div>
-        </div>
+        <aside className="endless-right">
+          <ChallengeRankingPanel user={user} lang={lang} />
+        </aside>
       </div>
-      <div className="challenge-rank-btn-wrap">
-        <button className="challenge-rank-btn" onClick={() => setRankOpen(true)}>
-          🏆 {isEn ? 'Challenge Ranking' : '챌린지 랭킹'}
-        </button>
-      </div>
-      {rankOpen && <ChallengeRankingModal onClose={() => setRankOpen(false)} user={user} lang={lang} />}
     </main>
   );
 }
