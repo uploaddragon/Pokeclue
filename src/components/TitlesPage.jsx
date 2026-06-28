@@ -58,9 +58,11 @@ function TitleCard({ title, isEquipped, onEquip, user, progress, progressMax }) 
   );
 }
 
+const MYSTERY_VISIBLE = new Set(['hello']);
+
 function LockedCard({ title, descOverride, progress, progressMax }) {
   const s = RARITY[title.rarity];
-  const isMystery = title.rarity === 'mystery';
+  const isMystery = title.rarity === 'mystery' && !MYSTERY_VISIBLE.has(title.id);
   return (
     <div className={`title-card locked${isMystery ? ' mystery' : ''}`} style={{ '--tc': s.color, '--tbg': s.bg, '--tb': s.border }}>
       <div className="title-card-top">
