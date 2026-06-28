@@ -129,10 +129,14 @@ export function useTitles(user) {
   }, [user]);
 
   /** 대전 종료 시 호출 — 조건 달성 칭호 수여, 새로 얻은 ID 배열 반환 */
-  const checkBattleTitles = useCallback(async ({ totalTurns }) => {
+  const checkBattleTitles = useCallback(async ({ totalTurns, wins }) => {
     if (!user) return [];
     const candidates = [];
     if (totalTurns >= 20) candidates.push('gapseok');
+    if (wins >= 1)   candidates.push('battle_1');
+    if (wins >= 10)  candidates.push('battle_10');
+    if (wins >= 50)  candidates.push('battle_50');
+    if (wins >= 100) candidates.push('battle_100');
     return batchAward(user, candidates);
   }, [user]);
 

@@ -93,7 +93,7 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
       ).length;
       const mySolvedKey = b.mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
       const wonBySolving = !!b.room?.[mySolvedKey];
-      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer, wonBySolving });
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer, wonBySolving, wins: (b.myStats?.wins ?? 0) + 1 });
     }
     if (b.phase !== 'finished') {
       battleWinFiredRef.current = false;

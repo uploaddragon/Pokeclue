@@ -174,14 +174,14 @@ export default function App() {
               if (earned.length > 0) pushToast(earned);
             })
           }
-          onBattleWin={({ totalTurns, myTries, isFirstMover, answer, wonBySolving }) => {
+          onBattleWin={({ totalTurns, myTries, isFirstMover, answer, wonBySolving, wins }) => {
             if (wonBySolving || totalTurns > 3) {
               const isShiny = Math.random() < 0.01;
               unlockDex(answer, isShiny, myTries);
             }
             const validWin = wonBySolving || totalTurns > 3;
             Promise.all([
-              validWin ? checkBattleTitles({ totalTurns }) : Promise.resolve([]),
+              validWin ? checkBattleTitles({ totalTurns, wins }) : Promise.resolve([]),
               validWin && wonBySolving && totalTurns === 1 ? checkOnehit({ tries: 1 }) : Promise.resolve([]),
             ]).then(([e1, e2]) => {
               const earned = [...e1, ...e2];
