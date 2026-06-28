@@ -276,6 +276,8 @@ export const GENERAL_TITLES = [
     desc_ko: '대전 1승 달성',
     desc_en: 'Win 1 battle',
     rarity: 'common',
+    progressGroup: 'battle_wins',
+    threshold: 1,
   },
   {
     id: 'battle_10',
@@ -285,6 +287,8 @@ export const GENERAL_TITLES = [
     desc_ko: '대전 10승 달성',
     desc_en: 'Win 10 battles',
     rarity: 'rare',
+    progressGroup: 'battle_wins',
+    threshold: 10,
   },
   {
     id: 'battle_50',
@@ -294,6 +298,8 @@ export const GENERAL_TITLES = [
     desc_ko: '대전 50승 달성',
     desc_en: 'Win 50 battles',
     rarity: 'epic',
+    progressGroup: 'battle_wins',
+    threshold: 50,
   },
   {
     id: 'battle_100',
@@ -303,6 +309,8 @@ export const GENERAL_TITLES = [
     desc_ko: '대전 100승 달성',
     desc_en: 'Win 100 battles',
     rarity: 'legendary',
+    progressGroup: 'battle_wins',
+    threshold: 100,
   },
   {
     id: 'sparkdust',

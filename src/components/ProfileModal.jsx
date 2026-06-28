@@ -74,6 +74,18 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   // 보유 칭호 (정의된 순서 유지)
   const earned = TITLES.filter(t => earnedIds.includes(t.id));
 
+  // 진행도 그룹별 현재 값
+  const progressValues = stats ? {
+    daily_clears: stats.dailyClears,
+    battle_wins: stats.battleWins,
+    near_miss: user.user_metadata?.near_miss_count ?? 0,
+  } : {};
+
+  // 진행도가 있는 미획득 칭호
+  const progressTitles = TITLES.filter(t =>
+    t.progressGroup && t.threshold && !earnedIds.includes(t.id) && progressValues[t.progressGroup] !== undefined
+  );
+
   return (
     <div className="auth-modal-bg" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="profile-modal">
@@ -196,7 +208,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
             </span>
           </div>
 
-          {earned.length === 0 ? (
+          {earned.length === 0 && progressTitles.length === 0 ? (
             <div className="profile-titles-empty">
               {isEn ? 'No titles yet. Clear the daily to earn some!' : '아직 획득한 칭호가 없어요. 데일리를 클리어해보세요!'}
             </div>
@@ -223,6 +235,22 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
                       <span className="title-chip-name">{isEn ? t.en : t.ko}</span>
                       {isEquipped && <span className="title-chip-check">✓</span>}
                     </button>
+                  );
+                })}
+                {progressTitles.map(t => {
+                  const style = RARITY[t.rarity];
+                  const current = progressValues[t.progressGroup] ?? 0;
+                  const pct = Math.min(100, Math.round((current / t.threshold) * 100));
+                  return (
+                    <div key={t.id} className="title-chip locked" style={{ '--tc': style.color, '--tbg': style.bg, '--tb': style.border }}
+                      title={isEn ? t.desc_en : t.desc_ko}>
+                      <span className="title-chip-emoji">{t.emoji}</span>
+                      <span className="title-chip-name">{isEn ? t.en : t.ko}</span>
+                      <div className="title-progress-wrap">
+                        <div className="title-progress-bar" style={{ width: `${pct}%`, background: style.color }} />
+                      </div>
+                      <span className="title-progress-text">{current}/{t.threshold}</span>
+                    </div>
                   );
                 })}
               </div>
