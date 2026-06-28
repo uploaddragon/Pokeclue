@@ -323,6 +323,15 @@ export const GENERAL_TITLES = [
     progressGroup: 'near_miss',
     threshold: 10,
   },
+  {
+    id: 'hello',
+    ko: '헬로봉주르니하오안녕',
+    en: 'HelloBonjourNiHaoAnnyeong',
+    emoji: '👋',
+    desc_ko: 'Pokeclue 인스타그램 팔로우',
+    desc_en: 'Follow Pokeclue on Instagram',
+    rarity: 'mystery',
+  },
 ];
 
 // 전체 칭호 배열 (일반 + 타입 전체)

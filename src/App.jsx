@@ -98,6 +98,15 @@ export default function App() {
         onEquipTitle={equipTitle}
         dex={dex}
         onUpdateProfilePokemon={updateProfilePokemon}
+        onInstagramClick={() => {
+          if (user) {
+            const current = user.user_metadata?.earned_titles ?? [];
+            if (!current.includes('hello')) {
+              supabase.auth.updateUser({ data: { earned_titles: [...current, 'hello'] } });
+              pushToast('hello');
+            }
+          }
+        }}
       />
 
       {authOpen && (
