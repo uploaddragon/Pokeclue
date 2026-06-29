@@ -149,19 +149,30 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
         </div>
       </div>
 
-      {/* ── 일반 칭호 ── */}
-      <section className="titles-section">
-        <div className="titles-section-label">📋 일반 칭호</div>
-        <div className="titles-cards">
-          {GENERAL_TITLES.map(t => {
-            const current = t.progressGroup ? (progressCounts[t.progressGroup] ?? 0) : undefined;
-            const max = t.threshold ?? undefined;
-            return earnedIds.includes(t.id)
-              ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} progress={current} progressMax={max} />
-              : <LockedCard key={t.id} title={t} progress={current} progressMax={max} />;
-          })}
-        </div>
-      </section>
+      {/* ── 카테고리별 칭호 ── */}
+      {[
+        { label: '📅 데일리 칭호', ids: ['quick','earlybird','slowstart','reckless','shortpants','elitetrainer','champion'] },
+        { label: '★ 챌린지 칭호', ids: ['challenge_30','challenge_50','challenge_100','challenge_300'] },
+        { label: '⚔ 대전 칭호', ids: ['battle_1','battle_10','battle_50','battle_100','battle_play_100','battle_play_200','gapseok'] },
+        { label: '🌐 공통 칭호', ids: ['pallet','nombungi','sparkdust','onehit','hello','insomnia'] },
+      ].map(cat => {
+        const titles = cat.ids.map(id => GENERAL_TITLES.find(t => t.id === id)).filter(Boolean);
+        if (titles.length === 0) return null;
+        return (
+          <section key={cat.label} className="titles-section">
+            <div className="titles-section-label">{cat.label}</div>
+            <div className="titles-cards">
+              {titles.map(t => {
+                const current = t.progressGroup ? (progressCounts[t.progressGroup] ?? 0) : undefined;
+                const max = t.threshold ?? undefined;
+                return earnedIds.includes(t.id)
+                  ? <TitleCard key={t.id} title={t} isEquipped={equippedTitle === t.id} onEquip={handleEquip} user={user} progress={current} progressMax={max} />
+                  : <LockedCard key={t.id} title={t} progress={current} progressMax={max} />;
+              })}
+            </div>
+          </section>
+        );
+      })}
 
       {/* ── 타입별 칭호 ── */}
       <section className="titles-section">
