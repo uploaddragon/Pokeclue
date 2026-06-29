@@ -57,7 +57,7 @@ function seededShiny(roomCode, round) {
   return (Math.abs(h) % 100) === 0; // 1%
 }
 
-export function BattlePage({ user, lang, onBattleWin, onGuess }) {
+export function BattlePage({ user, lang, onBattleWin, onBattleLoss, onGuess }) {
   const isEn = lang === 'en';
   const b = useBattle(user);
   const [joinCode, setJoinCode] = useState('');
@@ -93,7 +93,14 @@ export function BattlePage({ user, lang, onBattleWin, onGuess }) {
       ).length;
       const mySolvedKey = b.mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
       const wonBySolving = !!b.room?.[mySolvedKey];
-      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer, wonBySolving, wins: (b.myStats?.wins ?? 0) + 1 });
+      const newWins = (b.myStats?.wins ?? 0) + 1;
+      const newPlays = newWins + (b.myStats?.losses ?? 0);
+      onBattleWin?.({ totalTurns: b.sharedGuesses.length, myTries, isFirstMover: b.mySlot === 'p1', answer: b.answer, wonBySolving, wins: newWins, plays: newPlays });
+    }
+    if (b.phase === 'finished' && !b.iWon && b.room?.winner && !battleWinFiredRef.current) {
+      battleWinFiredRef.current = true;
+      const newPlays = (b.myStats?.wins ?? 0) + (b.myStats?.losses ?? 0) + 1;
+      onBattleLoss?.({ plays: newPlays });
     }
     if (b.phase !== 'finished') {
       battleWinFiredRef.current = false;

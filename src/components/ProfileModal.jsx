@@ -78,6 +78,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   const progressValues = stats ? {
     daily_clears: stats.dailyClears,
     battle_wins: stats.battleWins,
+    battle_plays: stats.battleWins + stats.battleLosses,
     near_miss: user.user_metadata?.near_miss_count ?? 0,
   } : {};
 
