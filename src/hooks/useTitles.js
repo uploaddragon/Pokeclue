@@ -167,5 +167,15 @@ export function useTitles(user) {
     }
   }, [user]);
 
-  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit };
+  const checkChallengeTitles = useCallback(async (clears) => {
+    if (!user) return [];
+    const candidates = [];
+    if (clears >= 30)  candidates.push('challenge_30');
+    if (clears >= 50)  candidates.push('challenge_50');
+    if (clears >= 100) candidates.push('challenge_100');
+    if (clears >= 300) candidates.push('challenge_300');
+    return batchAward(user, candidates);
+  }, [user]);
+
+  return { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit, checkChallengeTitles };
 }

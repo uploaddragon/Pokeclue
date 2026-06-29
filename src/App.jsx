@@ -36,7 +36,7 @@ export default function App() {
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
-  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit } = useTitles(user);
+  const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit, checkChallengeTitles } = useTitles(user);
 
   // 로그인 시 태초마을 지급
   useEffect(() => {
@@ -156,6 +156,12 @@ export default function App() {
       )}
       {page === 'game' && gameTab === 'endless' && (
         <EndlessPage unlockDex={unlockDex} lang={lang} user={user}
+          onChallengeWin={async () => {
+            if (!user) return;
+            const { count } = await supabase.from('challenge_clears').select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+            const earned = await checkChallengeTitles(count ?? 0);
+            if (earned.length > 0) pushToast(earned);
+          }}
           onGuess={(guess, answer) =>
             checkNearMiss(guess, answer).then(earned => {
               if (earned.length > 0) pushToast(earned);

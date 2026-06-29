@@ -148,7 +148,7 @@ function NormalGame({ lang, onBack, onEasterEgg, onWin, onGuess }) {
   );
 }
 
-function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess }) {
+function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess, onChallengeWin }) {
   const g = useEndlessChallenge(unlockDex);
   const isEn = lang === 'en';
   const firedRef = useRef(false);
@@ -157,6 +157,7 @@ function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess })
     if (g.result?.win && !firedRef.current) {
       firedRef.current = true;
       onWin?.({ tries: g.guesses.length, usedFilter: false });
+      onChallengeWin?.();
     }
     if (!g.result) firedRef.current = false;
   }, [g.result]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -262,10 +263,10 @@ function ChallengeGame({ unlockDex, lang, onBack, onEasterEgg, onWin, onGuess })
   );
 }
 
-export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess, user }) {
+export function EndlessPage({ unlockDex, lang, onEasterEgg, onWin, onGuess, user, onChallengeWin }) {
   const [mode, setMode] = useState('select');
 
   if (mode === 'select') return <ModeSelect onSelect={setMode} lang={lang} user={user} />;
   if (mode === 'normal') return <NormalGame lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
-  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} />;
+  if (mode === 'challenge') return <ChallengeGame unlockDex={unlockDex} lang={lang} onBack={() => setMode('select')} onEasterEgg={onEasterEgg} onWin={onWin} onGuess={onGuess} onChallengeWin={onChallengeWin} />;
 }

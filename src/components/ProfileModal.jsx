@@ -77,6 +77,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   // 진행도 그룹별 현재 값
   const progressValues = stats ? {
     daily_clears: stats.dailyClears,
+    challenge_clears: stats.challengeClears,
     battle_wins: stats.battleWins,
     battle_plays: stats.battleWins + stats.battleLosses,
     near_miss: user.user_metadata?.near_miss_count ?? 0,
