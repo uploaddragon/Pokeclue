@@ -82,6 +82,8 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
   const equippedTitle = user?.user_metadata?.equipped_title ?? null;
 
   const [dailyClearCount, setDailyClearCount] = useState(0);
+  const [challengeClearCount, setChallengeClearCount] = useState(0);
+  const [battleStats, setBattleStats] = useState({ wins: 0, losses: 0 });
   const nearMissCount = user?.user_metadata?.near_miss_count ?? 0;
 
   useEffect(() => {
@@ -92,11 +94,25 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
       .eq('user_id', user.id)
       .eq('solved', true)
       .then(({ count }) => { if (count != null) setDailyClearCount(count); });
+    supabase
+      .from('challenge_clears')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .then(({ count }) => { if (count != null) setChallengeClearCount(count); });
+    supabase
+      .from('battle_stats')
+      .select('wins, losses')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => { if (data) setBattleStats(data); });
   }, [user?.id]);
 
   // progressGroup → 현재 카운트 맵
   const progressCounts = {
     daily_clears: dailyClearCount,
+    challenge_clears: challengeClearCount,
+    battle_wins: battleStats.wins,
+    battle_plays: battleStats.wins + battleStats.losses,
     near_miss: nearMissCount,
   };
 
