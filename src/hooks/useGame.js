@@ -137,6 +137,7 @@ export function useGame(unlockDex, user, authLoading) {
   useEffect(() => {
     if (!result?.win) return;
     if (authLoading) return;
+    if (result?.synced) return; // 다른 기기/새로고침으로 동기화된 결과는 재저장하지 않음
 
     if (user) {
       // 로그인 유저: nickname 변경 포함 항상 upsert (서버에서 중복 처리)
