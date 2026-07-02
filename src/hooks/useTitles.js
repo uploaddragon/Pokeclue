@@ -174,6 +174,7 @@ export function useTitles(user) {
     if (clears >= 50)  candidates.push('challenge_50');
     if (clears >= 100) candidates.push('challenge_100');
     if (clears >= 300) candidates.push('challenge_300');
+    if (clears >= 700) candidates.push('challenge_700');
     return batchAward(user, candidates);
   }, [user]);
 

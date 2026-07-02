@@ -368,6 +368,17 @@ export const GENERAL_TITLES = [
     threshold: 300,
   },
   {
+    id: 'challenge_700',
+    ko: '은빛산',
+    en: 'Mt. Silver',
+    emoji: '🏔️',
+    desc_ko: '챌린지 모드 700회 클리어',
+    desc_en: 'Clear Challenge mode 700 times',
+    rarity: 'mythic',
+    progressGroup: 'challenge_clears',
+    threshold: 700,
+  },
+  {
     id: 'battle_play_100',
     ko: '배틀프런티어',
     en: 'Battle Frontier',

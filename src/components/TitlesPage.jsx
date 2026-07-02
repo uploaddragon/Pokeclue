@@ -152,7 +152,7 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
       {/* ── 카테고리별 칭호 ── */}
       {[
         { label: '📅 데일리 칭호', ids: ['quick','earlybird','slowstart','reckless','insomnia','shortpants','elitetrainer','champion'] },
-        { label: '★ 챌린지 칭호', ids: ['challenge_30','challenge_50','challenge_100','challenge_300'] },
+        { label: '★ 챌린지 칭호', ids: ['challenge_30','challenge_50','challenge_100','challenge_300','challenge_700'] },
         { label: '⚔ 대전 칭호', ids: ['battle_1','battle_10','battle_50','battle_100','battle_play_100','battle_play_200','gapseok'] },
         { label: '🌐 공통 칭호', ids: ['pallet','nombungi','sparkdust','onehit','hello'] },
       ].map(cat => {
