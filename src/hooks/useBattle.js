@@ -86,8 +86,11 @@ export function useBattle(user) {
     if (phase !== 'finished' || !user?.id || !room?.winner || battleRecordedRef.current) return;
     const totalTurns = (room.shared_guesses || []).length;
     const mySolvedKey = mySlot === 'p1' ? 'p1_solved' : 'p2_solved';
+    const opSolvedKey = mySlot === 'p1' ? 'p2_solved' : 'p1_solved';
     const wonBySolving = !!room[mySolvedKey];
-    if (!wonBySolving && totalTurns <= 3) return;
+    const opSolved = !!room[opSolvedKey];
+    // 둘 다 못 풀고 도망/끊김인 경우만 제외 (상대가 정상적으로 이긴 경우는 패배 기록)
+    if (!wonBySolving && !opSolved && totalTurns <= 3) return;
     battleRecordedRef.current = true;
     const won = room.winner === mySlot;
     recordBattleResult(user.id, won).then(() => {
