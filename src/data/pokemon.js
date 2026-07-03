@@ -341,7 +341,7 @@ const DB = [
   {id:626,ko:'버프론',en:'Bouffalant',gen:5,t1:'노말',t2:'없음',evo:1,len:3,enLen:10},
   {id:627,ko:'수리둥보',en:'Rufflet',gen:5,t1:'노말',t2:'비행',evo:1,len:4,enLen:7},{id:628,ko:'워글',en:'Braviary',gen:5,t1:'노말',t2:'비행',evo:2,len:2,enLen:8},
   {id:629,ko:'벌차이',en:'Vullaby',gen:5,t1:'악',t2:'비행',evo:1,len:3,enLen:7},{id:630,ko:'버랜지나',en:'Mandibuzz',gen:5,t1:'악',t2:'비행',evo:2,len:4,enLen:9},
-  {id:631,ko:'앤티골',en:'Heatmor',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3,enLen:7},{id:632,ko:'아이앤트',en:'Durant',gen:5,t1:'벌레',t2:'강철',evo:2,len:4,enLen:6},
+  {id:631,ko:'앤티골',en:'Heatmor',gen:5,t1:'불꽃',t2:'없음',evo:1,len:3,enLen:7},{id:632,ko:'아이앤트',en:'Durant',gen:5,t1:'벌레',t2:'강철',evo:1,len:4,enLen:6},
   {id:633,ko:'모노두',en:'Deino',gen:5,t1:'악',t2:'드래곤',evo:1,len:3,enLen:5},{id:634,ko:'디헤드',en:'Zweilous',gen:5,t1:'악',t2:'드래곤',evo:2,len:3,enLen:8},{id:635,ko:'삼삼드래',en:'Hydreigon',gen:5,t1:'악',t2:'드래곤',evo:3,len:4,enLen:9},
   {id:636,ko:'활화르바',en:'Larvesta',gen:5,t1:'벌레',t2:'불꽃',evo:1,len:4,enLen:8},{id:637,ko:'불카모스',en:'Volcarona',gen:5,t1:'벌레',t2:'불꽃',evo:2,len:4,enLen:9},
   {id:638,ko:'코바르온',en:'Cobalion',gen:5,t1:'강철',t2:'격투',evo:1,len:4,enLen:8},{id:639,ko:'테라키온',en:'Terrakion',gen:5,t1:'바위',t2:'격투',evo:1,len:4,enLen:9},{id:640,ko:'비리디온',en:'Virizion',gen:5,t1:'풀',t2:'격투',evo:1,len:4,enLen:8},
