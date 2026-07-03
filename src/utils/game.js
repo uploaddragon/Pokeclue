@@ -97,6 +97,20 @@ export const FORM_LABEL_EN = {
   combat:   'Combat Breed',
   blaze:    'Blaze Breed',
   aqua:     'Aqua Breed',
+  // Morpeko
+  full:     'Full Belly Mode',
+  hangry:   'Hangry Mode',
+  // Zygarde
+  '10':     '10% Forme',
+  '50':     '50% Forme',
+  perfect:  'Complete Forme',
+  // Wishiwashi
+  solo:     'Solo Form',
+  school:   'School Form',
+  // Lycanroc
+  midday:   'Midday Form',
+  midnight: 'Midnight Form',
+  'lycanroc-dusk': 'Dusk Form',
 };
 
 export const FORM_LABEL = {
@@ -182,6 +196,20 @@ export const FORM_LABEL = {
   combat:   '컴뱃종',
   blaze:    '블레이즈종',
   aqua:     '워터종',
+  // 모르페코
+  full:     '배부른 모양',
+  hangry:   '배고픈 모양',
+  // 지가르데
+  '10':     '10% 폼',
+  '50':     '50% 폼',
+  perfect:  '퍼펙트 폼',
+  // 약어리
+  solo:     '단독의 모습',
+  school:   '군집의 모습',
+  // 루가루암
+  midday:         '한낮의 모습',
+  midnight:       '한밤중의 모습',
+  'lycanroc-dusk':'황혼의 모습',
 };
 
 export function formLabel(form, lang = 'ko') {
