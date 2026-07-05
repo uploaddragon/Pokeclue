@@ -62,11 +62,12 @@ export function useBattle(user) {
   const mySlotRef = useRef(null);
   const roomCodeRef = useRef('');
 
-  // 말풍선 채팅 상태
+  // 말풍선 채팅 상태 { text, key } — key가 바뀌면 애니메이션 재실행
   const [myBubble, setMyBubble] = useState(null);
   const [opBubble, setOpBubble] = useState(null);
   const myBubbleTimer = useRef(null);
   const opBubbleTimer = useRef(null);
+  const bubbleKeyRef = useRef(0);
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { mySlotRef.current = mySlot; }, [mySlot]);
@@ -142,7 +143,8 @@ export function useBattle(user) {
       .channel(`battle-${code}`)
       .on('broadcast', { event: 'chat' }, ({ payload }) => {
         if (payload.slot === slot) return; // 내 메시지 에코 무시
-        setOpBubble(payload.text);
+        const k = ++bubbleKeyRef.current;
+        setOpBubble({ text: payload.text, key: k });
         clearTimeout(opBubbleTimer.current);
         opBubbleTimer.current = setTimeout(() => setOpBubble(null), 3500);
       })
@@ -364,7 +366,8 @@ export function useBattle(user) {
   const sendChat = useCallback((text) => {
     if (!channelRef.current || !mySlot) return;
     channelRef.current.send({ type: 'broadcast', event: 'chat', payload: { slot: mySlot, text } });
-    setMyBubble(text);
+    const k = ++bubbleKeyRef.current;
+    setMyBubble({ text, key: k });
     clearTimeout(myBubbleTimer.current);
     myBubbleTimer.current = setTimeout(() => setMyBubble(null), 3500);
   }, [mySlot]);

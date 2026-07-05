@@ -11,11 +11,11 @@ const QUICK_MSGS = [
   '😅 어렵다...', '🤔 이게 뭐지?', '😂 ㅋㅋㅋ', '👋 수고했어!',
 ];
 
-function SpeechBubble({ text, side }) {
-  if (!text) return null;
+function SpeechBubble({ bubble, side }) {
+  if (!bubble) return null;
   return (
     <div className={`battle-bubble battle-bubble-${side}`}>
-      <span className="battle-bubble-text">{text}</span>
+      <span className="battle-bubble-text">{bubble.text}</span>
       <div className="battle-bubble-tail" />
     </div>
   );
@@ -297,7 +297,7 @@ export function BattlePage({ user, lang, onBattleWin, onBattleLoss, onGuess }) {
           <div className={`battle-hud-player me${b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'ME' : '나'}</div>
             <div className="battle-avatar-wrap">
-              <SpeechBubble text={b.myBubble} side="me" />
+              <SpeechBubble key={b.myBubble?.key} bubble={b.myBubble} side="me" />
               <BattleAvatar profilePokemon={b.myProfilePokemon} />
             </div>
             <div className="battle-hud-nick">{b.myNick}</div>
@@ -325,7 +325,7 @@ export function BattlePage({ user, lang, onBattleWin, onBattleLoss, onGuess }) {
           <div className={`battle-hud-player op${!b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
             <div className="battle-avatar-wrap">
-              <SpeechBubble text={b.opBubble} side="op" />
+              <SpeechBubble key={b.opBubble?.key} bubble={b.opBubble} side="op" />
               <BattleAvatar profilePokemon={b.opProfilePokemon} />
             </div>
             <div className="battle-hud-nick">{b.opNick || '???'}</div>

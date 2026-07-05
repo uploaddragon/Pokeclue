@@ -863,7 +863,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-cancel-btn:hover{color:var(--ink);border-color:#888;}
 
 /* HUD */
-.battle-hud{display:flex;align-items:stretch;background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;margin-bottom:12px;overflow:hidden;}
+.battle-hud{display:flex;align-items:stretch;background:white;border:3px solid #222;box-shadow:4px 4px 0 #222;margin-bottom:12px;overflow:visible;}
 .battle-hud-player{flex:1;padding:14px 16px;text-align:center;display:flex;flex-direction:column;gap:4px;}
 .battle-hud-player.me{background:#f0faf0;}
 .battle-hud-player.op{background:#fff8f0;}
