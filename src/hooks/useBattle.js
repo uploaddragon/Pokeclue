@@ -62,6 +62,12 @@ export function useBattle(user) {
   const mySlotRef = useRef(null);
   const roomCodeRef = useRef('');
 
+  // 말풍선 채팅 상태
+  const [myBubble, setMyBubble] = useState(null);
+  const [opBubble, setOpBubble] = useState(null);
+  const myBubbleTimer = useRef(null);
+  const opBubbleTimer = useRef(null);
+
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { mySlotRef.current = mySlot; }, [mySlot]);
   useEffect(() => { roomCodeRef.current = roomCode; }, [roomCode]);
@@ -134,6 +140,12 @@ export function useBattle(user) {
 
     channelRef.current = bc
       .channel(`battle-${code}`)
+      .on('broadcast', { event: 'chat' }, ({ payload }) => {
+        if (payload.slot === slot) return; // 내 메시지 에코 무시
+        setOpBubble(payload.text);
+        clearTimeout(opBubbleTimer.current);
+        opBubbleTimer.current = setTimeout(() => setOpBubble(null), 3500);
+      })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         if (phaseRef.current !== 'playing') return;
         const opLeft = leftPresences.some(p => p.slot === opSlot);
@@ -348,6 +360,15 @@ export function useBattle(user) {
     }
   }, [roomCode, mySlot]);
 
+  // 말풍선 채팅 전송
+  const sendChat = useCallback((text) => {
+    if (!channelRef.current || !mySlot) return;
+    channelRef.current.send({ type: 'broadcast', event: 'chat', payload: { slot: mySlot, text } });
+    setMyBubble(text);
+    clearTimeout(myBubbleTimer.current);
+    myBubbleTimer.current = setTimeout(() => setMyBubble(null), 3500);
+  }, [mySlot]);
+
   // 항복 — 상대방 승리로 처리
   const giveUp = useCallback(async () => {
     if (!roomCode) return;
@@ -395,5 +416,6 @@ export function useBattle(user) {
     myStats, opStats,
     isMyTurn, currentTurn, mySkips, sharedGuesses,
     createFriendRoom, joinFriendRoom, findRandom, submitGuess, skipTurn, giveUp, requestRematch, reset,
+    sendChat, myBubble, opBubble,
   };
 }

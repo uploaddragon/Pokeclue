@@ -6,6 +6,21 @@ import { displayName } from '../utils/game.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
 
+const QUICK_MSGS = [
+  '😊 잘 부탁해!', '🔥 내가 이긴다!', '😤 질 수 없어!', '👏 대단해요!',
+  '😅 어렵다...', '🤔 이게 뭐지?', '😂 ㅋㅋㅋ', '👋 수고했어!',
+];
+
+function SpeechBubble({ text, side }) {
+  if (!text) return null;
+  return (
+    <div className={`battle-bubble battle-bubble-${side}`}>
+      <span className="battle-bubble-text">{text}</span>
+      <div className="battle-bubble-tail" />
+    </div>
+  );
+}
+
 function BattleAvatar({ profilePokemon }) {
   const sprSrc = profilePokemon
     ? (profilePokemon.endsWith('-shiny') ? sprShiny(profilePokemon.slice(0, -6)) : spr(profilePokemon))
@@ -281,7 +296,10 @@ export function BattlePage({ user, lang, onBattleWin, onBattleLoss, onGuess }) {
         <div className="battle-hud">
           <div className={`battle-hud-player me${b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'ME' : '나'}</div>
-            <BattleAvatar profilePokemon={b.myProfilePokemon} />
+            <div className="battle-avatar-wrap">
+              <SpeechBubble text={b.myBubble} side="me" />
+              <BattleAvatar profilePokemon={b.myProfilePokemon} />
+            </div>
             <div className="battle-hud-nick">{b.myNick}</div>
             <BattleTitleBadge titleId={b.myTitle} />
             <div className="battle-hud-record">{b.myStats.wins}{isEn ? 'W' : '승'} {b.myStats.losses}{isEn ? 'L' : '패'}</div>
@@ -306,12 +324,24 @@ export function BattlePage({ user, lang, onBattleWin, onBattleLoss, onGuess }) {
 
           <div className={`battle-hud-player op${!b.isMyTurn ? ' active' : ''}`}>
             <div className="battle-hud-label">{isEn ? 'OPPONENT' : '상대'}</div>
-            <BattleAvatar profilePokemon={b.opProfilePokemon} />
+            <div className="battle-avatar-wrap">
+              <SpeechBubble text={b.opBubble} side="op" />
+              <BattleAvatar profilePokemon={b.opProfilePokemon} />
+            </div>
             <div className="battle-hud-nick">{b.opNick || '???'}</div>
             <BattleTitleBadge titleId={b.opTitle} />
             <div className="battle-hud-record">{b.opStats.wins}{isEn ? 'W' : '승'} {b.opStats.losses}{isEn ? 'L' : '패'}</div>
             {!b.isMyTurn && <div className="battle-hud-arrow op">◀ {isEn ? "Their turn" : '상대 턴'}</div>}
           </div>
+        </div>
+
+        {/* 프리셋 채팅 버튼 */}
+        <div className="battle-chat-bar">
+          {QUICK_MSGS.map(msg => (
+            <button key={msg} className="battle-chat-btn" onClick={() => b.sendChat(msg)}>
+              {msg}
+            </button>
+          ))}
         </div>
 
         {/* 자리비움 경고 */}

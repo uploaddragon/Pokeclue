@@ -894,6 +894,50 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .battle-timer-bar{height:4px;background:var(--yellow);transition:width 1s linear;}
 .battle-timer-bar.urgent{background:var(--wrong);}
 
+/* Speech bubble chat */
+.battle-avatar-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+.battle-bubble{
+  position:absolute;bottom:calc(100% + 6px);
+  background:#fff;border:2px solid #222;border-radius:12px;
+  padding:6px 10px;white-space:nowrap;max-width:140px;
+  font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:12px;font-weight:600;
+  box-shadow:2px 2px 0 #222;
+  animation:bubble-in 0.15s ease-out;
+  z-index:10;
+}
+.battle-bubble-me{left:50%;transform:translateX(-50%);}
+.battle-bubble-op{left:50%;transform:translateX(-50%);}
+.battle-bubble-text{display:block;text-align:center;line-height:1.4;}
+.battle-bubble-tail{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  width:0;height:0;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:7px solid #222;
+}
+.battle-bubble-tail::after{
+  content:'';position:absolute;top:-8px;left:-5px;
+  width:0;height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:6px solid #fff;
+}
+@keyframes bubble-in{from{opacity:0;transform:translateX(-50%) scale(0.85);}to{opacity:1;transform:translateX(-50%) scale(1);}}
+
+/* Chat preset bar */
+.battle-chat-bar{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  padding:8px 12px;margin-bottom:8px;
+}
+.battle-chat-btn{
+  font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:11px;font-weight:600;
+  background:#fff;border:1.5px solid #ddd;border-radius:20px;
+  padding:5px 10px;cursor:pointer;color:#444;
+  transition:border-color 0.1s,color 0.1s,background 0.1s;
+}
+.battle-chat-btn:hover{border-color:#222;color:#111;background:#f5f5f5;}
+.battle-chat-btn:active{background:#efefef;}
+
 /* AFK warning */
 .battle-afk-warning{font-family:'Pretendard','Noto Sans KR',sans-serif;font-size:13px;font-weight:700;text-align:center;padding:10px 16px;margin-bottom:8px;background:#fff3e0;color:#e65100;border:2px solid #e65100;border-radius:6px;animation:afk-pulse 1s ease-in-out infinite;}
 @keyframes afk-pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
