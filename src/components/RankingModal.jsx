@@ -31,6 +31,7 @@ function Pokeball() {
 
 function RankAvatar({ rank, profilePokemon }) {
   const medal = rank <= 3 ? MEDAL[rank - 1] : null;
+  const [imgError, setImgError] = useState(false);
   const sprSrc = profilePokemon
     ? (profilePokemon.endsWith('-shiny')
         ? sprShiny(profilePokemon.slice(0, -6))
@@ -40,8 +41,8 @@ function RankAvatar({ rank, profilePokemon }) {
   return (
     <div className="rank-avatar-wrap">
       <div className={`rank-avatar-circle rank${rank <= 3 ? rank : ''}`}>
-        {sprSrc
-          ? <img src={sprSrc} className="rank-avatar-spr" alt="" />
+        {sprSrc && !imgError
+          ? <img src={sprSrc} className="rank-avatar-spr" alt="" onError={() => setImgError(true)} />
           : <Pokeball />}
       </div>
       {medal
