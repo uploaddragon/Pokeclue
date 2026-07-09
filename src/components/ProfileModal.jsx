@@ -17,6 +17,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   const [error, setError] = useState('');
   const [equipping, setEquipping] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(user.user_metadata?.profile_pokemon ?? null);
+  const [previewImgError, setPreviewImgError] = useState(false);
 
   const avatar = user.user_metadata?.avatar_url;
   const equippedTitle = user.user_metadata?.equipped_title ?? null;
@@ -96,10 +97,10 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
 
         <div className="profile-avatar-wrap">
           {(() => {
-            if (selectedProfile) {
+            if (selectedProfile && !previewImgError) {
               const isShiny = selectedProfile.endsWith('-shiny');
               const pid = isShiny ? selectedProfile.slice(0, -6) : selectedProfile;
-              return <img src={isShiny ? sprShiny(pid) : spr(pid)} alt="" className="profile-avatar-img profile-avatar-poke" />;
+              return <img src={isShiny ? sprShiny(pid) : spr(pid)} alt="" className="profile-avatar-img profile-avatar-poke" onError={() => setPreviewImgError(true)} />;
             }
             return (
               <div className="profile-avatar-fallback profile-avatar-ball">
@@ -161,7 +162,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
           <div className="profile-titles-header">
             <span className="profile-label">{isEn ? 'Profile Pokémon' : '프로필 포켓몬'}</span>
             {selectedProfile && (
-              <button className="profile-pokemon-clear" onClick={() => setSelectedProfile(null)}>
+              <button className="profile-pokemon-clear" onClick={() => { setSelectedProfile(null); setPreviewImgError(false); }}>
                 {isEn ? 'Clear' : '해제'}
               </button>
             )}
@@ -180,7 +181,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
                   <div key={p.id} className="profile-pokemon-item">
                     <button
                       className={`profile-pokemon-btn${selectedProfile === normalKey ? ' selected' : ''}`}
-                      onClick={() => setSelectedProfile(selectedProfile === normalKey ? null : normalKey)}
+                      onClick={() => { setSelectedProfile(selectedProfile === normalKey ? null : normalKey); setPreviewImgError(false); }}
                       title={isEn ? p.en : p.ko}
                     >
                       <img src={spr(p.id)} alt={p.ko} className="profile-pokemon-spr" />
@@ -188,7 +189,7 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
                     {hasShiny && (
                       <button
                         className={`profile-pokemon-btn shiny${selectedProfile === shinyKey ? ' selected' : ''}`}
-                        onClick={() => setSelectedProfile(selectedProfile === shinyKey ? null : shinyKey)}
+                        onClick={() => { setSelectedProfile(selectedProfile === shinyKey ? null : shinyKey); setPreviewImgError(false); }}
                         title={`✨ ${isEn ? p.en : p.ko}`}
                       >
                         <img src={sprShiny(p.id)} alt={`✨${p.ko}`} className="profile-pokemon-spr" />

@@ -21,9 +21,10 @@ export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, o
     user.user_metadata?.pokeclue_nickname ||
     user.user_metadata?.full_name ||
     user.email;
+  const [imgError, setImgError] = useState(false);
 
   const avatarSrc = (() => {
-    if (profilePokemon) {
+    if (profilePokemon && !imgError) {
       const isShiny = profilePokemon.endsWith('-shiny');
       const pid = isShiny ? profilePokemon.slice(0, -6) : profilePokemon;
       return { type: 'poke', src: isShiny ? sprShiny(pid) : spr(pid) };
@@ -35,7 +36,7 @@ export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, o
     <div className="user-menu-wrap" ref={ref}>
       <button className="user-avatar-btn" onClick={() => setOpen(o => !o)}>
         {avatarSrc.type === 'poke'
-          ? <img src={avatarSrc.src} alt={name} className="user-avatar-img user-avatar-poke" />
+          ? <img src={avatarSrc.src} alt={name} className="user-avatar-img user-avatar-poke" onError={() => setImgError(true)} />
           : <span className="user-avatar-ball">
               <svg viewBox="0 0 40 40" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="20" cy="20" r="18" fill="#fff" stroke="#222" strokeWidth="2"/>
@@ -50,7 +51,7 @@ export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, o
       {open && (
         <div className="user-dropdown">
           <div className="user-dropdown-info">
-            {avatarSrc.type === 'poke' && <img src={avatarSrc.src} alt={name} className="user-dropdown-avatar user-avatar-poke" />}
+            {avatarSrc.type === 'poke' && <img src={avatarSrc.src} alt={name} className="user-dropdown-avatar user-avatar-poke" onError={() => setImgError(true)} />}
             <div>
               <div className="user-dropdown-name">{name}</div>
               <div className="user-dropdown-email">{user.email}</div>
