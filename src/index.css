@@ -1371,6 +1371,23 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .who-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 
+/* ── 이로치 획득 알림 ── */
+.shiny-unlock-wrap{
+  display:flex;align-items:center;gap:12px;
+  margin-top:14px;padding:12px 16px;
+  background:linear-gradient(135deg,#fef9c3,#fde68a);
+  border:2px solid #f59e0b;border-radius:12px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.shiny-unlock-icon{ font-size:2rem;line-height:1; }
+.shiny-unlock-title{ font-weight:700;font-size:.95rem;color:#92400e; }
+.shiny-unlock-desc{ font-size:.82rem;color:#b45309;margin-top:2px; }
+@media(prefers-color-scheme:dark){
+  .shiny-unlock-wrap{ background:linear-gradient(135deg,#451a03,#78350f);border-color:#d97706; }
+  .shiny-unlock-title{ color:#fde68a; }
+  .shiny-unlock-desc{ color:#fcd34d; }
+}
+
 /* ── 새 칭호 획득 알림 (클리어 화면) ── */
 .new-titles-wrap{
   margin-top:16px;padding:14px 16px;

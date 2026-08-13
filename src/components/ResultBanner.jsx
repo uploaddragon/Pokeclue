@@ -178,7 +178,7 @@ export function LegendPanel({ lang = 'ko' }) {
 /* ── Reveal Card (정답 공개) ── */
 export function ResultBanner({ answer, result, guessCount, lang = 'ko', user, newTitleIds = [] }) {
   if (!result) return null;
-  const { win, shinyPct } = result;
+  const { win, shinyPct, gotShiny } = result;
   const isEn = lang === 'en';
   const name = displayName(answer, lang);
 
@@ -221,6 +221,17 @@ export function ResultBanner({ answer, result, guessCount, lang = 'ko', user, ne
             <span className="vv px">{shinyPct}</span>
           </span>
         </div>
+
+        {/* 이로치 획득 알림 */}
+        {gotShiny && (
+          <div className="shiny-unlock-wrap">
+            <span className="shiny-unlock-icon">✨</span>
+            <div>
+              <div className="shiny-unlock-title">{isEn ? 'Shiny unlocked!' : '이로치 획득!'}</div>
+              <div className="shiny-unlock-desc">{isEn ? `✨ ${name} added to your Pokédex` : `✨ ${name}이(가) 도감에 등록되었어요`}</div>
+            </div>
+          </div>
+        )}
 
         {/* 새 칭호 획득 알림 */}
         {newTitleIds.length > 0 && (

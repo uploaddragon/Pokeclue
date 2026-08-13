@@ -170,7 +170,7 @@ export function useGame(unlockDex, user, authLoading) {
         const shinyUnlock = isShiny && Math.random() < 0.10;
         unlockDex(prev.answer, shinyUnlock, next.length);
         // Supabase 저장은 위 useEffect에서 담당 (setState 안에서 async 호출 금지)
-        return { ...prev, guesses: next, gameOver: true, result: { win: true, shinyPct } };
+        return { ...prev, guesses: next, gameOver: true, result: { win: true, shinyPct, gotShiny: shinyUnlock } };
       }
 
       return { ...prev, guesses: next };
