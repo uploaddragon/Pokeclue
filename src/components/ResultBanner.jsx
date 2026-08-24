@@ -194,11 +194,11 @@ export function ResultBanner({ answer, result, guessCount, lang = 'ko', user, ne
     return (
       <div className={`panel reveal win-reveal`}>
         <div className="spritebig">
-          <img src={spr(answer.id)} alt={name}
+          <img src={gotShiny ? sprShiny(answer.id) : spr(answer.id)} alt={name}
             onError={e => {
               if (answer.baseId && !e.target.dataset.fb) {
                 e.target.dataset.fb = '1';
-                e.target.src = spr(answer.baseId);
+                e.target.src = gotShiny ? sprShiny(answer.baseId) : spr(answer.baseId);
               }
             }}
           />
