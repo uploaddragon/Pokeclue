@@ -50,6 +50,21 @@ function BattleTitleBadge({ titleId }) {
   );
 }
 
+function WrongFlash({ flash, side }) {
+  if (!flash) return null;
+  const { poke } = flash;
+  return (
+    <div className={`battle-bubble tb-wrong-bubble battle-bubble-${side}`}>
+      <img src={spr(poke.id)} alt="" className="tb-wrong-bubble-spr" />
+      <div className="tb-wrong-bubble-types">
+        <TypeChip type={poke.t1} lang="ko" />
+        {poke.t2 !== '없음' && <TypeChip type={poke.t2} lang="ko" />}
+      </div>
+      <div className="battle-bubble-tail" />
+    </div>
+  );
+}
+
 function TypeChip({ type, lang }) {
   const isEn = lang === 'en';
   const col = TCHIP_COL[type] || TCHIP_COL['없음'];
@@ -68,16 +83,28 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
   const [now, setNow] = useState(Date.now());
   const autoPickedRef = useRef(null);
   const resultFiredRef = useRef(false);
+  const revealedAtRef = useRef(null);
 
-  // 선택 단계 타이머 갱신
+  const roundDoneNow = !!b.room?.round_winner;
+
+  // 선택 단계 + 정답 대기(실루엣 타이머) 단계 동안 시계 갱신
   useEffect(() => {
-    if (b.phase !== 'playing' || b.bothChosen) return;
+    if (b.phase !== 'playing') return;
+    if (roundDoneNow) return;
+    if (b.bothChosen && !b.revealed) return; // 공개 연출 중엔 불필요
     const iv = setInterval(() => setNow(Date.now()), 250);
     return () => clearInterval(iv);
-  }, [b.phase, b.bothChosen, b.room?.round]);
+  }, [b.phase, b.bothChosen, b.revealed, roundDoneNow, b.room?.round]);
 
   const startedAt = b.room?.round_started_at ? new Date(b.room.round_started_at).getTime() : now;
   const selectRemain = Math.max(0, SELECT_SEC - Math.floor((now - startedAt) / 1000));
+
+  // 라운드가 공개되는 순간의 시각을 기록 (실루엣 힌트 타이머 기준)
+  useEffect(() => {
+    revealedAtRef.current = b.revealed ? Date.now() : null;
+  }, [b.revealed, b.room?.round]);
+  const guessElapsed = revealedAtRef.current ? (now - revealedAtRef.current) / 1000 : 0;
+  const showSilhouette = b.revealed && !roundDoneNow && guessElapsed >= 10 && !!b.hintPokemon;
 
   // 시간 초과 시 자동으로 랜덤 타입 선택
   useEffect(() => {
@@ -288,7 +315,9 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
         <div className={`battle-hud-player me${iWonRound ? ' tb-round-glow' : ''}`}>
           <div className="battle-avatar-wrap">
             <BattleAvatar profilePokemon={b.myProfilePokemon} />
-            <SpeechBubble key={b.myBubble?.key} bubble={b.myBubble} side="me" />
+            {b.myWrongFlash
+              ? <WrongFlash key={b.myWrongFlash.key} flash={b.myWrongFlash} side="me" />
+              : <SpeechBubble key={b.myBubble?.key} bubble={b.myBubble} side="me" />}
           </div>
           <span className="battle-hud-nick">{b.myNick} {isEn ? '(Me)' : '(나)'}</span>
           <BattleTitleBadge titleId={b.myTitle} />
@@ -301,7 +330,9 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
         <div className={`battle-hud-player op${opWonRound ? ' tb-round-glow' : ''}`}>
           <div className="battle-avatar-wrap">
             <BattleAvatar profilePokemon={b.opProfilePokemon} />
-            <SpeechBubble key={b.opBubble?.key} bubble={b.opBubble} side="op" />
+            {b.opWrongFlash
+              ? <WrongFlash key={b.opWrongFlash.key} flash={b.opWrongFlash} side="op" />
+              : <SpeechBubble key={b.opBubble?.key} bubble={b.opBubble} side="op" />}
           </div>
           <span className="battle-hud-nick">{b.opNick || (isEn ? 'Opponent' : '상대')}</span>
           <BattleTitleBadge titleId={b.opTitle} />
@@ -363,6 +394,12 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
               <div className="tb-round-sub">
                 {isEn ? 'Name a Pokémon with this exact type combo — first correct guess wins the round!' : '이 타입 조합을 가진 포켓몬을 먼저 맞히면 라운드 승리!'}
               </div>
+              {showSilhouette && (
+                <div className="tb-silhouette-wrap">
+                  <img src={spr(b.hintPokemon.id)} alt="" className="tb-silhouette-img" />
+                  <div className="tb-silhouette-label">{isEn ? '💡 Hint' : '💡 실루엣 힌트'}</div>
+                </div>
+              )}
               <Autocomplete onSubmit={handleSubmit} lang={lang} />
               {b.myGuesses.length > 0 && (
                 <div className="tb-wrong-list">

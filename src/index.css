@@ -703,6 +703,18 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .tb-round-glow{animation:tb-glow 1s ease-in-out infinite alternate;box-shadow:inset 0 0 0 3px var(--yellow),0 0 18px 4px rgba(255,215,0,0.7);}
 @keyframes tb-glow{from{filter:brightness(1);}to{filter:brightness(1.15);}}
 
+.tb-wrong-bubble{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;animation:tb-shake .4s ease, tb-fadeout 2.2s ease forwards;}
+.tb-wrong-bubble-spr{width:40px;height:40px;image-rendering:pixelated;}
+.tb-wrong-bubble-types{display:flex;gap:4px;}
+.tb-wrong-bubble .tb-type-chip{padding:3px 8px;font-size:.65rem;box-shadow:none;}
+@keyframes tb-shake{0%,100%{transform:translateX(-50%);}15%{transform:translateX(-56%);}30%{transform:translateX(-44%);}45%{transform:translateX(-54%);}60%{transform:translateX(-46%);}75%{transform:translateX(-52%);}}
+@keyframes tb-fadeout{0%,70%{opacity:1;}100%{opacity:0;}}
+
+.tb-silhouette-wrap{margin:14px auto;text-align:center;animation:tb-fadein .5s ease;}
+.tb-silhouette-img{width:96px;height:96px;image-rendering:pixelated;filter:brightness(0);opacity:.85;}
+.tb-silhouette-label{font-size:.75rem;color:#999;margin-top:4px;font-weight:700;}
+@keyframes tb-fadein{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
 /* ── Info Page (소개/약관/개인정보) ── */
 .info-page{max-width:760px;margin:24px auto;padding:32px 36px;line-height:1.75;}
 .info-page h1{font-size:1.5rem;margin-bottom:12px;}

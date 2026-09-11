@@ -64,6 +64,13 @@ export function useTypeBattle(user) {
   const [revealed, setRevealed] = useState(false); // 로컬 3초 공개 연출 완료 여부
   const battleRecordedRef = useRef(false);
 
+  // 오답 제출 시 잠깐 보여주는 흔들림 말풍선 { poke, key }
+  const [myWrongFlash, setMyWrongFlash] = useState(null);
+  const [opWrongFlash, setOpWrongFlash] = useState(null);
+  const myWrongTimer = useRef(null);
+  const opWrongTimer = useRef(null);
+  const wrongFlashKeyRef = useRef(0);
+
   const channelRef = useRef(null);
   const timeoutRef = useRef(null);
   const pollRef = useRef(null);
@@ -131,6 +138,15 @@ export function useTypeBattle(user) {
         clearTimeout(opBubbleTimer.current);
         opBubbleTimer.current = setTimeout(() => setOpBubble(null), 3500);
       })
+      .on('broadcast', { event: 'wrong_guess' }, ({ payload }) => {
+        if (payload.slot === slot) return; // 내 에코 무시
+        const poke = DB.find(p => String(p.id) === String(payload.id));
+        if (!poke) return;
+        const k = ++wrongFlashKeyRef.current;
+        setOpWrongFlash({ poke, key: k });
+        clearTimeout(opWrongTimer.current);
+        opWrongTimer.current = setTimeout(() => setOpWrongFlash(null), 2200);
+      })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         if (phaseRef.current !== 'playing') return;
         const opLeft = leftPresences.some(p => p.slot === opSlot);
@@ -148,7 +164,10 @@ export function useTypeBattle(user) {
         event: 'UPDATE', schema: 'public', table: 'type_battle_rooms', filter: `id=eq.${code}`,
       }, ({ new: r }) => {
         setRoom(r);
-        if (r.status === 'playing' && phaseRef.current !== 'playing') setPhase('playing');
+        if (r.status === 'playing' && phaseRef.current !== 'playing') {
+          clearTimeout(timeoutRef.current);
+          setPhase('playing');
+        }
         if (r.status === 'finished' && phaseRef.current !== 'rematch_wait') setPhase('finished');
       })
       .subscribe(async (st, err) => {
@@ -322,6 +341,12 @@ export function useTypeBattle(user) {
         [myGuessesKey]: [...myGuesses, String(pokemonId)],
       }).eq('id', roomCode).eq('round', room.round);
       if (e) console.error('[TypeBattle] submitGuess error', e);
+
+      const k = ++wrongFlashKeyRef.current;
+      setMyWrongFlash({ poke: g, key: k });
+      clearTimeout(myWrongTimer.current);
+      myWrongTimer.current = setTimeout(() => setMyWrongFlash(null), 2200);
+      channelRef.current?.send({ type: 'broadcast', event: 'wrong_guess', payload: { slot: mySlot, id: String(g.id) } });
     }
   }, [room, roomCode, mySlot]);
 
@@ -369,12 +394,15 @@ export function useTypeBattle(user) {
     clearTimeout(timeoutRef.current);
     clearInterval(pollRef.current);
     clearTimeout(revealTimerRef.current);
+    clearTimeout(myWrongTimer.current);
+    clearTimeout(opWrongTimer.current);
     channelRef.current = null;
     resolveDrawRef.current = null;
     advanceRef.current = null;
     battleRecordedRef.current = false;
     setPhase('select'); setRoomCode(''); setRoom(null); setMySlot(null);
     setError(''); setRevealed(false);
+    setMyWrongFlash(null); setOpWrongFlash(null);
   }
 
   const me = getIdentity(user);
@@ -395,14 +423,18 @@ export function useTypeBattle(user) {
   const opProfilePokemon = room ? (mySlot === 'p1' ? room.p2_profile_pokemon : room.p1_profile_pokemon) : null;
   const iWon = room?.winner === mySlot;
   const roundAnswer = room?.round_answer_id ? DB.find(p => String(p.id) === String(room.round_answer_id)) : null;
-  const validCount = room?.p1_type && room?.p2_type ? findValidPokemon(room.p1_type, room.p2_type).length : null;
+  const validPokemon = room?.p1_type && room?.p2_type ? findValidPokemon(room.p1_type, room.p2_type) : [];
+  const validCount = room?.p1_type && room?.p2_type ? validPokemon.length : null;
+  // 힌트용 실루엣 — 양쪽 클라이언트가 같은 포켓몬을 보도록 결정론적으로 첫 항목 사용
+  const hintPokemon = validPokemon.length > 0 ? validPokemon[0] : null;
 
   return {
     phase, roomCode, room, mySlot, error,
     myNick: me.nick, myTitle: me.title, myProfilePokemon: me.profilePokemon,
     opNick, opTitle, opProfilePokemon, iWon, winner: room?.winner,
     myType, opTypeChosen, bothChosen, revealed, myGuesses, myScore, opScore,
-    roundAnswer, validCount,
+    roundAnswer, validCount, hintPokemon,
+    myWrongFlash, opWrongFlash,
     createFriendRoom, joinFriendRoom, findRandom, pickType, submitGuess, giveUp, requestRematch, reset,
     sendChat, myBubble, opBubble,
     ALL_TYPES,
