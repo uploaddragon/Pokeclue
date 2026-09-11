@@ -12,6 +12,7 @@ import { BattlePage } from './components/BattlePage.jsx';
 import { TitlesPage } from './components/TitlesPage.jsx';
 import { TitleUnlockToast } from './components/TitleUnlockToast.jsx';
 import { InfoPage } from './components/InfoPage.jsx';
+import { TypeBattlePage } from './components/TypeBattlePage.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
@@ -19,7 +20,7 @@ import { useTitles } from './hooks/useTitles.js';
 
 export default function App() {
   const [page, setPage] = useState('game');       // 'game' | 'dex' | 'titles' | 'about' | 'privacy' | 'terms'
-  const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless' | 'battle'
+  const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless' | 'battle' | 'typebattle'
   const [lang, setLang] = useState('ko');
   const [authOpen, setAuthOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
@@ -210,6 +211,9 @@ export default function App() {
             });
           }}
         />
+      )}
+      {page === 'game' && gameTab === 'typebattle' && (
+        <TypeBattlePage user={user} lang={lang} />
       )}
       {page === 'dex' && (
         <DexPage dex={dex} lang={lang} />

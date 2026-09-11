@@ -665,6 +665,34 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .footer-col a:hover{color:white;}
 .footer-bottom{max-width:860px;margin:24px auto 0;border-top:1px solid #333;padding-top:16px;text-align:center;font-size:7px;font-weight:700;font-family:'Press Start 2P',monospace;color:#555;line-height:2;}
 
+/* ── 타입 대전 (Type Battle) ── */
+.tb-score{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--ink);margin-top:4px;}
+.tb-goal{font-size:8px;color:rgba(255,255,255,0.5);}
+
+.tb-select-panel{padding:24px;text-align:center;}
+.tb-select-header{font-weight:800;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+.tb-timer{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--red,#e63329);}
+.tb-op-ready{font-size:.85rem;color:#4caf50;font-weight:700;margin-bottom:10px;}
+.tb-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:16px;}
+.tb-type-btn{border:2.5px solid var(--ink);border-radius:10px;padding:10px 6px;font-weight:800;font-size:.85rem;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:transform .1s;}
+.tb-type-btn:hover:not(:disabled){transform:translateY(-2px);}
+.tb-type-btn:disabled{cursor:default;}
+.tb-type-btn.picked{outline:3px solid #333;transform:scale(1.05);}
+
+.tb-reveal-wait{padding:40px 20px;text-align:center;}
+.tb-reveal-icon{font-size:2.5rem;margin-bottom:10px;animation:tb-pulse 1s infinite;}
+.tb-reveal-text{font-weight:800;font-size:1.1rem;}
+@keyframes tb-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+
+.tb-round-panel{padding:24px;text-align:center;}
+.tb-combo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+.tb-combo-plus{font-weight:900;color:#999;}
+.tb-type-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;font-weight:800;font-size:.95rem;box-shadow:2px 2px 0 var(--ink);}
+.tb-round-sub{font-size:.85rem;color:#777;margin-bottom:14px;}
+.tb-wrong-list{margin-top:10px;font-size:.8rem;color:#b00;}
+.tb-round-result{padding:16px;font-weight:700;font-size:1rem;}
+.tb-result-text{line-height:1.6;}
+
 /* ── Info Page (소개/약관/개인정보) ── */
 .info-page{max-width:760px;margin:24px auto;padding:32px 36px;line-height:1.75;}
 .info-page h1{font-size:1.5rem;margin-bottom:12px;}

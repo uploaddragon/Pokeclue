@@ -93,6 +93,12 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
             >
               {isEn ? '⚔ Battle' : '⚔ 대전'}
             </button>
+            <button
+              className={`game-tab-btn${gameTab === 'typebattle' ? ' on' : ''}`}
+              onClick={() => onGameTab('typebattle')}
+            >
+              {isEn ? '🔤 Type Battle' : '🔤 타입 대전'}
+            </button>
           </div>
         </div>
       ) : (
