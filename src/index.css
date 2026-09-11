@@ -692,6 +692,16 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .tb-wrong-list{margin-top:10px;font-size:.8rem;color:#b00;}
 .tb-round-result{padding:16px;font-weight:700;font-size:1rem;}
 .tb-result-text{line-height:1.6;}
+.tb-result-banner{font-size:1.15rem;font-weight:900;margin-bottom:14px;}
+.tb-round-result.win .tb-result-banner{color:#2e9e3f;}
+.tb-round-result.lose .tb-result-banner{color:#c0392b;}
+.tb-answer-card{display:inline-flex;align-items:center;gap:12px;background:#fff;border:2.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 var(--ink);padding:10px 18px 10px 10px;}
+.tb-answer-spr{width:56px;height:56px;image-rendering:pixelated;}
+.tb-answer-info{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+.tb-answer-name{font-weight:800;font-size:1rem;}
+.tb-answer-types{display:flex;gap:6px;}
+.tb-round-glow{animation:tb-glow 1s ease-in-out infinite alternate;box-shadow:inset 0 0 0 3px var(--yellow),0 0 18px 4px rgba(255,215,0,0.7);}
+@keyframes tb-glow{from{filter:brightness(1);}to{filter:brightness(1.15);}}
 
 /* ── Info Page (소개/약관/개인정보) ── */
 .info-page{max-width:760px;margin:24px auto;padding:32px 36px;line-height:1.75;}

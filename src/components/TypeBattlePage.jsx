@@ -258,11 +258,13 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
   // ── PLAYING ──────────────────────────────────────────────
   const myPicked = !!b.myType;
   const roundDone = !!b.room?.round_winner;
+  const iWonRound = roundDone && b.room.round_winner === b.mySlot;
+  const opWonRound = roundDone && b.room.round_winner !== 'draw' && b.room.round_winner !== b.mySlot;
 
   return (
     <main>
       <div className="battle-hud">
-        <div className="battle-hud-player me">
+        <div className={`battle-hud-player me${iWonRound ? ' tb-round-glow' : ''}`}>
           <div className="battle-avatar-wrap">
             <BattleAvatar profilePokemon={b.myProfilePokemon} />
             <SpeechBubble key={b.myBubble?.key} bubble={b.myBubble} side="me" />
@@ -275,7 +277,7 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
           <span className="battle-hud-vs">VS</span>
           <span className="tb-goal">{isEn ? `First to ${WIN_SCORE}` : `${WIN_SCORE}선승`}</span>
         </div>
-        <div className="battle-hud-player op">
+        <div className={`battle-hud-player op${opWonRound ? ' tb-round-glow' : ''}`}>
           <div className="battle-avatar-wrap">
             <BattleAvatar profilePokemon={b.opProfilePokemon} />
             <SpeechBubble key={b.opBubble?.key} bubble={b.opBubble} side="op" />
@@ -351,16 +353,31 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
           )}
 
           {roundDone && (
-            <div className="tb-round-result">
+            <div className={`tb-round-result${iWonRound ? ' win' : opWonRound ? ' lose' : ''}`}>
               {b.room.round_winner === 'draw' ? (
                 <div className="tb-result-text">
                   {isEn ? '😅 No Pokémon has this type combo! No winner this round.' : '😅 해당 타입 조합의 포켓몬이 존재하지 않아요! 승자 없이 다음 라운드로 넘어갑니다.'}
                 </div>
               ) : (
-                <div className="tb-result-text">
-                  {(b.room.round_winner === b.mySlot ? (isEn ? '🎉 You win the round!' : '🎉 라운드 승리!') : (isEn ? '💧 Opponent wins the round' : '💧 상대가 라운드를 가져갔어요'))}
-                  {b.roundAnswer && <> — <b>{displayName(b.roundAnswer, lang)}</b></>}
-                </div>
+                <>
+                  <div className="tb-result-banner">
+                    {iWonRound
+                      ? (isEn ? `🎉 You score! (${b.myNick})` : `🎉 ${b.myNick} 득점!`)
+                      : (isEn ? `💧 ${b.opNick || 'Opponent'} scores!` : `💧 ${b.opNick || '상대'} 득점!`)}
+                  </div>
+                  {b.roundAnswer && (
+                    <div className="tb-answer-card">
+                      <img src={spr(b.roundAnswer.id)} alt="" className="tb-answer-spr" />
+                      <div className="tb-answer-info">
+                        <span className="tb-answer-name">{displayName(b.roundAnswer, lang)}</span>
+                        <div className="tb-answer-types">
+                          <TypeChip type={b.roundAnswer.t1} lang={lang} />
+                          {b.roundAnswer.t2 !== '없음' && <TypeChip type={b.roundAnswer.t2} lang={lang} />}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}
