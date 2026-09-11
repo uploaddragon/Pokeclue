@@ -38,6 +38,9 @@ export function pickAnswer() {
 export const FORM_LABEL_EN = {
   base:     'Base',
   mega:     'Mega',
+  'mega-x': 'Mega X',
+  'mega-y': 'Mega Y',
+  'mega-z': 'Mega Z',
   origin:   'Origin Forme',
   altered:  'Altered Forme',
   regional: 'Regional Form',
@@ -116,6 +119,9 @@ export const FORM_LABEL_EN = {
 export const FORM_LABEL = {
   base:     '기본',
   mega:     '메가',
+  'mega-x': '메가X',
+  'mega-y': '메가Y',
+  'mega-z': '메가Z',
   origin:   '오리진',
   altered:  '어나더',
   regional: '리전',
@@ -219,12 +225,12 @@ export function formLabel(form, lang = 'ko') {
 
 export function displayName(p, lang = 'ko') {
   if (lang === 'en') {
-    if (!p.form || p.form === 'mega' || p.form === 'primal' || p.form === 'ultra') return p.en;
+    if (!p.form || p.form === 'mega' || p.form === 'mega-x' || p.form === 'mega-y' || p.form === 'mega-z' || p.form === 'primal' || p.form === 'ultra') return p.en;
     const label = FORM_LABEL_EN[p.form] ?? p.form;
     return `${p.en} (${label})`;
   }
   // 메가/원시는 ko에 이미 "메가"/"원시" 포함 → 접미사 불필요
-  if (!p.form || p.form === 'mega' || p.form === 'primal' || p.form === 'ultra') return p.ko;
+  if (!p.form || p.form === 'mega' || p.form === 'mega-x' || p.form === 'mega-y' || p.form === 'mega-z' || p.form === 'primal' || p.form === 'ultra') return p.ko;
   return `${p.ko}(${formLabel(p.form)})`;
 }
 
