@@ -187,6 +187,10 @@ const FORM_SPRITE_ID = {
   'mega/audino':      10069,
   // ── 메가진화 6세대 ──
   'mega/diancie':     10075,
+  // ── 메가진화 레전드 ZA ──
+  'mega/staraptor':   10308,
+  'mega/darkrai':     10312,
+  'mega/zeraora':     10319,
   // ── 디아루기/펄기아 오리진폼 ──
   '483-origin':       10245,
   '484-origin':       10246,
