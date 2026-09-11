@@ -11,13 +11,14 @@ import { WelcomeModal, useWelcomeModal } from './components/WelcomeModal.jsx';
 import { BattlePage } from './components/BattlePage.jsx';
 import { TitlesPage } from './components/TitlesPage.jsx';
 import { TitleUnlockToast } from './components/TitleUnlockToast.jsx';
+import { InfoPage } from './components/InfoPage.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
 import { useTitles } from './hooks/useTitles.js';
 
 export default function App() {
-  const [page, setPage] = useState('game');       // 'game' | 'dex' | 'titles'
+  const [page, setPage] = useState('game');       // 'game' | 'dex' | 'titles' | 'about' | 'privacy' | 'terms'
   const [gameTab, setGameTab] = useState('daily'); // 'daily' | 'endless' | 'battle'
   const [lang, setLang] = useState('ko');
   const [authOpen, setAuthOpen] = useState(false);
@@ -222,11 +223,14 @@ export default function App() {
           dex={dex}
         />
       )}
+      {(page === 'about' || page === 'privacy' || page === 'terms') && (
+        <InfoPage type={page} lang={lang} />
+      )}
       <TitleUnlockToast
         queue={toastQueue}
         onDone={() => setToastQueue(q => q.slice(1))}
       />
-      <Footer />
+      <Footer onNav={setPage} />
     </div>
   );
 }
