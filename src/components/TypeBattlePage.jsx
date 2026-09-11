@@ -242,14 +242,35 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
   if (b.phase === 'finished') {
     return (
       <main>
-        <div className="battle-hero">
-          <div className="battle-hero-badge">{b.iWon ? '🏆' : '💧'}</div>
-          <div className="hero-t">{b.iWon ? (isEn ? 'Victory!' : '승리!') : (isEn ? 'Defeat' : '패배')}</div>
-          <div className="hero-s">{b.myScore} : {b.opScore}</div>
-        </div>
-        <div className="battle-waiting">
-          <button className="battle-action-btn" onClick={b.requestRematch}>{isEn ? 'Rematch' : '재대전'}</button>
-          <button className="battle-cancel-btn" onClick={b.reset}>{isEn ? 'Leave' : '나가기'}</button>
+        <div className={`battle-result-banner${b.iWon ? ' win' : ' lose'}`}>
+          <div className="battle-result-top">
+            <div className="battle-result-emoji">{b.iWon ? '🏆' : '💀'}</div>
+            <div className="battle-result-verdict">{b.iWon ? (isEn ? 'Victory!' : '승리!') : (isEn ? 'Defeat...' : '패배...')}</div>
+            <div className="battle-result-round">{isEn ? `First to ${WIN_SCORE}` : `${WIN_SCORE}선승`}</div>
+          </div>
+
+          <div className="battle-result-scores">
+            <div className={`battle-result-score${b.iWon ? ' winner' : ''}`}>
+              {b.iWon && <div className="battle-result-crown">👑</div>}
+              <BattleAvatar profilePokemon={b.myProfilePokemon} />
+              <div className="battle-result-nick">{b.myNick}</div>
+              <BattleTitleBadge titleId={b.myTitle} />
+              <div className="battle-result-tries">{b.myScore}<span className="battle-result-tries-unit">{isEn ? ' wins' : '승'}</span></div>
+            </div>
+            <div className="battle-result-vs-mid">VS</div>
+            <div className={`battle-result-score${!b.iWon ? ' winner' : ''}`}>
+              {!b.iWon && <div className="battle-result-crown">👑</div>}
+              <BattleAvatar profilePokemon={b.opProfilePokemon} />
+              <div className="battle-result-nick">{b.opNick || '???'}</div>
+              <BattleTitleBadge titleId={b.opTitle} />
+              <div className="battle-result-tries">{b.opScore}<span className="battle-result-tries-unit">{isEn ? ' wins' : '승'}</span></div>
+            </div>
+          </div>
+
+          <div className="battle-result-btns">
+            <button className="battle-action-btn" onClick={b.requestRematch}>🔄 {isEn ? 'Rematch' : '재대전'}</button>
+            <button className="battle-leave-btn" onClick={b.reset}>✕ {isEn ? 'Leave' : '나가기'}</button>
+          </div>
         </div>
       </main>
     );
@@ -388,7 +409,13 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
         {['😊 잘 부탁해!', '🔥 좋아!', '😤 아깝다!', '👏 나이스!'].map(m => (
           <button key={m} className="battle-chat-btn" onClick={() => b.sendChat(m)}>{m}</button>
         ))}
-        <button className="battle-chat-btn giveup" onClick={b.giveUp}>{isEn ? 'Give up' : '항복'}</button>
+      </div>
+      <div className="battle-giveup-wrap">
+        <button className="battle-giveup-btn" onClick={() => {
+          if (window.confirm(isEn ? 'Give up? You will lose.' : '항복하시겠어요? 패배 처리됩니다.')) b.giveUp();
+        }}>
+          🏳 {isEn ? 'Give up' : '항복'}
+        </button>
       </div>
     </main>
   );
