@@ -769,7 +769,7 @@ const DB = [
   {id:'mega/diancie',    ko:'메가디안시',   en:'Mega Diancie',    baseId:719,form:'mega',gen:6,t1:'바위', t2:'페어리',evo:1,len:5,enLen:12},
 
   // ── 메가진화 (레전드 ZA) ──
-  {id:'mega/staraptor',  ko:'메가찌르호크', en:'Mega Staraptor',  baseId:398,form:'mega',gen:4,t1:'싸움', t2:'비행',  evo:3,len:6,enLen:14},
+  {id:'mega/staraptor',  ko:'메가찌르호크', en:'Mega Staraptor',  baseId:398,form:'mega',gen:4,t1:'격투', t2:'비행',  evo:3,len:6,enLen:14},
   {id:'mega/darkrai',    ko:'메가다크라이', en:'Mega Darkrai',    baseId:491,form:'mega',gen:4,t1:'악',   t2:'없음',  evo:1,len:6,enLen:12},
   {id:'mega/zeraora',    ko:'메가제라오라', en:'Mega Zeraora',    baseId:807,form:'mega',gen:7,t1:'전기', t2:'없음',  evo:1,len:6,enLen:12},
   {id:10304,             ko:'메가라이츄X', en:'Mega Raichu X',   baseId:26, form:'mega-x',gen:1,t1:'전기', t2:'없음',  evo:3,len:7,enLen:14},
