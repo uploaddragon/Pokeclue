@@ -449,9 +449,9 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
       </div>
       <div className="battle-giveup-wrap">
         <button className="battle-giveup-btn" onClick={() => {
-          if (window.confirm(isEn ? 'Give up? You will lose.' : '항복하시겠어요? 패배 처리됩니다.')) b.giveUp();
+          if (window.confirm(isEn ? 'Give up? You will lose.' : '도망치시겠어요? 패배 처리됩니다.')) b.giveUp();
         }}>
-          🏳 {isEn ? 'Give up' : '항복'}
+          🏃 {isEn ? 'Run Away' : '도망치다'}
         </button>
       </div>
     </main>
