@@ -443,7 +443,7 @@ export function TypeBattlePage({ user, lang, onBattleWin, onBattleLoss }) {
       )}
 
       <div className="battle-chat-bar">
-        {['😊 잘 부탁해!', '🔥 좋아!', '😤 아깝다!', '👏 나이스!'].map(m => (
+        {['😊 잘 부탁해!', '🔥 좋아!', '😤 아깝다!', '👏 나이스!', '😱 이런!'].map(m => (
           <button key={m} className="battle-chat-btn" onClick={() => b.sendChat(m)}>{m}</button>
         ))}
       </div>

@@ -8,7 +8,7 @@ import { TITLE_MAP, RARITY } from '../data/titles.js';
 
 const QUICK_MSGS = [
   '😊 잘 부탁해!', '🔥 내가 이긴다!', '😤 질 수 없어!', '👏 대단해요!',
-  '😅 어렵다...', '🤔 이게 뭐지?', '😂 ㅋㅋㅋ', '👋 수고했어!',
+  '😅 어렵다...', '🤔 이게 뭐지?', '😂 ㅋㅋㅋ', '👋 수고했어!', '😱 이런!',
 ];
 
 function SpeechBubble({ bubble, side }) {
