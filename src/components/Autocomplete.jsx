@@ -16,15 +16,36 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
   const [matches, setMatches] = useState([]);
   const [sel, setSel] = useState(-1);
   const wrapRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // 내 차례가 되어 입력창이 활성화되면 클릭 없이 바로 타이핑할 수 있도록 자동 포커스
+  useEffect(() => {
+    if (!disabled) inputRef.current?.focus();
+  }, [disabled]);
 
   function search(input) {
     const v = input.trim().toLowerCase();
     if (!v) return [];
-    return DB.filter(p => {
-      const base = lang === 'en' ? (p.en || '').toLowerCase() : p.ko.toLowerCase();
-      const full = displayName(p, lang).toLowerCase();
-      return base.includes(v) || full.includes(v);
-    }).slice(0, 8);
+    // 정확히 이름이 일치하는 포켓몬을 최우선으로 — 짧은 이름(예: "라이츄")이
+    // 새로 추가된 폼("메가라이츄X" 등)의 부분 문자열에 걸려 엔터 시
+    // 엉뚱한 포켓몬이 제출되는 것을 방지
+    return DB
+      .filter(p => {
+        const base = lang === 'en' ? (p.en || '').toLowerCase() : p.ko.toLowerCase();
+        const full = displayName(p, lang).toLowerCase();
+        return base.includes(v) || full.includes(v);
+      })
+      .sort((a, b) => {
+        const aBase = lang === 'en' ? (a.en || '').toLowerCase() : a.ko.toLowerCase();
+        const bBase = lang === 'en' ? (b.en || '').toLowerCase() : b.ko.toLowerCase();
+        const aFull = displayName(a, lang).toLowerCase();
+        const bFull = displayName(b, lang).toLowerCase();
+        const aExact = aBase === v || aFull === v;
+        const bExact = bBase === v || bFull === v;
+        if (aExact !== bExact) return aExact ? -1 : 1;
+        return aFull.length - bFull.length;
+      })
+      .slice(0, 8);
   }
 
   function handleInput(e) {
@@ -68,6 +89,10 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
       e.preventDefault();
       setSel(s => Math.max(s - 1, 0));
     } else if (e.key === 'Enter') {
+      // 한글 입력기(IME) 조합 중 마지막 글자를 확정하는 엔터는 무시
+      // (그렇지 않으면 아직 완성되지 않은 글자로 검색되어 매칭이 안 되고,
+      //  결과적으로 정답을 입력해도 아무 반응이 없는 것처럼 보임)
+      if (e.nativeEvent?.isComposing || e.keyCode === 229) return;
       const eggId = EASTER_EGGS[value.trim()];
       if (eggId) {
         const eggPoke = DB.find(p => p.id === eggId);
@@ -95,6 +120,7 @@ export const Autocomplete = forwardRef(function Autocomplete({ onSubmit, disable
     <div className="search-wrap" ref={wrapRef}>
       <input
         id="inp"
+        ref={inputRef}
         type="text"
         placeholder={lang === 'en' ? 'Enter Pokémon name...' : '포켓몬 이름 입력...'}
         autoComplete="off"
