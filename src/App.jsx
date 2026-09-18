@@ -13,6 +13,7 @@ import { TitlesPage } from './components/TitlesPage.jsx';
 import { TitleUnlockToast } from './components/TitleUnlockToast.jsx';
 import { InfoPage } from './components/InfoPage.jsx';
 import { TypeBattlePage } from './components/TypeBattlePage.jsx';
+import { TutorialTour, useTutorial } from './components/TutorialTour.jsx';
 import { useGame } from './hooks/useGame.js';
 import { useDex } from './hooks/useDex.js';
 import { useAuth } from './hooks/useAuth.js';
@@ -34,6 +35,17 @@ export default function App() {
     setToastQueue(q => [...q, ...(Array.isArray(ids) ? ids : [ids])]);
   }
   const welcome = useWelcomeModal();
+  const tutorial = useTutorial();
+  const tutorialStartedRef = useRef(false);
+
+  // 첫 방문 시 웰컴 모달이 닫히면 이어서 가이드 투어 시작 (한 번만)
+  useEffect(() => {
+    if (welcome.open || page !== 'game' || gameTab !== 'daily') return;
+    if (tutorial.seen || tutorialStartedRef.current) return;
+    tutorialStartedRef.current = true;
+    const t = setTimeout(() => tutorial.start(), 400);
+    return () => clearTimeout(t);
+  }, [welcome.open, tutorial.seen, page, gameTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon } = useAuth();
   const { dex, unlockDex } = useDex(user);
@@ -109,7 +121,15 @@ export default function App() {
             }
           }
         }}
+        onHelpClick={() => {
+          if (page !== 'game' || gameTab !== 'daily') { setPage('game'); setGameTab('daily'); }
+          tutorial.start();
+        }}
       />
+
+      {tutorial.active && (
+        <TutorialTour lang={lang} onDone={tutorial.finish} />
+      )}
 
       {authOpen && (
         <AuthModal

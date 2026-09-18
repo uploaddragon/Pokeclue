@@ -102,7 +102,7 @@ export function GamePage({
           {isEn ? 'Attempts ' : '시도 횟수 '}
           <b className="px">{guesses.length}</b>
         </span>
-        <span className="chip">
+        <span className="chip" data-tour="shiny-chip">
           <span className="dot" />
           {isEn ? ' Shiny ' : ' 이로치 확률 '}
           <b className="px">{shinyPct}</b>
@@ -110,12 +110,13 @@ export function GamePage({
       </div>
 
       {/* 입력 행 */}
-      <div className="inputrow">
+      <div className="inputrow" data-tour="guess-input">
         <Autocomplete ref={acRef} onSubmit={onSubmit} disabled={gameOver} lang={lang} onEasterEgg={onEasterEgg} />
         <button className="btn go" onClick={() => acRef.current?.submit()}>
           {isEn ? 'Guess ▶' : '맞히기 ▶'}
         </button>
         <button
+          data-tour="filter-btn"
           className={`btn ghost${filterOpen ? ' active' : ''}`}
           onClick={filterOpen ? onCloseFilter : onOpenFilter}
         >
