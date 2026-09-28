@@ -7,7 +7,7 @@
     <title>PokéClue - 포켓몬 추리 게임</title>
     <meta name="description" content="매일 새로운 정답 포켓몬을 세대, 타입, 진화 단계, 이름 글자 수 같은 단서로 추리하는 무료 포켓몬 퀴즈 게임. 데일리, 엔드리스, 실시간 대전 모드와 도감·칭호 수집 기능을 제공합니다." />
     <meta name="keywords" content="포켓몬, 포켓몬 퀴즈, 포켓몬 워들, PokeClue, 포케클루, 포켓몬 추리 게임" />
-    <link rel="canonical" href="https://pokeclue.com/" />
+    <link rel="canonical" href="https://www.pokeclue.com/" />
     <meta property="og:title" content="PokéClue - 포켓몬 추리 게임" />
     <meta property="og:description" content="매일 새로운 정답 포켓몬을 추리하는 무료 포켓몬 퀴즈 게임. 데일리·엔드리스·실시간 대전 모드." />
     <meta property="og:type" content="website" />
@@ -21,7 +21,31 @@
         crossorigin="anonymous"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- 앱이 로드되면 React가 이 영역을 교체한다. JS를 실행하지 않는 크롤러/검색엔진이 읽을 본문. -->
+      <div style="max-width:760px;margin:0 auto;padding:24px 20px;font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif;line-height:1.8;color:#1a1a1a">
+        <h1>PokéClue(포케클루) - 매일 즐기는 포켓몬 추리 게임</h1>
+        <p>PokéClue는 매일 새로운 정답 포켓몬을 <strong>세대, 타입, 진화 단계, 이름 글자 수, 폼</strong> 여섯 가지 단서로 추리해 맞히는 무료 웹 게임입니다. 이름을 입력할 때마다 정답과의 일치 여부가 색과 화살표로 표시되고, 단서를 조합해 후보를 좁혀 가며 정답에 다가갑니다. 설치나 회원가입 없이 브라우저에서 바로 플레이할 수 있습니다.</p>
+        <h2>게임 모드</h2>
+        <ul>
+          <li><strong>데일리</strong> — 하루 한 문제, 모든 플레이어가 같은 정답에 도전하고 시도 횟수로 랭킹을 겨룹니다.</li>
+          <li><strong>엔드리스</strong> — 횟수 제한 없이 계속 플레이하며, 챌린지 모드에서는 클리어한 포켓몬이 도감에 등록됩니다.</li>
+          <li><strong>대전</strong> — 다른 플레이어와 실시간으로 번갈아 추측해 먼저 맞히는 쪽이 승리합니다.</li>
+          <li><strong>타입 대전</strong> — 서로 고른 두 타입에 맞는 포켓몬을 먼저 입력하는 5선승제 대결입니다.</li>
+        </ul>
+        <h2>이로치와 도감</h2>
+        <p>정답을 맞히면 해당 포켓몬이 도감에 등록되며, 필터를 쓰지 않고 클리어하면 10% 확률로 이로치(색이 다른 포켓몬)가 됩니다. 알로라·갈라르·히스이·팔데아 리전폼, 메가진화, 거다이맥스 등 다양한 폼을 수록하고 있습니다.</p>
+        <h2>더 알아보기</h2>
+        <ul>
+          <li><a href="/guide.html">게임 방법</a> — 단서 읽는 법과 모드별 규칙</li>
+          <li><a href="/strategy.html">추리 전략 가이드</a> — 더 적은 횟수로 맞히는 요령</li>
+          <li><a href="/types.html">포켓몬 타입 상성표</a> — 18개 타입의 상성 정리</li>
+          <li><a href="/faq.html">자주 묻는 질문</a></li>
+          <li><a href="/about.html">사이트 소개</a> · <a href="/privacy.html">개인정보처리방침</a> · <a href="/terms.html">이용약관</a></li>
+        </ul>
+        <p>게임을 불러오는 중입니다…</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
