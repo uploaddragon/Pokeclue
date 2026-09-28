@@ -21,11 +21,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.pokeclue.com/types.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://www.pokeclue.com/faq.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
