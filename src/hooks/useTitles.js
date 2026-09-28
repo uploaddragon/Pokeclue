@@ -96,6 +96,11 @@ export function useTitles(user) {
       });
     });
 
+    // 18종 플레이트(각 타입 최종 티어)를 모두 모으면 천계의피리 해금
+    const earned = new Set([...(user.user_metadata?.earned_titles ?? []), ...candidates]);
+    const plateIds = TYPE_TIERS.map(({ tiers }) => tiers[tiers.length - 1].id);
+    if (plateIds.every(id => earned.has(id))) candidates.push('arceus_flute');
+
     return batchAward(user, candidates);
   }, [user]);
 

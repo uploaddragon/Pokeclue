@@ -1174,6 +1174,7 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
 .rarity-rare     {background:#DBEAFE;color:#1D4ED8;}
 .rarity-epic     {background:#EDE9FE;color:#6D28D9;}
 .rarity-legendary{background:#FEF3C7;color:#B45309;}
+.rarity-mythic   {background:#C0392B;color:#fff !important;}
 
 .title-card-name{font-size:15px;font-weight:700;color:var(--tc,var(--ink));}
 .locked-name{color:var(--muted);}

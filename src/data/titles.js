@@ -401,6 +401,17 @@ export const GENERAL_TITLES = [
     threshold: 200,
   },
   {
+    id: 'arceus_flute',
+    ko: '천계의피리',
+    en: 'Azure Flute',
+    emoji: '🎶',
+    desc_ko: '18종의 플레이트 칭호를 모두 획득',
+    desc_en: 'Earn all 18 Plate titles',
+    rarity: 'mythic',
+    progressGroup: 'plates',
+    threshold: 18,
+  },
+  {
     id: 'hello',
     ko: '헬로봉주르니하오안녕',
     en: 'HelloBonjourNiHaoAnnyeong',

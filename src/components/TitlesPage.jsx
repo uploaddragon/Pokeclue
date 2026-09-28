@@ -114,6 +114,7 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
     battle_wins: battleStats.wins,
     battle_plays: battleStats.wins + battleStats.losses,
     near_miss: nearMissCount,
+    plates: TYPE_TIERS.filter(({ tiers }) => earnedIds.includes(tiers[tiers.length - 1].id)).length,
   };
 
   const typeCounts = useMemo(() => {
@@ -154,7 +155,7 @@ export function TitlesPage({ user, earnedIds = [], onEquipTitle, lang = 'ko', de
         { label: '📅 데일리 칭호', ids: ['quick','earlybird','slowstart','reckless','insomnia','shortpants','elitetrainer','champion'] },
         { label: '★ 챌린지 칭호', ids: ['challenge_30','challenge_50','challenge_100','challenge_300','challenge_700'] },
         { label: '⚔ 대전 칭호', ids: ['battle_1','battle_10','battle_50','battle_100','battle_play_100','battle_play_200','gapseok'] },
-        { label: '🌐 공통 칭호', ids: ['pallet','nombungi','sparkdust','onehit','hello'] },
+        { label: '🌐 공통 칭호', ids: ['pallet','nombungi','sparkdust','onehit','arceus_flute','hello'] },
       ].map(cat => {
         const titles = cat.ids.map(id => GENERAL_TITLES.find(t => t.id === id)).filter(Boolean);
         if (titles.length === 0) return null;
