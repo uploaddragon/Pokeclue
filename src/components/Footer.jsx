@@ -16,6 +16,7 @@ export function Footer({ onNav }) {
           <h4>Guide</h4>
           <a href="/strategy.html">추리 전략</a>
           <a href="/faq.html">자주 묻는 질문</a>
+          <a href="/updates.html">업데이트 소식</a>
         </div>
         <div className="footer-col">
           <h4>Company</h4>
