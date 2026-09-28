@@ -833,6 +833,7 @@ const DB = [
   {id:'264-galar', ko:'직구리',  en:'Linoone',  baseId:264, form:'galar',gen:3,t1:'악',    t2:'노말',  evo:2,len:3,enLen:7},
   {id:'554-galar', ko:'달막화',  en:'Darumaka', baseId:554, form:'galar',gen:5,t1:'얼음',  t2:'없음',  evo:1,len:3,enLen:8},
   {id:'555-galar', ko:'불비달마',en:'Darmanitan',baseId:555,form:'galar',gen:5,t1:'얼음',  t2:'없음',  evo:2,len:4,enLen:10},
+  {id:'555-galar-zen', ko:'불비달마',en:'Darmanitan',baseId:555,form:'galar-zen',gen:5,t1:'얼음',  t2:'불꽃',  evo:2,len:4,enLen:10},
   {id:'562-galar', ko:'데스마스',en:'Yamask',   baseId:562, form:'galar',gen:5,t1:'땅',    t2:'고스트',evo:1,len:4,enLen:6},
   {id:'618-galar', ko:'메더',    en:'Stunfisk', baseId:618, form:'galar',gen:5,t1:'땅',    t2:'강철',  evo:1,len:2,enLen:8},
 

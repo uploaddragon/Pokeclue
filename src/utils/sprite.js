@@ -46,6 +46,7 @@ const FORM_SPRITE_ID = {
   '264-galar': 10175,
   '554-galar': 10176,
   '555-galar': 10177,
+  '555-galar-zen': 10178,
   '562-galar': 10179,
   '618-galar': 10180,
   // ── 후파 (10086) ──
@@ -57,6 +58,7 @@ const FORM_SPRITE_ID = {
   '27-alola':         10101,
   '28-alola':         10102,
   '37-alola':         10103,
+  '38-alola':         10104,
   '50-alola':         10105,
   '51-alola':         10106,
   '52-alola':         10107,

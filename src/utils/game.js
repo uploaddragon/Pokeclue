@@ -46,6 +46,7 @@ export const FORM_LABEL_EN = {
   regional: 'Regional Form',
   alola:    'Alolan Form',
   galar:    'Galarian Form',
+  'galar-zen': 'Galarian Zen Mode',
   gmax:     'Gigantamax',
   primal:   'Primal',
   ultra:    'Ultra',
@@ -127,6 +128,7 @@ export const FORM_LABEL = {
   regional: '리전',
   alola:    '리전폼',
   galar:    '리전폼',
+  'galar-zen': '리전폼 달마모드',
   gmax:     '거다이맥스',
   primal:   '원시',
   ultra:    '울트라',
@@ -235,7 +237,7 @@ export function displayName(p, lang = 'ko') {
 }
 
 // 리전폼 판별 집합 (alola / galar / paldea 및 팔데아 종 포함)
-const REGIONAL = new Set(['alola', 'galar', 'hisui', 'paldea', 'combat', 'blaze', 'aqua']);
+const REGIONAL = new Set(['alola', 'galar', 'galar-zen', 'hisui', 'paldea', 'combat', 'blaze', 'aqua']);
 
 export function compareForm(guess, answer) {
   const gForm  = guess.form  ?? 'base';
