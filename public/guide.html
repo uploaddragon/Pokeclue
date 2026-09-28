@@ -12,39 +12,80 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://www.pokeclue.com/guide.html">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/quiple/galmuri/dist/galmuri.css">
 <style>
+:root{--red:#E63329;--red-d:#C42B22;--red-dd:#9E2018;--bg:#ECE6D7;--ink:#15171A;--gold:#F6C944;--green:#5AAE5A;--muted:#7C786C}
 *{box-sizing:border-box}
-body{margin:0;background:#ece5d4;color:#1a1a1a;font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif;line-height:1.8;font-size:16px}
-header{background:#c8322c;border-bottom:4px solid #1a1a1a}
-.hd{max-width:920px;margin:0 auto;padding:14px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.logo{font-weight:900;font-size:22px;color:#fff;text-decoration:none;letter-spacing:.06em}
-.logo span{color:#ffd23f}
-nav{display:flex;flex-wrap:wrap;gap:6px 14px}
-nav a{color:#fff;text-decoration:none;font-size:14px;opacity:.9}
-nav a:hover,nav a.on{opacity:1;text-decoration:underline}
-main{max-width:820px;margin:28px auto;padding:0 20px}
-article{background:#fff;border:3px solid #1a1a1a;box-shadow:6px 6px 0 #1a1a1a;border-radius:6px;padding:32px 36px}
-h1{font-size:28px;margin:0 0 16px}
-h2{font-size:20px;margin:30px 0 8px;padding-bottom:4px;border-bottom:2px solid #eee}
-h3{font-size:17px;margin:20px 0 4px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Noto Sans KR',system-ui,sans-serif;line-height:1.8;font-size:16px;-webkit-font-smoothing:antialiased}
+.px,h1,h2,h3,nav a,.cta,.play{font-family:'Galmuri11','Pretendard',monospace}
+
+header{background:var(--red);border-bottom:3px solid var(--ink)}
+.hd{max-width:1080px;margin:0 auto;padding:0 22px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.tiles{display:flex;gap:3px}
+.lt{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid var(--ink);border-radius:3px;font-family:'Galmuri11','Press Start 2P',monospace}
+.lt.r{background:#fff;color:var(--red)}
+.lt.d{background:var(--ink);color:#fff}
+.ball{width:30px;height:30px;border:3px solid #000;border-radius:50%;overflow:hidden;position:relative;box-shadow:2px 2px 0 #000;margin-left:8px}
+.ball i{position:absolute;left:0;right:0;height:50%}
+.ball i.t{top:0;background:#CC0000}
+.ball i.b{bottom:0;background:#fff}
+.ball b{position:absolute;top:50%;left:0;right:0;height:5px;transform:translateY(-50%);background:#000}
+.ball u{position:absolute;top:50%;left:50%;width:8px;height:8px;transform:translate(-50%,-50%);background:#fff;border:2px solid #000;border-radius:50%;z-index:1}
+.play{background:var(--green);color:#fff;font-size:13px;text-decoration:none;padding:8px 16px;border:2px solid var(--ink);border-radius:7px;box-shadow:2px 2px 0 var(--ink);white-space:nowrap}
+.play:hover{filter:brightness(1.08)}
+
+.tabs{background:var(--red-d);border-bottom:3px solid var(--ink)}
+.tabs-in{max-width:1080px;margin:0 auto;padding:0 12px;display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs-in::-webkit-scrollbar{display:none}
+nav a{flex:none;color:rgba(255,255,255,.78);text-decoration:none;font-size:13px;padding:12px 16px 10px;border-bottom:4px solid transparent;white-space:nowrap;transition:color .12s,background .12s}
+nav a:hover{color:#fff;background:rgba(0,0,0,.12)}
+nav a.on{color:#fff;border-bottom-color:var(--gold);background:rgba(0,0,0,.18)}
+
+main{max-width:820px;margin:32px auto 40px;padding:0 20px}
+article{background:#fff;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:12px;padding:36px 40px}
+h1{font-size:26px;line-height:1.35;margin:0 0 18px;padding-bottom:14px;border-bottom:3px dashed #e4e0d3}
+h2{font-size:18px;margin:34px 0 10px;padding-left:12px;border-left:6px solid var(--red)}
+h3{font-size:15px;margin:22px 0 4px;color:var(--red-dd)}
 p{margin:0 0 14px}
-ul{margin:0 0 14px 22px;padding:0}
+ul{margin:0 0 14px 20px;padding:0}
 li{margin-bottom:6px}
-a{color:#c8322c}
+li::marker{color:var(--red)}
+a{color:var(--red-d)}
+strong{font-weight:800}
 .tbl{overflow-x:auto;margin-bottom:14px}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top}
-thead th{background:#1a1a1a;color:#fff}
-tbody th{background:#f6f2e7;white-space:nowrap}
-.cta{display:inline-block;margin:6px 0 24px;padding:12px 22px;background:#2e9e3f;color:#fff;font-weight:700;text-decoration:none;border:3px solid #1a1a1a;box-shadow:3px 3px 0 #1a1a1a;border-radius:6px}
-footer{max-width:820px;margin:0 auto 40px;padding:0 20px;font-size:13px;color:#666;text-align:center}
-footer a{color:#666}
-@media(max-width:600px){article{padding:22px 18px}h1{font-size:24px}}
+thead th{background:var(--ink);color:#fff}
+.cta{display:inline-block;margin:8px 0 0;padding:12px 24px;background:var(--green);color:#fff;font-size:15px;text-decoration:none;border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);border-radius:8px}
+.cta:hover{filter:brightness(1.08)}
+
+footer{background:#181818;color:#aaa;font-size:13px;text-align:center;padding:28px 20px;line-height:2}
+footer a{color:#ccc}
+footer .fl{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-bottom:8px}
+footer .fl a{font-family:'Galmuri11',monospace;text-decoration:none}
+footer .fl a:hover{color:#fff}
+
+@media(max-width:600px){
+  .hd{padding:0 14px}
+  .tiles .lt{width:20px;height:20px;font-size:12px}
+  .ball{display:none}
+  .play{font-size:12px;padding:7px 12px}
+  main{margin:20px auto 28px;padding:0 12px}
+  article{padding:24px 18px;border-radius:10px}
+  h1{font-size:22px}
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2182640585423147" crossorigin="anonymous"></script>
 </head>
 <body>
-<header><div class="hd"><a class="logo" href="/">POKÉ<span>CLUE</span></a><nav><a href="/">게임 플레이</a><a href="/about.html">사이트 소개</a><a href="/guide.html" class="on">게임 방법</a><a href="/strategy.html">추리 전략</a><a href="/updates.html">업데이트 소식</a><a href="/faq.html">자주 묻는 질문</a><a href="/privacy.html">개인정보처리방침</a><a href="/terms.html">이용약관</a></nav></div></header>
+<header>
+  <div class="hd">
+    <a class="logo" href="/" aria-label="PokéClue 홈"><div class="tiles"><div class="lt r">P</div><div class="lt r">O</div><div class="lt r">K</div><div class="lt r">E</div><div class="lt d">C</div><div class="lt d">L</div><div class="lt d">U</div><div class="lt d">E</div></div><div class="ball"><i class="t"></i><i class="b"></i><b></b><u></u></div></a>
+    <a class="play" href="/">▶ 게임 플레이</a>
+  </div>
+</header>
+<div class="tabs"><nav class="tabs-in"><a href="/about.html">사이트 소개</a><a href="/guide.html" class="on">게임 방법</a><a href="/strategy.html">추리 전략</a><a href="/updates.html">업데이트 소식</a><a href="/faq.html">자주 묻는 질문</a><a href="/privacy.html">개인정보처리방침</a><a href="/terms.html">이용약관</a></nav></div>
 <main>
 <article>
 
@@ -91,6 +132,10 @@ footer a{color:#666}
 <p><a class="cta" href="/">▶ 지금 게임 플레이하기</a></p>
 </article>
 </main>
-<footer>© 2026 PokéClue · 비공식 팬 프로젝트이며 닌텐도·게임프리크·더 포켓몬 컴퍼니와 무관합니다.<br>문의: <a href="mailto:uploaddragon0723@gmail.com">uploaddragon0723@gmail.com</a></footer>
+<footer>
+<div class="fl"><a href="/">게임 플레이</a><a href="/about.html">사이트 소개</a><a href="/guide.html">게임 방법</a><a href="/strategy.html">추리 전략</a><a href="/updates.html">업데이트 소식</a><a href="/faq.html">자주 묻는 질문</a><a href="/privacy.html">개인정보처리방침</a><a href="/terms.html">이용약관</a></div>
+© 2026 PokéClue · 비공식 팬 프로젝트이며 닌텐도·게임프리크·더 포켓몬 컴퍼니와 무관합니다.<br>문의: <a href="mailto:uploaddragon0723@gmail.com">uploaddragon0723@gmail.com</a>
+</footer>
+<script>var t=document.querySelector('.tabs-in');var a=t&&t.querySelector('a.on');if(a){t.scrollLeft=a.offsetLeft-(t.clientWidth-a.offsetWidth)/2}</script>
 </body>
 </html>
