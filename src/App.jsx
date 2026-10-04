@@ -68,7 +68,7 @@ export default function App() {
 
   // 새 추측마다 near-miss 체크 (반짝가루 칭호)
   useEffect(() => {
-    if (!user || loading || game.guesses.length === 0) return;
+    if (!user || loading || game.guesses.length === 0 || !game.answer) return;
     const lastGuess = game.guesses[game.guesses.length - 1];
     checkNearMiss(lastGuess, game.answer);
   }, [game.guesses.length, user?.id, loading]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -148,7 +148,30 @@ export default function App() {
         <WelcomeModal onClose={welcome.close} onNeverShow={welcome.closeForever} lang={lang} />
       )}
 
-      {page === 'game' && gameTab === 'daily' && (
+      {page === 'game' && gameTab === 'daily' && !game.answer && (
+        <main>
+          <div className="panel" style={{ maxWidth: 520, margin: '40px auto', padding: '36px 28px', textAlign: 'center' }}>
+            {game.answerStatus === 'error' ? (
+              <>
+                <div className="px" style={{ fontSize: 16, marginBottom: 10 }}>
+                  {lang === 'en' ? "Couldn't load today's puzzle" : '오늘의 문제를 불러오지 못했어요'}
+                </div>
+                <p style={{ color: 'var(--muted)', margin: '0 0 18px', lineHeight: 1.7 }}>
+                  {lang === 'en'
+                    ? 'Please check your connection and try again. If your device clock is off, fix it and retry.'
+                    : '네트워크 상태를 확인하고 다시 시도해 주세요. 기기의 시계가 많이 틀어져 있어도 발생할 수 있어요.'}
+                </p>
+                <button className="btn go" onClick={game.retryAnswer}>{lang === 'en' ? 'Retry' : '다시 시도'}</button>
+              </>
+            ) : (
+              <div className="px" style={{ fontSize: 15, color: 'var(--muted)' }}>
+                {lang === 'en' ? "Loading today's puzzle…" : '오늘의 포켓몬을 불러오는 중…'}
+              </div>
+            )}
+          </div>
+        </main>
+      )}
+      {page === 'game' && gameTab === 'daily' && game.answer && (
         <GamePage
           answer={game.answer}
           guesses={game.guesses}

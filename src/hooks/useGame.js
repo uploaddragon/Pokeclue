@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import DB from '../data/pokemon.js';
-import { pickAnswer, getTodayStr } from '../utils/game.js';
+import { fetchDailyAnswer, getTodayStr } from '../utils/game.js';
 import { supabase, supabasePublic } from '../lib/supabase.js';
+
+fetchDailyAnswer().catch(() => {}); // prefetch — 실패 시 훅에서 재시도/오류 표시
 
 const ANON_KEY = 'pokeclue_anon';
 
@@ -34,7 +36,7 @@ function saveDailyState(state) {
 
 function initState() {
   const saved = loadDailyState();
-  const answer = pickAnswer();
+  const answer = null; // 서버에서 받아 채워진다 (useGame 의 answer effect)
   if (saved) {
     const guesses = saved.guessIds.map(id => DB.find(p => p.id === id)).filter(Boolean);
     return {
@@ -91,6 +93,31 @@ export function useGame(unlockDex, user, authLoading) {
   const { answer, guesses, gameOver, usedFilter, result } = state;
   const [filterOpen, setFilterOpen] = useState(false);
   const syncedRef = useRef(false);
+
+  // 오늘의 정답: 서버에서 조회 (실패 시 3회 재시도 후 오류 상태 → retryAnswer 로 수동 재시도)
+  const [answerStatus, setAnswerStatus] = useState('loading'); // 'loading' | 'ready' | 'error'
+  const [answerAttempt, setAnswerAttempt] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    setAnswerStatus('loading');
+    (async () => {
+      for (let i = 0; i < 3 && !cancelled; i++) {
+        try {
+          const a = await fetchDailyAnswer();
+          if (cancelled) return;
+          if (a) {
+            setState(prev => ({ ...prev, answer: a }));
+            setAnswerStatus('ready');
+            return;
+          }
+        } catch { /* 아래에서 재시도 */ }
+        await new Promise(r => setTimeout(r, 800 * (i + 1)));
+      }
+      if (!cancelled) setAnswerStatus('error');
+    })();
+    return () => { cancelled = true; };
+  }, [answerAttempt]);
+  const retryAnswer = useCallback(() => setAnswerAttempt(n => n + 1), []);
 
   // 로그인 유저: 서버에 이미 오늘 클리어 기록이 있으면 클리어 상태로 전환
   useEffect(() => {
@@ -152,11 +179,12 @@ export function useGame(unlockDex, user, authLoading) {
   }, [result?.win, user?.id, authLoading, nickname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submitGuess = useCallback((pokemonId) => {
-    if (gameOver) return;
+    if (gameOver || !answer) return;
     const g = DB.find(x => x.id === pokemonId);
     if (!g) { alert('포켓몬을 찾을 수 없습니다.'); return; }
 
     setState(prev => {
+      if (!prev.answer) return prev;
       if (prev.guesses.find(x => x.id === g.id)) {
         alert('이미 시도했습니다.');
         return prev;
@@ -175,7 +203,7 @@ export function useGame(unlockDex, user, authLoading) {
 
       return { ...prev, guesses: next };
     });
-  }, [gameOver, unlockDex]);
+  }, [gameOver, answer, unlockDex]);
 
   const openFilter = useCallback(() => {
     setState(prev => ({ ...prev, usedFilter: true }));
@@ -194,10 +222,11 @@ export function useGame(unlockDex, user, authLoading) {
     savedForUserRef.current = null;
     setState(initState());
     setFilterOpen(false);
+    setAnswerAttempt(n => n + 1); // 정답을 다시 채운다 (캐시되어 있으면 즉시)
   }, []);
 
   return {
-    answer, guesses, gameOver, usedFilter, filterOpen,
+    answer, answerStatus, retryAnswer, guesses, gameOver, usedFilter, filterOpen,
     result, submitGuess, openFilter, closeFilter, pickFromFilter, resetGame,
   };
 }

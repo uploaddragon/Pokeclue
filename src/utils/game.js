@@ -1,5 +1,5 @@
 import DB from '../data/pokemon.js';
-import ANSWERS from '../data/answers.json';
+import { supabasePublic } from '../lib/supabase.js';
 import { TYPE_EN } from '../data/types.js';
 
 export function getTodayStr() {
@@ -10,29 +10,24 @@ export function getTodayStr() {
   return `${y}-${m}-${day}`;
 }
 
-function dateHash(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-  }
-  // Wang hash mixing — 연속된 날짜가 연속된 인덱스로 매핑되지 않도록
-  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-  h ^= (h >>> 16);
-  return Math.abs(h);
-}
+// 데일리 정답은 번들에 넣지 않고 서버(daily_answers 테이블)에서 받는다.
+// RLS가 "아직 어느 시간대에도 오지 않은 날짜"의 정답은 내주지 않는다.
+const answerCache = new Map(); // dateStr -> Promise<pokemon|null>
 
-export function pickAnswer() {
-  const today = getTodayStr();
-  // answers.json 고정 매핑 우선 사용 — DB 변경에도 날짜별 정답 불변
-  const id = ANSWERS[today];
-  if (id !== undefined) {
-    const p = DB.find(p => p.id === id);
-    if (p) return p;
+export function fetchDailyAnswer(dateStr = getTodayStr()) {
+  if (!answerCache.has(dateStr)) {
+    const p = (async () => {
+      const { data, error } = await supabasePublic
+        .from('daily_answers').select('answer_id').eq('date', dateStr).maybeSingle();
+      if (error) throw error;
+      if (!data) return null;
+      return DB.find(x => String(x.id) === String(data.answer_id)) ?? null;
+    })();
+    // 실패/미존재는 캐시하지 않는다 → 재시도 가능 (자정 직후 시계 오차 등)
+    p.then(v => { if (!v) answerCache.delete(dateStr); }, () => answerCache.delete(dateStr));
+    answerCache.set(dateStr, p);
   }
-  // fallback: 기존 해시 방식 (answers.json 범위 밖 날짜)
-  const idx = dateHash(today + 'GJHJ') % DB.length;
-  return DB[idx];
+  return answerCache.get(dateStr);
 }
 
 export const FORM_LABEL_EN = {

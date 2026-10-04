@@ -24,11 +24,10 @@ const _p2 = path.join(__dirname, '../frontend/src/data/pokemon.js');
 const _dbPath = fs.existsSync(_p1) ? _p1 : _p2;
 const { default: DB } = await import(pathToFileURL(_dbPath).href);
 
-// ── answers.json 로드 (날짜→포켓몬ID 고정 매핑) ──
-const _aPath1 = path.join(__dirname, '../src/data/answers.json');
-const _aPath2 = path.join(__dirname, '../frontend/src/data/answers.json');
-const _answersPath = fs.existsSync(_aPath1) ? _aPath1 : _aPath2;
-const ANSWERS = JSON.parse(fs.readFileSync(_answersPath, 'utf-8'));
+// ── 정답은 서버(Supabase daily_answers)에서 조회 ──
+// 공개 레포에 정답 파일을 두지 않기 위함. anon(공개) 키로 읽을 수 있는 건 "이미 지난 날짜"뿐이다.
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 
 function getDateStr(date) {
   const y = date.getFullYear();
@@ -37,23 +36,25 @@ function getDateStr(date) {
   return `${y}-${m}-${d}`;
 }
 
-function pickAnswerForDate(dateStr) {
-  // answers.json 고정 매핑 우선 — DB 변경에도 날짜별 정답 불변
-  const id = ANSWERS[dateStr];
-  if (id !== undefined) {
-    const p = DB.find(p => p.id === id);
-    if (p) return p;
+async function pickAnswerForDate(dateStr) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) throw new Error('환경변수 SUPABASE_URL / SUPABASE_ANON_KEY 필요');
+  const url = `${SUPABASE_URL}/rest/v1/daily_answers?select=answer_id&date=eq.${dateStr}`;
+  let lastErr;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+      if (!rows[0]) throw new Error(`${dateStr} 정답 행이 없습니다 (아직 오지 않은 날짜이거나 시드 누락)`);
+      const p = DB.find(x => String(x.id) === String(rows[0].answer_id));
+      if (!p) throw new Error(`DB에 없는 포켓몬 id: ${rows[0].answer_id}`);
+      return p;
+    } catch (e) {
+      lastErr = e;
+      await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+    }
   }
-  // fallback: 해시 방식 (answers.json 범위 밖 날짜)
-  function dateHash(str) {
-    let h = 0;
-    for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-    h = Math.imul(h ^ (h >>> 16), 0x45d9f3b) | 0;
-    h ^= (h >>> 16);
-    return Math.abs(h);
-  }
-  return DB[dateHash(dateStr + 'GJHJ') % DB.length];
+  throw new Error(`정답 조회 실패: ${lastErr?.message}`);
 }
 
 // ── displayName ───────────────────────────
@@ -294,7 +295,7 @@ async function main() {
     if (!pokemon) throw new Error(`포켓몬 ID를 찾을 수 없음: ${rawId}`);
     console.log(`🎯 오버라이드 포켓몬: ${displayName(pokemon)} (id: ${pokemon.id})`);
   } else {
-    pokemon = pickAnswerForDate(dateStr);
+    pokemon = await pickAnswerForDate(dateStr);
   }
   const name = displayName(pokemon);
   console.log(`🎯 정답: ${name} (id: ${pokemon.id})`);
