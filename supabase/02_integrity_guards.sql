@@ -51,6 +51,14 @@ begin
   end if;
 end $$;
 
+-- ───────── 헬퍼 함수 노출 차단 ─────────
+-- Supabase는 public 스키마의 함수를 anon/authenticated 가 REST(/rpc/...)로 호출할 수 있게 기본 허용한다.
+-- _guard_min_interval 이 그대로 노출되면 누구나 남의 user_id 로 호출해 그 사람의 정상 기록을
+-- 'rate_limited' 로 막을 수 있다. 트리거 함수(security definer, 소유자 권한)는 내부에서 호출하므로 영향 없음.
+revoke all on function public._guard_min_interval(text, text, int) from public, anon, authenticated;
+revoke all on function public._is_api_client()                    from public, anon, authenticated;
+revoke all on function public._api_uid()                          from public, anon, authenticated;
+
 -- ───────── challenge_clears ─────────
 create or replace function public.guard_challenge_clears() returns trigger
 language plpgsql security definer set search_path = public, pg_temp as $$
@@ -140,3 +148,7 @@ drop trigger if exists trg_guard_battle_stats on public.battle_stats;
 create trigger trg_guard_battle_stats
   before insert or update on public.battle_stats
   for each row execute function public.guard_battle_stats();
+
+revoke all on function public.guard_challenge_clears() from public, anon, authenticated;
+revoke all on function public.guard_daily_results()    from public, anon, authenticated;
+revoke all on function public.guard_battle_stats()     from public, anon, authenticated;
