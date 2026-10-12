@@ -22,7 +22,9 @@ const arg = (name, def) => {
 };
 
 const kstToday = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
-const KEEP_THROUGH = arg('keep-through', kstToday());
+// 기본값: 내일(KST)까지 기존 값 보존. 시드 실행~배포 사이에 사이트(구버전)가 내는 값과 어긋나지 않게 하는 여유분이다.
+// 시드를 만든 날 안에 SQL 실행과 배포를 끝내야 한다. 하루 이상 지났다면 다시 생성할 것(아직 실행 전이라면 안전).
+const KEEP_THROUGH = arg('keep-through', new Date(Date.now() + 33 * 3600e3).toISOString().slice(0, 10));
 const START = '2025-01-01'; // (LEGACY 없으면 아래에서 keep-through 다음 날로 조정)
 const END = arg('end', '2030-12-31');
 const AVOID_WINDOW = 365; // 최근 N일 내 중복 정답 금지
