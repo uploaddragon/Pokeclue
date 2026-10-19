@@ -3,6 +3,7 @@ import { spr, sprShiny } from '../utils/sprite.js';
 import { displayName, getTodayStr } from '../utils/game.js';
 import { supabasePublic } from '../lib/supabase.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
+import { PlayerLink, PublicProfileModal } from './PublicProfileModal.jsx';
 
 /* ── 칭호 뱃지 (미니 인라인) ── */
 function TitleBadge({ titleId }) {
@@ -84,6 +85,7 @@ const PAGE_SIZE = 10;
 export function RankingPanel({ win, user, lang = 'ko' }) {
   const { rows, loading } = useInlineRanking(win);
   const [page, setPage] = useState(1);
+  const [profileTarget, setProfileTarget] = useState(null);
   const isEn = lang === 'en';
 
   const anonId = (() => {
@@ -118,7 +120,7 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
               <div key={r.id ?? globalIdx} className={`ritem${isMe ? ' me' : ''}`}>
                 <RankAvatar rank={globalIdx + 1} profilePokemon={r.profile_pokemon} />
                 <div className="who">
-                  <span className="who-name">{r.nickname || (isEn ? 'Trainer' : '트레이너')}</span>
+                  <span className="who-name"><PlayerLink userId={r.user_id} nickname={r.nickname || (isEn ? 'Trainer' : '트레이너')} onOpen={setProfileTarget} lang={lang} /></span>
                   {r.equipped_title && TITLE_MAP[r.equipped_title] && (
                     <TitleBadge titleId={r.equipped_title} />
                   )}
@@ -149,6 +151,7 @@ export function RankingPanel({ win, user, lang = 'ko' }) {
           >▶</button>
         </div>
       )}
+      <PublicProfileModal target={profileTarget} onClose={() => setProfileTarget(null)} lang={lang} />
     </div>
   );
 }

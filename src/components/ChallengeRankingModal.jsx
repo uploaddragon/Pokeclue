@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabasePublic } from '../lib/supabase.js';
 import { spr, sprShiny } from '../utils/sprite.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
+import { PlayerLink, PublicProfileModal } from './PublicProfileModal.jsx';
 
 const MEDAL = ['🥇', '🥈', '🥉'];
 
@@ -102,7 +103,7 @@ function useChallengeRanking(tab) {
   return { rows, loading };
 }
 
-function RankingRows({ rows, user, lang }) {
+function RankingRows({ rows, user, lang, onOpenProfile }) {
   const isEn = lang === 'en';
   if (rows.length === 0) return <div className="ranking-empty">{isEn ? 'No records yet.' : '아직 기록이 없어요.'}</div>;
   return rows.map((r, i) => {
@@ -112,7 +113,7 @@ function RankingRows({ rows, user, lang }) {
         <RankAvatar rank={i + 1} profilePokemon={r.profilePokemon} />
         <div className="ranking-info">
           <span className="ranking-nickname">
-            {r.nickname}
+            <PlayerLink userId={r.userId} nickname={r.nickname} onOpen={onOpenProfile} lang={lang} />
             {isMe && <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>}
           </span>
           {r.equippedTitle && TITLE_MAP[r.equippedTitle] && (
@@ -132,6 +133,7 @@ export function ChallengeRankingPanel({ user, lang }) {
   const isEn = lang === 'en';
   const [tab, setTab] = useState('monthly');
   const { rows, loading } = useChallengeRanking(tab);
+  const [profileTarget, setProfileTarget] = useState(null);
 
   const now = new Date();
   const monthLabel = isEn
@@ -156,8 +158,9 @@ export function ChallengeRankingPanel({ user, lang }) {
       <div className="challenge-rank-list">
         {loading
           ? <div className="ranking-empty">{isEn ? 'Loading...' : '불러오는 중...'}</div>
-          : <RankingRows rows={rows} user={user} lang={lang} />}
+          : <RankingRows rows={rows} user={user} lang={lang} onOpenProfile={setProfileTarget} />}
       </div>
+      <PublicProfileModal target={profileTarget} onClose={() => setProfileTarget(null)} lang={lang} />
     </div>
   );
 }

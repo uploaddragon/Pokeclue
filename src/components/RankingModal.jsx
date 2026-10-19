@@ -3,6 +3,7 @@ import { supabasePublic } from '../lib/supabase.js';
 import { getTodayStr } from '../utils/game.js';
 import { TITLE_MAP, RARITY } from '../data/titles.js';
 import { spr, sprShiny } from '../utils/sprite.js';
+import { PlayerLink, PublicProfileModal } from './PublicProfileModal.jsx';
 
 const MEDAL = ['🥇', '🥈', '🥉'];
 
@@ -56,6 +57,7 @@ export function RankingModal({ onClose, user, lang }) {
   const isEn = lang === 'en';
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [profileTarget, setProfileTarget] = useState(null);
 
   useEffect(() => {
     async function fetchRanking() {
@@ -120,7 +122,7 @@ export function RankingModal({ onClose, user, lang }) {
                   <RankAvatar rank={i + 1} profilePokemon={r.profile_pokemon} />
                   <div className="ranking-info">
                     <span className="ranking-nickname">
-                      {r.nickname || '트레이너'}
+                      <PlayerLink userId={r.user_id} nickname={r.nickname || '트레이너'} onOpen={setProfileTarget} lang={lang} />
                       {isMe && <span className="ranking-me-badge">{isEn ? 'ME' : '나'}</span>}
                     </span>
                     {r.equipped_title && TITLE_MAP[r.equipped_title] && (
@@ -139,6 +141,7 @@ export function RankingModal({ onClose, user, lang }) {
           )}
         </div>
       </div>
+      <PublicProfileModal target={profileTarget} onClose={() => setProfileTarget(null)} lang={lang} />
     </div>
   );
 }
