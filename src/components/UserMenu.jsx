@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ProfileModal } from './ProfileModal.jsx';
 import { spr, sprShiny } from '../utils/sprite.js';
 
-export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, onEquipTitle, dex, onUpdateProfilePokemon }) {
+export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, onEquipTitle, dex, onUpdateProfilePokemon, onUpdateProfileVisibility }) {
   const isEn = lang === 'en';
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -78,6 +78,7 @@ export function UserMenu({ user, onSignOut, onUpdateNickname, lang, earnedIds, o
           onEquipTitle={onEquipTitle}
           dex={dex ?? {}}
           onUpdateProfilePokemon={onUpdateProfilePokemon}
+          onUpdateProfileVisibility={onUpdateProfileVisibility}
         />
       )}
     </div>

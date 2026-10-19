@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { UserMenu } from './UserMenu.jsx';
 
-export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut, onUpdateNickname, earnedIds, onEquipTitle, dex, onUpdateProfilePokemon, onInstagramClick, onHelpClick }) {
+export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user, authLoading, onLoginClick, onSignOut, onUpdateNickname, earnedIds, onEquipTitle, dex, onUpdateProfilePokemon, onUpdateProfileVisibility, onInstagramClick, onHelpClick }) {
   const isEn = lang === 'en';
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef(null);
@@ -58,7 +58,7 @@ export function Header({ page, onNav, gameTab, onGameTab, lang, onLangSet, user,
             )}
           </div>
           {authLoading ? null : user
-            ? <UserMenu user={user} onSignOut={onSignOut} onUpdateNickname={onUpdateNickname} lang={lang} earnedIds={earnedIds ?? []} onEquipTitle={onEquipTitle} dex={dex} onUpdateProfilePokemon={onUpdateProfilePokemon} />
+            ? <UserMenu user={user} onSignOut={onSignOut} onUpdateNickname={onUpdateNickname} lang={lang} earnedIds={earnedIds ?? []} onEquipTitle={onEquipTitle} dex={dex} onUpdateProfilePokemon={onUpdateProfilePokemon} onUpdateProfileVisibility={onUpdateProfileVisibility} />
             : <button data-tour="nav-login" className="nav-btn login-btn" onClick={onLoginClick}>{isEn ? 'Login' : '로그인'}</button>
           }
           <div className="nav-divider" />

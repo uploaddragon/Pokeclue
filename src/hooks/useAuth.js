@@ -71,5 +71,14 @@ export function useAuth() {
     return error;
   }
 
-  return { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon };
+  // 프로필 공개 여부 (user_metadata.profile_public). 서버 함수 get_public_profile 이 이 값을 보고 응답을 줄인다.
+  async function updateProfileVisibility(isPublic) {
+    const { data, error } = await supabase.auth.updateUser({
+      data: { profile_public: !!isPublic },
+    });
+    if (!error) setUser(data.user);
+    return error;
+  }
+
+  return { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon, updateProfileVisibility };
 }

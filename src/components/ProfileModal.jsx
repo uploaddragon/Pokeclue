@@ -4,7 +4,7 @@ import { spr, sprShiny } from '../utils/sprite.js';
 import { supabasePublic } from '../lib/supabase.js';
 import DB from '../data/pokemon.js';
 
-export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEquipTitle, dex = {}, onUpdateProfilePokemon }) {
+export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEquipTitle, dex = {}, onUpdateProfilePokemon, onUpdateProfileVisibility }) {
   const isEn = lang === 'en';
   const currentNickname =
     user.user_metadata?.pokeclue_nickname ||
@@ -18,6 +18,9 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
   const [equipping, setEquipping] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(user.user_metadata?.profile_pokemon ?? null);
   const [previewImgError, setPreviewImgError] = useState(false);
+  // 프로필 공개 여부: 값이 없거나 false 가 아니면 공개(기본값). 서버 함수도 같은 규칙으로 해석한다.
+  const initialPublic = !(user.user_metadata?.profile_public === false || user.user_metadata?.profile_public === 'false');
+  const [isPublic, setIsPublic] = useState(initialPublic);
 
   const avatar = user.user_metadata?.avatar_url;
   const equippedTitle = user.user_metadata?.equipped_title ?? null;
@@ -58,8 +61,12 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
       const pid = selectedProfile ? (isShiny ? selectedProfile.slice(0, -6) : selectedProfile) : null;
       await onUpdateProfilePokemon(pid, isShiny);
     }
+    let visErr = null;
+    if (!err && onUpdateProfileVisibility && isPublic !== initialPublic) {
+      visErr = await onUpdateProfileVisibility(isPublic);
+    }
     setSaving(false);
-    if (err) { setError(isEn ? 'Failed to save.' : '저장에 실패했어요.'); return; }
+    if (err || visErr) { setError(isEn ? 'Failed to save.' : '저장에 실패했어요.'); return; }
     onClose();
   }
 
@@ -155,6 +162,22 @@ export function ProfileModal({ user, onClose, onSave, lang, earnedIds = [], onEq
             placeholder={isEn ? 'Enter nickname' : '닉네임 입력'}
           />
           {error && <div className="profile-error">{error}</div>}
+        </div>
+
+        {/* ── 프로필 공개 여부 ── */}
+        <div className="pv-row">
+          <div className="pv-text">
+            <b>{isEn ? 'Public profile' : '프로필 공개'}</b>
+            <span>
+              {isPublic
+                ? (isEn ? 'Others can tap your name in rankings to see your records, Dex count and titles.' : '랭킹에서 내 이름을 누르면 기록·도감 수·칭호가 보여요.')
+                : (isEn ? 'Your Dex count, records and titles are hidden. Rankings still show your name, title and rank.' : '내 도감 수·기록·칭호가 다른 사람에게 보이지 않아요. 랭킹에는 닉네임·칭호·순위만 표시돼요.')}
+            </span>
+          </div>
+          <label className="pv-switch" aria-label={isEn ? 'Public profile' : '프로필 공개'}>
+            <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} />
+            <span className="pv-track" />
+          </label>
         </div>
 
         {/* ── 프로필 포켓몬 섹션 ── */}

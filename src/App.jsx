@@ -47,7 +47,7 @@ export default function App() {
     return () => clearTimeout(t);
   }, [welcome.open, tutorial.seen, page, gameTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon } = useAuth();
+  const { user, loading, signInWithGoogle, signInWithDiscord, signOut, updateNickname, updateProfilePokemon, updateProfileVisibility } = useAuth();
   const { dex, unlockDex } = useDex(user);
   const game = useGame(unlockDex, user, loading);
   const { earnedIds, checkAndAwardTitles, checkDexTitles, equipTitle, awardPalletIfNeeded, checkNearMiss, checkBattleTitles, checkOnehit, checkChallengeTitles } = useTitles(user);
@@ -112,6 +112,7 @@ export default function App() {
         onEquipTitle={equipTitle}
         dex={dex}
         onUpdateProfilePokemon={updateProfilePokemon}
+        onUpdateProfileVisibility={updateProfileVisibility}
         onInstagramClick={() => {
           if (user) {
             const current = user.user_metadata?.earned_titles ?? [];

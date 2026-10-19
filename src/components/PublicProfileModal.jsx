@@ -73,7 +73,7 @@ export function PublicProfileModal({ target, onClose, lang = 'ko' }) {
 
   const p = state.data;
   // 서버가 돌려준 값은 사용자가 조작할 수 있으므로 우리가 아는 칭호만 표시한다
-  const earned = p ? [...new Set(p.earned_titles)].map(id => TITLE_MAP[id]).filter(Boolean) : [];
+  const earned = p && !p.private ? [...new Set(p.earned_titles ?? [])].map(id => TITLE_MAP[id]).filter(Boolean) : [];
   const equipped = p?.equipped_title ? TITLE_MAP[p.equipped_title] : null;
   const name = target.nickname || p?.nickname || (isEn ? 'Trainer' : '트레이너');
 
@@ -113,7 +113,13 @@ export function PublicProfileModal({ target, onClose, lang = 'ko' }) {
           </div>
         )}
 
-        {state.status === 'ready' && p && (
+        {state.status === 'ready' && p?.private && (
+          <div className="pp-msg">
+            🔒 {isEn ? 'This player keeps their profile private.' : '이 플레이어는 프로필을 비공개로 설정했어요.'}
+          </div>
+        )}
+
+        {state.status === 'ready' && p && !p.private && (
           <>
             <div className="profile-stats-section" style={{ marginTop: 18 }}>
               <div className="profile-stats-grid">
