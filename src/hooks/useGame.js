@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import DB from '../data/pokemon.js';
-import { fetchDailyAnswer, getTodayStr } from '../utils/game.js';
+import { fetchDailyAnswer, peekDailyAnswer, getTodayStr } from '../utils/game.js';
 import { supabase, supabasePublic } from '../lib/supabase.js';
 
 fetchDailyAnswer().catch(() => {}); // prefetch — 실패 시 훅에서 재시도/오류 표시
@@ -36,7 +36,7 @@ function saveDailyState(state) {
 
 function initState() {
   const saved = loadDailyState();
-  const answer = null; // 서버에서 받아 채워진다 (useGame 의 answer effect)
+  const answer = peekDailyAnswer(); // 부팅 중에 이미 받아왔으면 즉시 사용, 아니면 null → useGame 의 answer effect 가 채움
   if (saved) {
     const guesses = saved.guessIds.map(id => DB.find(p => p.id === id)).filter(Boolean);
     return {
@@ -95,11 +95,11 @@ export function useGame(unlockDex, user, authLoading) {
   const syncedRef = useRef(false);
 
   // 오늘의 정답: 서버에서 조회 (실패 시 3회 재시도 후 오류 상태 → retryAnswer 로 수동 재시도)
-  const [answerStatus, setAnswerStatus] = useState('loading'); // 'loading' | 'ready' | 'error'
+  const [answerStatus, setAnswerStatus] = useState(() => (peekDailyAnswer() ? 'ready' : 'loading')); // 'loading' | 'ready' | 'error'
   const [answerAttempt, setAnswerAttempt] = useState(0);
   useEffect(() => {
     let cancelled = false;
-    setAnswerStatus('loading');
+    if (!peekDailyAnswer()) setAnswerStatus('loading'); // 이미 받아온 정답이 있으면 로딩 화면을 다시 띄우지 않는다
     (async () => {
       for (let i = 0; i < 3 && !cancelled; i++) {
         try {

@@ -1534,3 +1534,12 @@ footer{background:#1a1a1a;border-top:4px solid #222;padding:32px;}
   .reveal h2{font-size:17px;}
   .pills{gap:7px;}
 }
+
+/* ── 부팅 로딩 몬스터볼 (index.html 스플래시와 동일한 모양) ── */
+.boot-ball{width:88px;height:88px;margin:0 auto;border:5px solid #000;border-radius:50%;overflow:hidden;position:relative;box-shadow:4px 4px 0 #000;background:#fff;animation:boot-spin .9s linear infinite;}
+.boot-ball i{position:absolute;left:0;right:0;height:50%;}
+.boot-ball i.t{top:0;background:#CC0000;}
+.boot-ball i.b{bottom:0;background:#fff;}
+.boot-ball b{position:absolute;top:50%;left:0;right:0;height:14px;transform:translateY(-50%);background:#000;z-index:1;}
+.boot-ball u{position:absolute;top:50%;left:50%;width:26px;height:26px;transform:translate(-50%,-50%);background:#fff;border:5px solid #000;border-radius:50%;z-index:2;}
+@keyframes boot-spin{to{transform:rotate(360deg);}}

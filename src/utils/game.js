@@ -13,6 +13,12 @@ export function getTodayStr() {
 // 데일리 정답은 번들에 넣지 않고 서버(daily_answers 테이블)에서 받는다.
 // RLS가 "아직 어느 시간대에도 오지 않은 날짜"의 정답은 내주지 않는다.
 const answerCache = new Map(); // dateStr -> Promise<pokemon|null>
+const resolvedAnswers = new Map(); // dateStr -> pokemon (이미 받아온 것만)
+
+// 이미 받아온 정답이 있으면 즉시 반환 (없으면 null). 첫 렌더에서 로딩 화면을 건너뛰기 위함.
+export function peekDailyAnswer(dateStr = getTodayStr()) {
+  return resolvedAnswers.get(dateStr) ?? null;
+}
 
 export function fetchDailyAnswer(dateStr = getTodayStr()) {
   if (!answerCache.has(dateStr)) {
@@ -24,7 +30,7 @@ export function fetchDailyAnswer(dateStr = getTodayStr()) {
       return DB.find(x => String(x.id) === String(data.answer_id)) ?? null;
     })();
     // 실패/미존재는 캐시하지 않는다 → 재시도 가능 (자정 직후 시계 오차 등)
-    p.then(v => { if (!v) answerCache.delete(dateStr); }, () => answerCache.delete(dateStr));
+    p.then(v => { if (v) resolvedAnswers.set(dateStr, v); else answerCache.delete(dateStr); }, () => answerCache.delete(dateStr));
     answerCache.set(dateStr, p);
   }
   return answerCache.get(dateStr);

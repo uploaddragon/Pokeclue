@@ -164,9 +164,12 @@ export default function App() {
                 <button className="btn go" onClick={game.retryAnswer}>{lang === 'en' ? 'Retry' : '다시 시도'}</button>
               </>
             ) : (
-              <div className="px" style={{ fontSize: 15, color: 'var(--muted)' }}>
-                {lang === 'en' ? "Loading today's puzzle…" : '오늘의 포켓몬을 불러오는 중…'}
-              </div>
+              <>
+                <div className="boot-ball"><i className="t" /><i className="b" /><b /><u /></div>
+                <div className="px" style={{ fontSize: 15, color: 'var(--muted)', marginTop: 18 }}>
+                  {lang === 'en' ? 'Loading game…' : '게임을 불러오는 중…'}
+                </div>
+              </>
             )}
           </div>
         </main>
